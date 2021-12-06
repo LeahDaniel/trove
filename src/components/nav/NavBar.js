@@ -1,4 +1,5 @@
-import React, { useState } from "react"
+import React from "react"
+import { Link, NavLink } from "react-router-dom"
 import { Collapse, DropdownItem, DropdownMenu, DropdownToggle, Nav, Navbar, NavbarBrand, NavbarToggler, UncontrolledDropdown } from "reactstrap"
 
 export const NavBar = () => {
@@ -31,13 +32,20 @@ export const NavBar = () => {
                             </DropdownToggle>
                             <DropdownMenu end>
                                 <DropdownItem>
-                                    Current
+                                    <Link to="/games/current">Current</Link>
                                 </DropdownItem>
                                 <DropdownItem>
                                     Queue
                                 </DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
+                        <NavLink to="#" onClick={
+                            () => {
+                                localStorage.removeItem("trove_user")
+                            }
+                        }>
+                            Logout
+                        </NavLink>
                     </Nav>
                 </Collapse>
             </Navbar>

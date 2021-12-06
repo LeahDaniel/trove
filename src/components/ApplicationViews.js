@@ -1,6 +1,7 @@
 import React from "react"
 import { Route } from "react-router-dom"
 import { HomePage } from "./HomePage/HomePage"
+import { CurrentGameList } from "./VideoGames/CurrentGameList"
 
 
 export const ApplicationViews = () => {
@@ -8,6 +9,9 @@ export const ApplicationViews = () => {
         <>
             <Route exact path="/">
                 <HomePage/>
+            </Route>
+            <Route exact path="/games/current">
+                <CurrentGameList/>
             </Route>
         </>
     )
