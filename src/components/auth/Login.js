@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react"
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom"
-import "./Login.css"
 
 export const Login = () => {
     const [email, set] = useState("")
