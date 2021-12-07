@@ -2,6 +2,7 @@ import React from "react"
 import { Route } from "react-router-dom"
 import { HomePage } from "./HomePage/HomePage"
 import { CurrentGameList } from "./VideoGames/CurrentGameList"
+import { GameQueue } from "./VideoGames/GameQueue"
 
 
 export const ApplicationViews = () => {
@@ -12,6 +13,9 @@ export const ApplicationViews = () => {
             </Route>
             <Route exact path="/games/current">
                 <CurrentGameList/>
+            </Route>
+            <Route exact path="/games/queue">
+                <GameQueue/>
             </Route>
         </>
     )

@@ -35,17 +35,17 @@ export const NavBar = () => {
                                     <Link to="/games/current">Current</Link>
                                 </DropdownItem>
                                 <DropdownItem>
-                                    Queue
+                                    <Link to="/games/queue">Queue</Link>
                                 </DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
-                        <NavLink to="#" onClick={
+                        <Link to="#" onClick={
                             () => {
                                 localStorage.removeItem("trove_user")
                             }
                         }>
                             Logout
-                        </NavLink>
+                        </Link>
                     </Nav>
                 </Collapse>
             </Navbar>

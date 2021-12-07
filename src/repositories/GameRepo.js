@@ -53,6 +53,26 @@ export default {
         console.log(userId)
         return games
     },
+    async getAllQueue() {
+        const userId = parseInt(localStorage.getItem("trove_user"))
+        const tags = await fetchIt(`http://localhost:8088/tags`)
+        const games = await fetchIt(`http://localhost:8088/games/?_expand=user&_expand=platform&_embed=taggedGames&userId=${userId}&current=false`)
+            .then(games => {
+                //map through the returned array of games
+                const embedded = games.map(game => {
+                    //for current game object, embed tag objects onto the embedded taggedGames array
+                    game = expandTags(game, tags)
+                    // only return once 2nd promise (tags- line 26, defined on line 21) is resolved
+                    return game
+                })
+                return embedded
+            })
+        //returns games array with user and platform expanded, 
+        //taggedGames embedded on first level, and tags embedded on second level
+        console.log(games)
+        console.log(userId)
+        return games
+    },
     // async function
     async get(id) {
         const tags = await fetchIt(`http://localhost:8088/tags`)
@@ -72,7 +92,7 @@ export default {
         return await fetchIt(`http://localhost:8088/games/${id}`, "DELETE")
     },
 
-    async addAnimal(newGame) {
+    async addGame(newGame) {
         return await fetchIt(
             `http://localhost:8088/games`,
             "POST",

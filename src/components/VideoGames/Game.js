@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react"
-import { Badge } from "reactstrap"
+import { Badge, Button, Card, CardBody, CardSubtitle, CardText, CardTitle } from "reactstrap"
 import GameRepo from "../../repositories/GameRepo"
 
 
-export const Game = ({ game }) => {
+export const Game = ({ game, setGames }) => {
     const [currentGame, setGame] = useState([])
 
     useEffect(() => {
@@ -13,27 +13,36 @@ export const Game = ({ game }) => {
     }, [game.id])
 
     return (
-        <article className="card game">
-            <section className="card-body">
-                <h5 className="card-title">
-                    {currentGame.name}
-                </h5>
-                <div>
-                    Platform: {currentGame.platform?.platform}
-                </div>
-                <div>
-                    Multiplayer Capable: {currentGame.multiplayerCapable === true ? "Yes" : "No"}
-                </div>
-                <div>
-                    {
-                        currentGame.taggedGames?.map(taggedGame => {
-                            return <Badge key={taggedGame.id} color="info" pill>
-                                {taggedGame.tag?.tag}
-                            </Badge>
-                        })
-                    }
-                </div>
-            </section>
-        </article>
+        <div>
+            <Card
+                body
+                color="light"
+            >
+                <CardBody>
+                    <CardTitle tag="h5">
+                        {currentGame.name}
+                    </CardTitle>
+                    <CardSubtitle
+                        className="mb-2 text-muted"
+                        tag="h6"
+                    >
+                        {currentGame.platform?.platform}{currentGame.multiplayerCapable === true ? ", Multiplayer Capable" : ""}
+                    </CardSubtitle>
+                    <CardText>
+                        {
+                            currentGame.taggedGames?.map(taggedGame => {
+                                return <Badge key={taggedGame.id} style={{ fontSize: 15 }} color="info" pill>
+                                    {taggedGame.tag?.tag}
+                                </Badge>
+                            })
+                        }
+                    </CardText>
+                    <Button>
+                        Button
+                    </Button>
+                </CardBody>
+            </Card>
+        </div>
+
     )
 }
