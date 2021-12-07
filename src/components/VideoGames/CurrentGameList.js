@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import GameRepo from "../../repositories/GameRepo"
+import { GameRepo } from "../../repositories/GameRepo"
 import { Game } from "./Game"
 import addIcon from '../../images/AddIcon.png';
 import { useHistory } from "react-router";

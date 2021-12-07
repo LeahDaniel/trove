@@ -1,53 +1,105 @@
 import React, { useState, useEffect } from "react"
+import { useHistory } from "react-router"
 import { Button, Form, FormGroup, FormText, Input, Label } from "reactstrap"
-import GameRepo from "../../repositories/GameRepo"
+import { GameRepo } from "../../repositories/GameRepo"
+import { TagRepo } from "../../repositories/TagRepo"
 
 export const GameForm = () => {
     const [platforms, setPlatforms] = useState([])
+    const [tags, setTags] = useState([])
     const [userChoices, setUserChoices] = useState({
         name: "",
         current: null,
         multiplayerCapable: false,
         chosenPlatforms: new Set(),
-        chosenCurrentPlatform: 0
+        chosenCurrentPlatform: 0,
+        tagString: ""
     })
+    const history = useHistory()
 
     useEffect(
         () => {
             GameRepo.getAllPlatforms()
                 .then(setPlatforms)
+                .then(() => TagRepo.getAll())
+                .then(setTags)
         }, []
     )
 
     const setPlatform = (id) => {
         const copy = { ...userChoices }
-
         copy.chosenPlatforms.has(id)
             ? copy.chosenPlatforms.delete(id)
             : copy.chosenPlatforms.add(id)
-
         setUserChoices(copy)
+    }
+
+    const constructGame = evt => {
+        evt.preventDefault()
+
+        const gameFromUserChoices = {
+            name: userChoices.name,
+            userId: parseInt(localStorage.getItem("trove_user")),
+            current: userChoices.current,
+            multiplayerCapable: userChoices.multiplayerCapable
+        }
+
+        GameRepo.addGame(gameFromUserChoices)
+            .then((addedGame) => {
+                //     constructTags(addedGame)
+                constructGamePlatforms(addedGame)
+                if (addedGame.current === true) {
+                    history.push("/games/current")
+                } else {
+                    history.push("/games/queue")
+                }
+            })
+    }
+
+    const constructGamePlatforms = (addedGame) => {
+        if(userChoices.chosenPlatforms.size > 0){
+            let promiseArray = []
+            for(const chosenPlatform of userChoices.chosenPlatforms){
+                const newGamePlatform = {
+                    gameId: addedGame.id,
+                    platformId: chosenPlatform
+                }
+                promiseArray.push(GameRepo.addGamePlatform(newGamePlatform))
+            }
+            Promise.all(promiseArray)
+            .then(console.log("All done with promises!"))
+        } else if(userChoices.chosenCurrentPlatform !== 0){
+            const newGamePlatform = {
+                gameId: addedGame.id,
+                platformId: userChoices.chosenCurrentPlatform
+            }
+            GameRepo.addGamePlatform(newGamePlatform)
+        } else {
+            console.log("Whoops! There were no platforms selected")
+        }
+        
     }
 
 
     return (
         <Form>
             <FormGroup row>
-                <Label
-                    for="gameTitle"
-                >
+                <Label for="gameTitle">
                     Game Title
                 </Label>
                 <Input
                     id="gameTitle"
                     name="title"
                     placeholder="Enter the title of the game"
+                    onChange={(event) => {
+                        const copy = { ...userChoices }
+                        copy.name = event.target.value
+                        setUserChoices(copy)
+                    }}
                 />
             </FormGroup>
             <FormGroup row>
-                <Label
-                    for="gameTags"
-                >
+                <Label for="gameTags">
                     Genre Tags
                 </Label>
                 <Input
@@ -55,6 +107,11 @@ export const GameForm = () => {
                     name="tags"
                     type="textarea"
                     placeholder="Enter tags, separated by commas"
+                    onChange={(event) => {
+                        const copy = { ...userChoices }
+                        copy.tagString = event.target.value
+                        setUserChoices(copy)
+                    }}
                 />
                 <FormText>
                     Ex: "horror, RPG, first-person shooter"
@@ -62,13 +119,15 @@ export const GameForm = () => {
             </FormGroup>
             <FormGroup check>
                 <Input
-                    id="checkbox7"
+                    id="multiplayerCheckbox"
                     type="checkbox"
+                    onChange={() => {
+                        const copy = { ...userChoices }
+                        copy.multiplayerCapable = !copy.multiplayerCapable
+                        setUserChoices(copy)
+                    }}
                 />
-                <Label
-                    check
-                    for="checkbox7"
-                >
+                <Label check for="multiplayerCheckbox">
                     Multiplayer Capable
                 </Label>
             </FormGroup>
@@ -124,8 +183,7 @@ export const GameForm = () => {
                                     const copy = { ...userChoices }
                                     copy.chosenCurrentPlatform = parseInt(event.target.value)
                                     setUserChoices(copy)
-                                }
-                                }
+                                }}
                             >
                                 <option value="0">
                                     Choose an option...
@@ -150,10 +208,6 @@ export const GameForm = () => {
                             <Label>
                                 Platforms
                             </Label>
-                            {/* //! Move this below the current game checkbox, only show checkboxes if 
-                //! This is a queue. Otherwise, show dropdown.
-                //! When moving the queue to current, if there is more than one gamePlatform,
-                //! Cause pop-up asking which platform you chose to play it on. */}
                             {
                                 platforms.map(platform => {
                                     return <FormGroup key={`platform--${platform.id}`} check>
@@ -174,9 +228,8 @@ export const GameForm = () => {
                             </FormText>
                         </FormGroup>
             }
-
             <FormGroup>
-                <Button>
+                <Button onClick={constructGame}>
                     Submit
                 </Button>
             </FormGroup>
