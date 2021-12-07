@@ -22,7 +22,7 @@ const embedTagsAndPlatforms = (game, tags, platforms) => {
     return game
 }
 
-export default {
+export const GameRepo = {
     async getAllCurrent() {
         const userId = parseInt(localStorage.getItem("trove_user"))
         const tags = await fetchIt(`http://localhost:8088/tags`)
@@ -81,6 +81,7 @@ export default {
     async delete(id) {
         return await fetchIt(`http://localhost:8088/games/${id}`, "DELETE")
     },
+    //! Need a delete that deletes all relevant taggedGames and gamePlatforms 
 
     async addGame(newGame) {
         return await fetchIt(
@@ -100,5 +101,17 @@ export default {
 
     async getAllPlatforms() {
         return await fetchIt(`http://localhost:8088/platforms`)
+    },
+
+    async addGamePlatform(newGamePlatform) {
+        const fetchOptions = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(newGamePlatform)
+        }
+    
+        return fetch("http://localhost:8088/gamePlatforms", fetchOptions)
     },
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Badge, Button, Card, CardBody, CardSubtitle, CardText, CardTitle } from "reactstrap"
-import GameRepo from "../../repositories/GameRepo"
+import { GameRepo } from "../../repositories/GameRepo"
 import deleteIcon from '../../images/DeleteIcon.png';
 import { useHistory } from "react-router";
 
@@ -75,7 +75,8 @@ export const Game = ({ game, setGames }) => {
                             })
                         }
                     </CardText>
-                    {
+                    {//! When moving the queue to current, if there is more than one gamePlatform,
+                //! Cause pop-up asking which platform you chose to play it on.
                         currentGame.current === false
                         ? <Button onClick={addToCurrent}> Add to Current </Button>
                         : ""
