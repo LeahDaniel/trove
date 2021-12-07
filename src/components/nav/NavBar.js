@@ -10,6 +10,7 @@ export const NavBar = () => {
                 color="light"
                 expand="md"
                 light
+                style={{marginLeft: -33}}
             >
                 <NavbarBrand href="/">
                     Trove
@@ -37,15 +38,18 @@ export const NavBar = () => {
                                 <DropdownItem>
                                     <Link to="/games/queue">Queue</Link>
                                 </DropdownItem>
+                                <DropdownItem>
+                                    <Link to="/games/create">Create New</Link>
+                                </DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
-                        <Link to="#" onClick={
+                        <NavLink to="#" onClick={
                             () => {
                                 localStorage.removeItem("trove_user")
                             }
                         }>
                             Logout
-                        </Link>
+                        </NavLink>
                     </Nav>
                 </Collapse>
             </Navbar>
