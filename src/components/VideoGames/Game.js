@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react"
-import { Badge, Button, Card, CardBody, CardSubtitle, CardText, CardTitle, Input, UncontrolledCollapse } from "reactstrap"
+import { Badge, Button, Card, CardBody, CardSubtitle, CardText, CardTitle} from "reactstrap"
 import { GameRepo } from "../../repositories/GameRepo"
 import deleteIcon from '../../images/DeleteIcon.png';
 import editIcon from '../../images/EditIcon.png';
 import { useHistory } from "react-router";
 import { PlatformModal } from "./PlatformModal";
-import { EditModal } from "./EditModal";
 
 
 export const Game = ({ game, setGames }) => {
