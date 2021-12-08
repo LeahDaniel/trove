@@ -20,4 +20,13 @@ export const TagRepo = {
             JSON.stringify(newTaggedGame)
         )
     },
+
+    async deleteTaggedGamesForOneGame(currentGame) {
+        const taggedGames = currentGame.taggedGames
+        let promiseArray = []
+        for(const taggedGame of taggedGames){
+            promiseArray.push(await fetchIt(`http://localhost:8088/taggedGames/${taggedGame.id}`, "DELETE"))
+        }
+        return Promise.all(promiseArray)
+    },
 }

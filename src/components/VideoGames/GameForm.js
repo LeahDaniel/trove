@@ -10,9 +10,9 @@ export const GameForm = () => {
     const [platforms, setPlatforms] = useState([])
     const [tags, setTags] = useState([])
     const [userChoices, setUserChoices] = useState({
-        name: currentGame?.name ?? "",
-        current: currentGame?.current ?? null,
-        multiplayerCapable: currentGame?.multiplayerCapable ?? false,
+        name: "",
+        current: null,
+        multiplayerCapable: false,
         chosenPlatforms: new Set(),
         chosenCurrentPlatform: 0,
         tagArray: []
@@ -26,6 +26,13 @@ export const GameForm = () => {
                 .then(setTags)
         }, []
     )
+    useEffect(
+        () => {
+            if (currentGame) {
+                userChoicesForCurrentGame()
+            }
+        }, [currentGame]
+    )
 
     const setPlatform = (id) => {
         const copy = { ...userChoices }
@@ -33,6 +40,64 @@ export const GameForm = () => {
             ? copy.chosenPlatforms.delete(id)
             : copy.chosenPlatforms.add(id)
         setUserChoices(copy)
+    }
+
+    const userChoicesForCurrentGame = () => {
+        //make copy of userChoices
+        const copy = { ...userChoices }
+
+        //change name, current, and multiplayer values based on currentGame values
+        copy.name = currentGame.name
+        copy.current = currentGame.current
+        copy.multiplayerCapable = currentGame.multiplayerCapable
+
+        //create a tag array from the currentGame's associated taggedGames, and set as userChoices.tagArray value
+        let tagArray = []
+        for (const taggedGame of currentGame.taggedGames) {
+            tagArray.push(taggedGame.tag.tag)
+        }
+        copy.tagArray = tagArray
+
+        //if a current game (only one platform possible), change chosenCurrentPlatform value base on platformId of first (and only) gamePlatform
+        if (currentGame.current === true) {
+            copy.chosenCurrentPlatform = currentGame.gamePlatforms[0].platformId
+        } else {
+            //if a queued game (more than one platform possible), create a Set of platformIds from the currentGame's associated gamePlatforms, and set as chosenPlatforms value
+            let platformSet = new Set()
+            for (const gamePlatform of currentGame.gamePlatforms) {
+                platformSet.add(gamePlatform.platformId)
+            }
+            copy.chosenPlatforms = platformSet
+        }
+
+        //set user choices using the copy constructed above
+        setUserChoices(copy)
+    }
+
+    const editGame = evt => {
+        evt.preventDefault()
+
+        const gameFromUserChoices = {
+            name: userChoices.name,
+            userId: parseInt(localStorage.getItem("trove_user")),
+            current: userChoices.current,
+            multiplayerCapable: userChoices.multiplayerCapable
+        }
+
+        GameRepo.deleteGamePlatformsForOneGame(currentGame)
+            .then(() => TagRepo.deleteTaggedGamesForOneGame(currentGame))
+            .then(() => GameRepo.modifyGame(gameFromUserChoices, currentGame.id))
+            .then((addedGame) => {
+                constructTags(addedGame)
+                constructGamePlatforms(addedGame)
+            })
+            .then(() => {
+                if (userChoices.current === true) {
+                    history.push("/games/current")
+                } else {
+                    history.push("/games/queue")
+                }
+            })
     }
 
     const constructGame = evt => {
@@ -88,29 +153,29 @@ export const GameForm = () => {
             const noSpaces = upperCased.split(" ").join("")
             return {
                 id: tag.id,
-                tag: noSpaces 
+                tag: noSpaces
             }
         })
-        
 
-        for(const enteredTag of userChoices.tagArray){
+
+        for (const enteredTag of userChoices.tagArray) {
             const neutralizedEnteredTag = enteredTag.toUpperCase().split(" ").join("")
             let foundTag = neutralizedTagsCopy.find(tag => tag.tag === neutralizedEnteredTag)
-            if(foundTag){
+            if (foundTag) {
                 //post a new taggedGame object with that tag
                 TagRepo.addTaggedGame({
                     tagId: foundTag.id,
                     gameId: addedGame.id
                 })
-            }else {
+            } else {
                 //post a new tag object with that enteredTag
-                TagRepo.addTag({tag: enteredTag})
-                    .then((newTag)=> {
+                TagRepo.addTag({ tag: enteredTag })
+                    .then((newTag) => {
                         TagRepo.addTaggedGame({
                             tagId: newTag.id,
                             gameId: addedGame.id
                         })
-                })
+                    })
 
                 //post a new taggedGame object with the tag object made above
 
@@ -146,6 +211,7 @@ export const GameForm = () => {
                     name="tags"
                     type="textarea"
                     placeholder="Enter tag names, separated by commas without spaces"
+                    value={userChoices.tagArray.join(",")}
                     onChange={(event) => {
                         const copy = { ...userChoices }
                         copy.tagArray = event.target.value.split(",")
@@ -160,7 +226,7 @@ export const GameForm = () => {
                 <Input
                     id="multiplayerCheckbox"
                     type="checkbox"
-                    checked={userChoices.multiplayerCapable? true : false}
+                    checked={userChoices.multiplayerCapable ? true : false}
                     onChange={() => {
                         const copy = { ...userChoices }
                         copy.multiplayerCapable = !copy.multiplayerCapable
@@ -181,9 +247,9 @@ export const GameForm = () => {
                     type="select"
                     value={userChoices.current === null
                         ? "Choose an option..."
-                        : userChoices.current === true 
-                        ? "Current"
-                        : "Queued"
+                        : userChoices.current === true
+                            ? "Current"
+                            : "Queued"
                     }
                     onChange={(event) => {
                         const copy = { ...userChoices }
@@ -225,6 +291,7 @@ export const GameForm = () => {
                                 id="currentSelect"
                                 name="select"
                                 type="select"
+                                value={userChoices.chosenCurrentPlatform}
                                 onChange={(event) => {
                                     const copy = { ...userChoices }
                                     copy.chosenCurrentPlatform = parseInt(event.target.value)
@@ -260,7 +327,8 @@ export const GameForm = () => {
                                         <Input
                                             className="platformCheckbox"
                                             type="checkbox"
-                                            onClick={() => setPlatform(platform.id)}
+                                            checked={userChoices.chosenPlatforms.has(platform.id) ? true : false}
+                                            onChange={() => setPlatform(platform.id)}
                                         />
                                         {' '}
                                         <Label check>
@@ -275,9 +343,21 @@ export const GameForm = () => {
                         </FormGroup>
             }
             <FormGroup>
-                <Button onClick={constructGame}>
+                <Button onClick={(evt) => {
+                    currentGame
+                        ? editGame(evt)
+                        : constructGame(evt)
+                }}>
                     Submit
                 </Button>
+                {currentGame
+                    ? <Button onClick={() => { history.goBack() }}>
+                        Cancel
+                    </Button>
+                    : ""
+                }
+
+
             </FormGroup>
         </Form>
     )
