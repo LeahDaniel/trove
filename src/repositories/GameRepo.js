@@ -81,7 +81,7 @@ export const GameRepo = {
     async delete(id) {
         return await fetchIt(`http://localhost:8088/games/${id}`, "DELETE")
     },
-    //! Need a delete that deletes all relevant taggedGames and gamePlatforms 
+    //! Need a delete that deletes all relevant taggedGames and gamePlatforms? Or can I let cascading delete take care of that? 
 
     async addGame(newGame) {
         return await fetchIt(
@@ -101,6 +101,15 @@ export const GameRepo = {
 
     async getAllPlatforms() {
         return await fetchIt(`http://localhost:8088/platforms`)
+    },
+
+    async deleteGamePlatformsForOneGame(currentGame) {
+        const gamePlatforms = currentGame.gamePlatforms
+        let promiseArray = []
+        for(const gamePlatform of gamePlatforms){
+            promiseArray.push(await fetchIt(`http://localhost:8088/gamePlatforms/${gamePlatform.id}`, "DELETE"))
+        }
+        return Promise.all(promiseArray)
     },
 
     async addGamePlatform(newGamePlatform) {
