@@ -19,7 +19,7 @@ export const Game = ({ game, setGames }) => {
     }, [game.id])
 
     const deleteGame = (gameId) => {
-        if (currentGame.current === true) {
+        if (currentGame.current === true) { 
             GameRepo.delete(gameId)
                 .then(() => GameRepo.getAllCurrent()
                     .then(setGames))

@@ -28,7 +28,9 @@ export const GameForm = () => {
     )
     useEffect(
         () => {
-            userChoicesForCurrentGame()
+            if (currentGame) {
+                userChoicesForCurrentGame()
+            }
         }, [currentGame]
     )
 
@@ -41,24 +43,26 @@ export const GameForm = () => {
     }
 
     const userChoicesForCurrentGame = () => {
+        //make copy of userChoices
         const copy = { ...userChoices }
 
-
+        //change name, current, and multiplayer values based on currentGame values
         copy.name = currentGame.name
         copy.current = currentGame.current
         copy.multiplayerCapable = currentGame.multiplayerCapable
 
-
+        //create a tag array from the currentGame's associated taggedGames, and set as userChoices.tagArray value
         let tagArray = []
         for (const taggedGame of currentGame.taggedGames) {
             tagArray.push(taggedGame.tag.tag)
         }
         copy.tagArray = tagArray
-        
 
+        //if a current game (only one platform possible), change chosenCurrentPlatform value base on platformId of first (and only) gamePlatform
         if (currentGame.current === true) {
             copy.chosenCurrentPlatform = currentGame.gamePlatforms[0].platformId
         } else {
+            //if a queued game (more than one platform possible), create a Set of platformIds from the currentGame's associated gamePlatforms, and set as chosenPlatforms value
             let platformSet = new Set()
             for (const gamePlatform of currentGame.gamePlatforms) {
                 platformSet.add(gamePlatform.platformId)
@@ -66,7 +70,34 @@ export const GameForm = () => {
             copy.chosenPlatforms = platformSet
         }
 
+        //set user choices using the copy constructed above
         setUserChoices(copy)
+    }
+
+    const editGame = evt => {
+        evt.preventDefault()
+
+        const gameFromUserChoices = {
+            name: userChoices.name,
+            userId: parseInt(localStorage.getItem("trove_user")),
+            current: userChoices.current,
+            multiplayerCapable: userChoices.multiplayerCapable
+        }
+
+        GameRepo.deleteGamePlatformsForOneGame(currentGame)
+            .then(() => TagRepo.deleteTaggedGamesForOneGame(currentGame))
+            .then(() => GameRepo.modifyGame(gameFromUserChoices, currentGame.id))
+            .then((addedGame) => {
+                constructTags(addedGame)
+                constructGamePlatforms(addedGame)
+            })
+            .then(() => {
+                if (userChoices.current === true) {
+                    history.push("/games/current")
+                } else {
+                    history.push("/games/queue")
+                }
+            })
     }
 
     const constructGame = evt => {
@@ -296,7 +327,7 @@ export const GameForm = () => {
                                         <Input
                                             className="platformCheckbox"
                                             type="checkbox"
-                                            checked={userChoices.chosenPlatforms.has(platform.id)? true : false}
+                                            checked={userChoices.chosenPlatforms.has(platform.id) ? true : false}
                                             onChange={() => setPlatform(platform.id)}
                                         />
                                         {' '}
@@ -312,9 +343,21 @@ export const GameForm = () => {
                         </FormGroup>
             }
             <FormGroup>
-                <Button onClick={constructGame}>
+                <Button onClick={(evt) => {
+                    currentGame
+                        ? editGame(evt)
+                        : constructGame(evt)
+                }}>
                     Submit
                 </Button>
+                {currentGame
+                    ? <Button onClick={() => { history.goBack() }}>
+                        Cancel
+                    </Button>
+                    : ""
+                }
+
+
             </FormGroup>
         </Form>
     )
