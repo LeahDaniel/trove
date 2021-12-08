@@ -46,6 +46,7 @@ export const GameRepo = {
         const userId = parseInt(localStorage.getItem("trove_user"))
         const tags = await fetchIt(`http://localhost:8088/tags`)
         const platforms = await fetchIt(`http://localhost:8088/platforms`)
+        // await response of fetch call, only proceed to next promise once 1st promise is resolved
         const games = await fetchIt(`http://localhost:8088/games/?_expand=user&_embed=gamePlatforms&_embed=taggedGames&userId=${userId}&current=false`)
             .then(games => {
                 //map through the returned array of games
@@ -80,8 +81,7 @@ export const GameRepo = {
 
     async delete(id) {
         return await fetchIt(`http://localhost:8088/games/${id}`, "DELETE")
-    },
-    //! Need a delete that deletes all relevant taggedGames and gamePlatforms? Or can I let cascading delete take care of that? 
+    }, 
 
     async addGame(newGame) {
         return await fetchIt(
