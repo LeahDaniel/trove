@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react"
-import { Badge, Button, Card, CardBody, CardSubtitle, CardText, CardTitle } from "reactstrap"
+import { Badge, Button, Card, CardBody, CardSubtitle, CardText, CardTitle, Input, UncontrolledCollapse } from "reactstrap"
 import { GameRepo } from "../../repositories/GameRepo"
 import deleteIcon from '../../images/DeleteIcon.png';
+import editIcon from '../../images/EditIcon.png';
 import { useHistory } from "react-router";
+import { PlatformModal } from "./PlatformModal";
+import { EditModal } from "./EditModal";
 
 
 export const Game = ({ game, setGames }) => {
     const [currentGame, setGame] = useState([])
+    const [openBoolean, setOpenBoolean] = useState(false)
     const history = useHistory()
 
     useEffect(() => {
@@ -16,14 +20,14 @@ export const Game = ({ game, setGames }) => {
     }, [game.id])
 
     const deleteGame = (gameId) => {
-        if(currentGame.current === true){
+        if (currentGame.current === true) {
             GameRepo.delete(gameId)
-            .then(() => GameRepo.getAllCurrent()
-                .then(setGames))
+                .then(() => GameRepo.getAllCurrent()
+                    .then(setGames))
         } else {
             GameRepo.delete(gameId)
-            .then(() => GameRepo.getAllQueue()
-                .then(setGames))
+                .then(() => GameRepo.getAllQueue()
+                    .then(setGames))
         }
     }
 
@@ -34,20 +38,29 @@ export const Game = ({ game, setGames }) => {
             current: true,
             multiplayerCapable: currentGame.multiplayerCapable
         }, currentGame.id)
-        .then(() => history.push("/games/current"))
+            .then(() => history.push("/games/current"))
     }
 
     return (
         <div>
+            <PlatformModal openBoolean={openBoolean} setOpenBoolean={setOpenBoolean}
+                currentGame={currentGame} addToCurrent={addToCurrent} />
+
             <Card
                 body
                 color="light"
             >
                 <div style={{ alignSelf: "flex-end" }}>
-                    <img src={deleteIcon} alt="Delete" style={{ maxWidth: 30}} onClick={
-                        () => {return deleteGame(currentGame.id)}
+                    <img src={deleteIcon} alt="Delete" style={{ maxWidth: 30 }} onClick={
+                        () => { return deleteGame(currentGame.id) }
                     } />
-                    
+                    <img src={editIcon} alt="Edit" style={{ maxWidth: 30 }} onClick={
+                        () => {history.push({
+                            pathname: "/games/create",
+                            state: currentGame
+                        })}
+                    } />
+
                 </div>
                 <CardBody style={{ paddingTop: 0, marginTop: 0 }}>
                     <CardTitle tag="h5" >
@@ -75,11 +88,15 @@ export const Game = ({ game, setGames }) => {
                             })
                         }
                     </CardText>
-                    {//! When moving the queue to current, if there is more than one gamePlatform,
-                //! Cause pop-up asking which platform you chose to play it on.
+                    {
                         currentGame.current === false
-                        ? <Button onClick={addToCurrent}> Add to Current </Button>
-                        : ""
+                            ? <Button onClick={() => {
+                                currentGame.gamePlatforms?.length > 1
+                                    ? setOpenBoolean(true)
+                                    : addToCurrent()
+                            }
+                            }> Add to Current </Button>
+                            : ""
                     }
                 </CardBody>
             </Card>

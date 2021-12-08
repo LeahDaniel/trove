@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from "react"
-import { useHistory } from "react-router"
+import { useHistory, useLocation } from "react-router"
 import { Button, Form, FormGroup, FormText, Input, Label } from "reactstrap"
 import { GameRepo } from "../../repositories/GameRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 
 export const GameForm = () => {
+    const history = useHistory()
+    const currentGame = useLocation().state
     const [platforms, setPlatforms] = useState([])
     const [tags, setTags] = useState([])
     const [userChoices, setUserChoices] = useState({
-        name: "",
-        current: null,
-        multiplayerCapable: false,
+        name: currentGame?.name ?? "",
+        current: currentGame?.current ?? null,
+        multiplayerCapable: currentGame?.multiplayerCapable ?? false,
         chosenPlatforms: new Set(),
         chosenCurrentPlatform: 0,
-        tagString: ""
+        tagArray: []
     })
-    const history = useHistory()
 
     useEffect(
         () => {
@@ -46,9 +47,11 @@ export const GameForm = () => {
 
         GameRepo.addGame(gameFromUserChoices)
             .then((addedGame) => {
-                //     constructTags(addedGame)
+                constructTags(addedGame)
                 constructGamePlatforms(addedGame)
-                if (addedGame.current === true) {
+            })
+            .then(() => {
+                if (userChoices.current === true) {
                     history.push("/games/current")
                 } else {
                     history.push("/games/queue")
@@ -57,9 +60,9 @@ export const GameForm = () => {
     }
 
     const constructGamePlatforms = (addedGame) => {
-        if(userChoices.chosenPlatforms.size > 0){
+        if (userChoices.chosenPlatforms.size > 0) {
             let promiseArray = []
-            for(const chosenPlatform of userChoices.chosenPlatforms){
+            for (const chosenPlatform of userChoices.chosenPlatforms) {
                 const newGamePlatform = {
                     gameId: addedGame.id,
                     platformId: chosenPlatform
@@ -67,8 +70,7 @@ export const GameForm = () => {
                 promiseArray.push(GameRepo.addGamePlatform(newGamePlatform))
             }
             Promise.all(promiseArray)
-            .then(console.log("All done with promises!"))
-        } else if(userChoices.chosenCurrentPlatform !== 0){
+        } else if (userChoices.chosenCurrentPlatform !== 0) {
             const newGamePlatform = {
                 gameId: addedGame.id,
                 platformId: userChoices.chosenCurrentPlatform
@@ -77,12 +79,48 @@ export const GameForm = () => {
         } else {
             console.log("Whoops! There were no platforms selected")
         }
-        
+
     }
 
+    const constructTags = (addedGame) => {
+        const neutralizedTagsCopy = tags.map(tag => {
+            const upperCased = tag.tag.toUpperCase()
+            const noSpaces = upperCased.split(" ").join("")
+            return {
+                id: tag.id,
+                tag: noSpaces 
+            }
+        })
+        
+
+        for(const enteredTag of userChoices.tagArray){
+            const neutralizedEnteredTag = enteredTag.toUpperCase().split(" ").join("")
+            let foundTag = neutralizedTagsCopy.find(tag => tag.tag === neutralizedEnteredTag)
+            if(foundTag){
+                //post a new taggedGame object with that tag
+                TagRepo.addTaggedGame({
+                    tagId: foundTag.id,
+                    gameId: addedGame.id
+                })
+            }else {
+                //post a new tag object with that enteredTag
+                TagRepo.addTag({tag: enteredTag})
+                    .then((newTag)=> {
+                        TagRepo.addTaggedGame({
+                            tagId: newTag.id,
+                            gameId: addedGame.id
+                        })
+                })
+
+                //post a new taggedGame object with the tag object made above
+
+            }
+        }
+    }
 
     return (
         <Form>
+            <h3> Add a New Game</h3>
             <FormGroup row>
                 <Label for="gameTitle">
                     Game Title
@@ -91,6 +129,7 @@ export const GameForm = () => {
                     id="gameTitle"
                     name="title"
                     placeholder="Enter the title of the game"
+                    value={userChoices.name}
                     onChange={(event) => {
                         const copy = { ...userChoices }
                         copy.name = event.target.value
@@ -106,21 +145,22 @@ export const GameForm = () => {
                     id="gameTags"
                     name="tags"
                     type="textarea"
-                    placeholder="Enter tags, separated by commas"
+                    placeholder="Enter tag names, separated by commas without spaces"
                     onChange={(event) => {
                         const copy = { ...userChoices }
-                        copy.tagString = event.target.value
+                        copy.tagArray = event.target.value.split(",")
                         setUserChoices(copy)
                     }}
                 />
                 <FormText>
-                    Ex: "horror, RPG, first-person shooter"
+                    Ex: "horror,RPG,first-person shooter"
                 </FormText>
             </FormGroup>
             <FormGroup check>
                 <Input
                     id="multiplayerCheckbox"
                     type="checkbox"
+                    checked={userChoices.multiplayerCapable? true : false}
                     onChange={() => {
                         const copy = { ...userChoices }
                         copy.multiplayerCapable = !copy.multiplayerCapable
@@ -139,6 +179,12 @@ export const GameForm = () => {
                     id="currentSelect"
                     name="select"
                     type="select"
+                    value={userChoices.current === null
+                        ? "Choose an option..."
+                        : userChoices.current === true 
+                        ? "Current"
+                        : "Queued"
+                    }
                     onChange={(event) => {
                         const copy = { ...userChoices }
 
