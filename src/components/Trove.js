@@ -9,6 +9,7 @@ export const Trove = () => (
     <>
         <Route
             render={() => {
+                // if there is a use logged in, show the navbar and app
                 if (localStorage.getItem("trove_user")) {
                     return (
                         <>
@@ -16,6 +17,7 @@ export const Trove = () => (
                             <ApplicationViews />
                         </>
                     );
+                //otherwise show the login page
                 } else {
                     return <Redirect to="/login" />;
                 }

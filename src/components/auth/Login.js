@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react"
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom"
+import { Button, Form, FormGroup, Input, Label } from "reactstrap";
 
 export const Login = () => {
     const [email, set] = useState("")
@@ -27,34 +28,34 @@ export const Login = () => {
     }
 
     return (
-        <main className="container--login">
-            <dialog className="dialog dialog--auth" ref={existDialog}>
-                <div>User does not exist</div>
-                <button className="button--close" onClick={e => existDialog.current.close()}>Close</button>
+        <main className="mx-4">
+            <dialog ref={existDialog} >
+                <div className="d-flex flex-column">
+                    <div><Button close onClick={e => existDialog.current.close()} className="float-end" /></div>
+                    <div className="m-4">User does not exist</div>
+                </div>
             </dialog>
 
-            <section>
-                <form className="form--login" onSubmit={handleLogin}>
-                    <h1>Trove</h1>
-                    <h2>Please sign in</h2>
-                    <fieldset>
-                        <label htmlFor="inputEmail"> Email address </label>
-                        <input type="email"
-                            onChange={evt => set(evt.target.value)}
-                            className="form-control"
-                            placeholder="Email address"
-                            required autoFocus />
-                    </fieldset>
-                    <fieldset>
-                        <button className="signInButton" type="submit">
-                            Sign in
-                        </button>
-                    </fieldset>
-                </form>
-            </section>
-            <section className="link--register">
+
+            <Form onSubmit={handleLogin}>
+                <h1 className="pt-5">Trove</h1>
+                <h5 className="pt-4">Please Log In</h5>
+                <FormGroup className="pt-3">
+                    <Label htmlFor="inputEmail"> Email address </Label>
+                    <Input type="email"
+                        onChange={evt => set(evt.target.value)}
+                        placeholder="Email address"
+                        required autoFocus />
+                </FormGroup>
+                <FormGroup className="pt-3">
+                    <Button type="submit">
+                        Sign in
+                    </Button>
+                </FormGroup>
+            </Form>
+            <div className="pt-3">
                 <Link to="/register">Not a member yet?</Link>
-            </section>
+            </div>
         </main>
     )
 }

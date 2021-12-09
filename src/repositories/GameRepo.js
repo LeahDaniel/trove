@@ -22,7 +22,10 @@ const embedTagsAndPlatforms = (game, tags, platforms) => {
     return game
 }
 
+//Object (GameRepo) with methods (functions) added onto it, making each function accessible via dot notation.
 export const GameRepo = {
+    //GETs
+    //async functions
     async getAllCurrent() {
         const userId = parseInt(localStorage.getItem("trove_user"))
         const tags = await fetchIt(`http://localhost:8088/tags`)
@@ -33,12 +36,12 @@ export const GameRepo = {
                 const embedded = games.map(game => {
                     //for current game object, embed tag objects onto the embedded taggedGames array
                     game = embedTagsAndPlatforms(game, tags, platforms)
-                    // only return once 2nd promise (tags) and 3rd promise (platforms) are resolved
+                    // only return game once 1st promise (tags) and 2nd promise (platforms) are resolved
                     return game
                 })
                 return embedded
             })
-        //returns games array with user expanded, 
+        //returns games array once the full promise of fetchIt line 30 is resolved, user is expanded,
         //taggedGames and gamePlatforms embedded on first level, and tags and platforms embedded on second level
         return games
     },
@@ -52,7 +55,6 @@ export const GameRepo = {
                 const embedded = games.map(game => {
                     //for current game object, embed tag objects onto the embedded taggedGames array
                     game = embedTagsAndPlatforms(game, tags, platforms)
-                    // only return once 2nd promise (tags) and 3rd promise (platforms) are resolved
                     return game
                 })
                 return embedded
@@ -61,28 +63,37 @@ export const GameRepo = {
         //taggedGames and gamePlatforms embedded on first level, and tags and platforms embedded on second level
         return games
     },
-
-    // async function
     async get(id) {
         const tags = await fetchIt(`http://localhost:8088/tags`)
         const platforms = await fetchIt(`http://localhost:8088/platforms`)
-        // await response of fetch call, only proceed to next promise once 1st promise is resolved
         return await fetchIt(`http://localhost:8088/games/${id}?_expand=user&_embed=gamePlatforms&_embed=taggedGames`)
             .then(game => {
                 //for fetched game object, embed tag objects onto the embedded taggedGames array
                 game = embedTagsAndPlatforms(game, tags, platforms)
-                // only return once 2nd promise (tags- line 44, defined on line 39) is resolved
                 return game
                 //returns one game object with user and platform expanded, 
                 //taggedGames embedded on first level, and tags embedded on second level
             })
     },
+    async getAllPlatforms() {
+        return await fetchIt(`http://localhost:8088/platforms`)
+    },
 
+    //DELETEs
     async delete(id) {
         return await fetchIt(`http://localhost:8088/games/${id}`, "DELETE")
     },
-    //! Need a delete that deletes all relevant taggedGames and gamePlatforms? Or can I let cascading delete take care of that? 
+    async deleteGamePlatformsForOneGame(game) {
+        const gamePlatforms = game.gamePlatforms
 
+        let promiseArray = []
+        for (const gamePlatform of gamePlatforms) {
+            promiseArray.push(await fetchIt(`http://localhost:8088/gamePlatforms/${gamePlatform.id}`, "DELETE"))
+        }
+        return Promise.all(promiseArray)
+    },
+
+    //POSTs
     async addGame(newGame) {
         return await fetchIt(
             `http://localhost:8088/games`,
@@ -90,28 +101,6 @@ export const GameRepo = {
             JSON.stringify(newGame)
         )
     },
-
-    async modifyGame(modifiedGame, id) {
-        return await fetchIt(
-            `http://localhost:8088/games/${id}`,
-            "PUT",
-            JSON.stringify(modifiedGame)
-        )
-    },
-
-    async getAllPlatforms() {
-        return await fetchIt(`http://localhost:8088/platforms`)
-    },
-
-    async deleteGamePlatformsForOneGame(currentGame) {
-        const gamePlatforms = currentGame.gamePlatforms
-        let promiseArray = []
-        for(const gamePlatform of gamePlatforms){
-            promiseArray.push(await fetchIt(`http://localhost:8088/gamePlatforms/${gamePlatform.id}`, "DELETE"))
-        }
-        return Promise.all(promiseArray)
-    },
-
     async addGamePlatform(newGamePlatform) {
         const fetchOptions = {
             method: "POST",
@@ -120,7 +109,16 @@ export const GameRepo = {
             },
             body: JSON.stringify(newGamePlatform)
         }
-    
+        
         return fetch("http://localhost:8088/gamePlatforms", fetchOptions)
+    },
+
+    //PUTs
+    async modifyGame(modifiedGame, id) {
+        return await fetchIt(
+            `http://localhost:8088/games/${id}`,
+            "PUT",
+            JSON.stringify(modifiedGame)
+        )
     },
 }

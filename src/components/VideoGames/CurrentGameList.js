@@ -17,10 +17,13 @@ export const CurrentGameList = () => {
 
     return (
         <>
-            <img src={addIcon} alt="Add" style={{ maxWidth: 40, alignSelf: "flex-end"}} onClick={
+            {/* clickable "add" image to bring user to form */}
+            <img className="m-4" src={addIcon} alt="Add" style={{ maxWidth: 40, alignSelf: "flex-end"}} 
+                onClick={
                 () => history.push("/games/create") 
             } />
-            <div className="games">
+            {/* Full list of current game cards. Pass state of current game and the setter function to the individual game card component */}
+            <div className="mx-4">
                 {
                     games.map(game => <Game key={game.id} game={game} setGames={setGames} />)
                 }
