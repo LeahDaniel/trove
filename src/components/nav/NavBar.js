@@ -1,27 +1,22 @@
 import React, { useState } from "react"
-import { Link, NavLink } from "react-router-dom"
-import { Collapse, DropdownItem, DropdownMenu, DropdownToggle, Nav, Navbar, NavbarBrand, NavbarToggler, UncontrolledDropdown } from "reactstrap"
+import { Collapse, DropdownItem, DropdownMenu, DropdownToggle, Nav, Navbar, NavLink, NavbarBrand, NavbarToggler, NavItem, UncontrolledDropdown } from "reactstrap"
 
 export const NavBar = () => {
+    //initialize state to open and close navbar when toggler is clicked.
     const [isOpen, setIsOpen] = useState(false)
 
     return (
-        <div>
             <Navbar
                 color="light"
-                expand="md"
+                expand="sm"
                 light
-                style={{marginLeft: -33}}
             >
-                <NavbarBrand href="/">
+                <NavbarBrand className="p-3" href="/">
                     Trove
                 </NavbarBrand>
                 <NavbarToggler onClick={() => setIsOpen(!isOpen)} />
-                <Collapse isOpen={isOpen} navbar>
-                    <Nav
-                        className="me-auto"
-                        navbar
-                    >
+                <Collapse isOpen={isOpen} className="ms-3" navbar>
+                    <Nav navbar >
                         <UncontrolledDropdown
                             inNavbar
                             nav
@@ -34,27 +29,28 @@ export const NavBar = () => {
                             </DropdownToggle>
                             <DropdownMenu end>
                                 <DropdownItem>
-                                    <Link to="/games/current">Current</Link>
+                                    <NavLink href="/games/current">Current</NavLink>
                                 </DropdownItem>
                                 <DropdownItem>
-                                    <Link to="/games/queue">Queue</Link>
+                                    <NavLink href="/games/queue">Queue</NavLink>
                                 </DropdownItem>
                                 <DropdownItem>
-                                    <Link to="/games/create">Create New</Link>
+                                    <NavLink href="/games/create">Create New</NavLink>
                                 </DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
-                        <NavLink to="#" onClick={
-                            () => {
-                                localStorage.removeItem("trove_user")
-                            }
-                        }>
-                            Logout
-                        </NavLink>
+                        <NavItem >
+                            <NavLink href="/login" onClick={
+                                () => {
+                                    localStorage.removeItem("trove_user")
+                                }
+                            }>
+                                Logout
+                            </NavLink>
+                        </NavItem>
                     </Nav>
                 </Collapse>
             </Navbar>
-        </div>
     )
 }
 

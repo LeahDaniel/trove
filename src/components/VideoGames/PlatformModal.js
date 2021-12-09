@@ -1,5 +1,5 @@
 import { useState } from "react/cjs/react.development"
-import { Modal, ModalBody, ModalFooter, Button, FormGroup, Label, Input } from "reactstrap"
+import { Modal, ModalBody, ModalFooter, Button, FormGroup, Input } from "reactstrap"
 import { GameRepo } from "../../repositories/GameRepo"
 
 export const PlatformModal = ({ openBoolean, setOpenBoolean, currentGame, addToCurrent }) => {
@@ -7,12 +7,9 @@ export const PlatformModal = ({ openBoolean, setOpenBoolean, currentGame, addToC
 
     return (
         <Modal isOpen={openBoolean === true ? true : false}>
-            <ModalBody>
+            <ModalBody className="mt-4">
                 Please select which platform you chose to play this game on.
-                <FormGroup>
-                    <Label for="exampleSelect">
-                        Select
-                    </Label>
+                <FormGroup className="mt-4">
                     <Input
                         id="exampleSelect"
                         name="select"
@@ -34,7 +31,7 @@ export const PlatformModal = ({ openBoolean, setOpenBoolean, currentGame, addToC
             </ModalBody>
             <ModalFooter>
                 <Button
-                    color="primary"
+                    color="dark"
                     onClick={() => {
                         GameRepo.deleteGamePlatformsForOneGame(currentGame)
                             .then(() => {

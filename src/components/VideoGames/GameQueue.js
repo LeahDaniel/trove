@@ -17,10 +17,10 @@ export const GameQueue = () => {
 
     return (
         <>
-            <img src={addIcon} alt="Add" style={{ maxWidth: 40, alignSelf: "flex-end" }} onClick={
+            <img className="m-4" src={addIcon} alt="Add" style={{ maxWidth: 40, alignItems: "flex-end" }} onClick={
                 () => history.push("/games/create")
             } />
-            <div className="games">
+            <div className="mx-4">
                 {
                     games.map(game => <Game key={game.id} game={game} setGames={setGames} />)
                 }

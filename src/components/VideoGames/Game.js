@@ -12,12 +12,13 @@ export const Game = ({ game, setGames }) => {
     const [openBoolean, setOpenBoolean] = useState(false)
     const history = useHistory()
 
+    //get individual game with expanded user, embedded taggedGames (with embedded tags)
     useEffect(() => {
-        //get individual game with expanded user and platform, embedded taggedGames (with embedded tags)
         GameRepo.get(game.id)
             .then(setGame)
     }, [game.id])
 
+    //delete game by id. If a current game, set games with current games, else set games with queued games (to update state appropriately based on current user view)
     const deleteGame = (gameId) => {
         if (currentGame.current === true) { 
             GameRepo.delete(gameId)
@@ -30,6 +31,7 @@ export const Game = ({ game, setGames }) => {
         }
     }
 
+    //PUT operation to allow user to quickly modify a game from queued to current with the click of a button (see button in form below)
     const addToCurrent = () => {
         GameRepo.modifyGame({
             name: currentGame.name,
@@ -41,7 +43,7 @@ export const Game = ({ game, setGames }) => {
     }
 
     return (
-        <div>
+        <div className="mb-4">
             <PlatformModal openBoolean={openBoolean} setOpenBoolean={setOpenBoolean}
                 currentGame={currentGame} addToCurrent={addToCurrent} />
 
@@ -49,11 +51,11 @@ export const Game = ({ game, setGames }) => {
                 body
                 color="light"
             >
-                <div style={{ alignSelf: "flex-end" }}>
-                    <img src={deleteIcon} alt="Delete" style={{ maxWidth: 30 }} onClick={
+                <div style={{ alignSelf: "flex-end" }} className="mt-2 mb-0">
+                    <img className="me-3"src={deleteIcon} alt="Delete" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
                         () => { return deleteGame(currentGame.id) }
                     } />
-                    <img src={editIcon} alt="Edit" style={{ maxWidth: 30 }} onClick={
+                    <img className="me-1" src={editIcon} alt="Edit" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
                         () => {history.push({
                             pathname: "/games/create",
                             state: currentGame
@@ -62,26 +64,26 @@ export const Game = ({ game, setGames }) => {
 
                 </div>
                 <CardBody style={{ paddingTop: 0, marginTop: 0 }}>
-                    <CardTitle tag="h5" >
+                    <CardTitle tag="h4" className="mb-3 mt-0">
                         {currentGame.name}
                     </CardTitle>
                     <CardSubtitle
-                        className="mb-2 text-muted"
+                        className=" text-muted"
                         tag="h6"
                     >
                         {currentGame.multiplayerCapable === true ? "Multiplayer Capable" : ""}
                     </CardSubtitle>
-                    <CardText>
-                        Available on {
+                    <CardText className="my-3">
+                        {currentGame.current? "Playing" : "Available"} on {
                             currentGame.gamePlatforms?.map(gamePlatform => {
                                 return gamePlatform.platform?.name
                             }).join(", ")
                         }
                     </CardText>
-                    <CardText>
+                    <CardText className="my-3">
                         {
                             currentGame.taggedGames?.map(taggedGame => {
-                                return <Badge key={taggedGame.id} style={{ fontSize: 15 }} color="info" pill>
+                                return <Badge className="my-1 me-1" key={taggedGame.id} style={{ fontSize: 15 }} color="info" pill>
                                     {taggedGame.tag?.tag}
                                 </Badge>
                             })

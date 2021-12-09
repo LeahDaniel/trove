@@ -12,11 +12,21 @@ export const GameForm = () => {
     const [userChoices, setUserChoices] = useState({
         name: "",
         current: null,
-        multiplayerCapable: false,
+        multiplayerCapable: null,
         chosenPlatforms: new Set(),
         chosenCurrentPlatform: 0,
         tagArray: []
     })
+    const [invalid, setInvalid] = useState({
+        name: true,
+        current: true,
+        multiplayer: true,
+        multiPlatforms: true,
+        singlePlatform: true,
+        tags: true
+    })
+    const [firstAttempt, setFirstAttempt] = useState(true)
+
 
     useEffect(
         () => {
@@ -24,6 +34,7 @@ export const GameForm = () => {
                 .then(setPlatforms)
                 .then(() => TagRepo.getAll())
                 .then(setTags)
+                .then(checkValidity)
         }, []
     )
     useEffect(
@@ -32,6 +43,11 @@ export const GameForm = () => {
                 userChoicesForCurrentGame()
             }
         }, [currentGame]
+    )
+    useEffect(
+        () => {
+            checkValidity()
+        }, [userChoices]
     )
 
     const setPlatform = (id) => {
@@ -183,59 +199,130 @@ export const GameForm = () => {
         }
     }
 
+    const checkValidity = () => {
+        const invalidCopy = { ...invalid }
+        //name
+        if (userChoices.name === "") {
+            invalidCopy.name = true
+        } else {
+            invalidCopy.name = false
+        }
+        //tags
+        if (userChoices.tagArray.length === 0) {
+            invalidCopy.tags = true
+        } else {
+            invalidCopy.tags = false
+        }
+        //multiplayer
+        if (userChoices.multiplayerCapable === null) {
+            invalidCopy.multiplayer = true
+        } else {
+            invalidCopy.multiplayer = false
+        }
+        //current
+        if (userChoices.current === null) {
+            invalidCopy.current = true
+        } else {
+            invalidCopy.current = false
+        }
+        //single and multi platform
+        if (userChoices.chosenCurrentPlatform === 0 && userChoices.chosenPlatforms.size === 0) {
+            invalidCopy.singlePlatform = true
+            invalidCopy.multiPlatforms = true
+        } else if (userChoices.chosenCurrentPlatform > 0 || userChoices.chosenPlatforms.size > 0) {
+            invalidCopy.singlePlatform = false
+            invalidCopy.multiPlatforms = false
+        }
+
+        setInvalid(invalidCopy)
+    }
+
     return (
-        <Form>
-            <h3> Add a New Game</h3>
-            <FormGroup row>
+        <Form className="m-4 p-2">
+            {
+                currentGame
+                    ? <h3> Edit a Game</h3>
+                    : <h3> Add a New Game</h3>
+            }
+            <FormGroup className="mt-4" row>
                 <Label for="gameTitle">
                     Game Title
                 </Label>
                 <Input
                     id="gameTitle"
                     name="title"
-                    placeholder="Enter the title of the game"
+                    invalid={!firstAttempt ? invalid.name : false}
                     value={userChoices.name}
                     onChange={(event) => {
                         const copy = { ...userChoices }
                         copy.name = event.target.value
                         setUserChoices(copy)
                     }}
+                    className="mb-2"
                 />
             </FormGroup>
             <FormGroup row>
-                <Label for="gameTags">
+                <Label
+                    for="gameTags"
+                >
                     Genre Tags
                 </Label>
                 <Input
                     id="gameTags"
-                    name="tags"
                     type="textarea"
-                    placeholder="Enter tag names, separated by commas without spaces"
-                    value={userChoices.tagArray.join(",")}
+                    invalid={!firstAttempt ? invalid.tags : false}
+                    value={userChoices.tagArray.join(", ")}
                     onChange={(event) => {
                         const copy = { ...userChoices }
-                        copy.tagArray = event.target.value.split(",")
+                        copy.tagArray = event.target.value.split(", ")
                         setUserChoices(copy)
                     }}
                 />
-                <FormText>
-                    Ex: "horror,RPG,first-person shooter"
+                <FormText className="mb-2">
+                    Enter tag names, separated by commas and spaces. Ex: "horror, RPG, first-person shooter"
                 </FormText>
             </FormGroup>
-            <FormGroup check>
-                <Input
-                    id="multiplayerCheckbox"
-                    type="checkbox"
-                    checked={userChoices.multiplayerCapable ? true : false}
-                    onChange={() => {
-                        const copy = { ...userChoices }
-                        copy.multiplayerCapable = !copy.multiplayerCapable
-                        setUserChoices(copy)
-                    }}
-                />
-                <Label check for="multiplayerCheckbox">
-                    Multiplayer Capable
+            <FormGroup>
+                <Label for="multiplayerSelect">
+                    Multiplayer Capable?
                 </Label>
+                <Input
+                    id="multiplayerSelect"
+                    type="select"
+                    invalid={!firstAttempt ? invalid.multiplayer : false}
+                    value={userChoices.multiplayerCapable === null
+                        ? "Choose an option..."
+                        : userChoices.multiplayerCapable === true
+                            ? "Yes"
+                            : "No"
+                    }
+                    onChange={(event) => {
+                        const copy = { ...userChoices }
+
+                        if (event.target.value === "Yes") {
+                            copy.multiplayerCapable = true
+                        } else if (event.target.value === "No") {
+                            copy.multiplayerCapable = false
+                        } else {
+                            copy.multiplayerCapable = null
+                        }
+                        setUserChoices(copy)
+                    }
+                    }
+                >
+                    <option>
+                        Choose an option...
+                    </option>
+                    <option>
+                        Yes
+                    </option>
+                    <option>
+                        No
+                    </option>
+                </Input>
+                <FormText className="mb-2">
+                    Does this game have an option for multiplayer (online or local)?
+                </FormText>
             </FormGroup>
             <FormGroup>
                 <Label for="exampleSelect">
@@ -243,8 +330,8 @@ export const GameForm = () => {
                 </Label>
                 <Input
                     id="currentSelect"
-                    name="select"
                     type="select"
+                    invalid={!firstAttempt ? invalid.current : false}
                     value={userChoices.current === null
                         ? "Choose an option..."
                         : userChoices.current === true
@@ -279,6 +366,9 @@ export const GameForm = () => {
                         Queued
                     </option>
                 </Input>
+                <FormText className="mb-2">
+                    Have you started this game (current) or are you thinking of playing it in the future (queued)?
+                </FormText>
             </FormGroup>
             {
                 userChoices.current === null ? "" :
@@ -289,8 +379,8 @@ export const GameForm = () => {
                             </Label>
                             <Input
                                 id="currentSelect"
-                                name="select"
                                 type="select"
+                                invalid={!firstAttempt ? invalid.singlePlatform : false}
                                 value={userChoices.chosenCurrentPlatform}
                                 onChange={(event) => {
                                     const copy = { ...userChoices }
@@ -327,8 +417,11 @@ export const GameForm = () => {
                                         <Input
                                             className="platformCheckbox"
                                             type="checkbox"
+                                            invalid={!firstAttempt ? invalid.multiPlatforms : false}
                                             checked={userChoices.chosenPlatforms.has(platform.id) ? true : false}
-                                            onChange={() => setPlatform(platform.id)}
+                                            onChange={() => {
+                                                setPlatform(platform.id)
+                                            }}
                                         />
                                         {' '}
                                         <Label check>
@@ -344,9 +437,16 @@ export const GameForm = () => {
             }
             <FormGroup>
                 <Button onClick={(evt) => {
-                    currentGame
-                        ? editGame(evt)
-                        : constructGame(evt)
+                    evt.preventDefault()
+
+                    setFirstAttempt(false)
+
+                    //check if every key on the "invalid" object is false
+                    if (Object.keys(invalid).every(key => invalid[key] === false)) {
+                        currentGame
+                            ? editGame(evt)
+                            : constructGame(evt)
+                    }
                 }}>
                     Submit
                 </Button>
@@ -359,6 +459,6 @@ export const GameForm = () => {
 
 
             </FormGroup>
-        </Form>
+        </Form >
     )
 }

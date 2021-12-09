@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react"
 import { useHistory } from "react-router-dom"
+import { Button, Form, FormGroup, Input, Label } from "reactstrap"
 
 export const Register = (props) => {
     const [user, setUser] = useState({})
@@ -46,28 +47,30 @@ export const Register = (props) => {
 
 
     return (
-        <main style={{ textAlign: "center" }}>
+        <main className="mx-4">
             <dialog className="dialog dialog--password" ref={conflictDialog}>
                 <div>Account with that email address already exists</div>
-                <button className="button--close" onClick={e => conflictDialog.current.close()}>Close</button>
+                <Button close onClick={e => conflictDialog.current.close()} className="text-right"/>
             </dialog>
-
-            <form className="form--login" onSubmit={handleRegister}>
-                <h1 className="h3 mb-3 font-weight-normal">Please Register for Trove</h1>
-                <fieldset>
-                    <label htmlFor="name"> Full Name </label>
-                    <input onChange={updateUser}
-                        type="text" id="name" className="form-control"
+            
+            <Form onSubmit={handleRegister}>
+                <h1 className="pt-5">Trove</h1>
+                <h5 className="pt-4">Please Register</h5>
+                <FormGroup className="pt-3">
+                    <Label htmlFor="name"> Full Name </Label>
+                    <Input onChange={updateUser}
+                        type="text" id="name"
                         placeholder="Enter your name" required autoFocus />
-                </fieldset>
-                <fieldset>
-                    <label htmlFor="email"> Email address </label>
-                    <input onChange={updateUser} type="email" id="email" className="form-control" placeholder="Email address" required />
-                </fieldset>
-                <fieldset>
-                    <button className="registerButton" type="submit"> Register </button>
-                </fieldset>
-            </form>
+                </FormGroup>
+                <FormGroup className="pt-3">
+                    <Label htmlFor="email"> Email address </Label>
+                    <Input onChange={updateUser} type="email" id="email" placeholder="Email address" required />
+                </FormGroup>
+                <FormGroup className="pt-3">
+                    <Button type="submit"> Register </Button>
+                </FormGroup>
+            </Form>
+            
         </main>
     )
 }
