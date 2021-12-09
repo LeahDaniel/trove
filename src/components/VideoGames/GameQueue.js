@@ -17,9 +17,11 @@ export const GameQueue = () => {
 
     return (
         <>
+            {/* clickable "add" image to bring user to form */}
             <img className="m-4" src={addIcon} alt="Add" style={{ maxWidth: 40, alignItems: "flex-end" }} onClick={
                 () => history.push("/games/create")
             } />
+            {/* Full list of queued game cards. Pass state of game from map and the setter function to the individual game card component */}
             <div className="mx-4">
                 {
                     games.map(game => <Game key={game.id} game={game} setGames={setGames} />)
