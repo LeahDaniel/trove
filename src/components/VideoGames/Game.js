@@ -44,7 +44,7 @@ export const Game = ({ game, setGames }) => {
     }
 
     return (
-        <div className="mb-4">
+        <div className="mt-5">
             {/*
                 Modal that pops up if the game has multiple platforms on it when user clicks "add to current".
                 Pass state of presentGame, addToCurrent function, and both the state and setter for the openBoolean
