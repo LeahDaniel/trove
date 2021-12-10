@@ -4,9 +4,10 @@ import { Button, Form, FormGroup, Input, Label } from "reactstrap"
 import { GameRepo } from "../../repositories/GameRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 
-export const SearchGames = ({ nameSetter, multiplayerSetter }) => {
+export const SearchGames = ({ userEntries, setUserEntries }) => {
     const [platforms, setPlatforms] = useState([])
     const [tags, setTags] = useState([])
+
 
     useEffect(
         () => {
@@ -29,7 +30,9 @@ export const SearchGames = ({ nameSetter, multiplayerSetter }) => {
                     type="search"
                     placeholder="Title"
                     onChange={(event) => {
-                        nameSetter(event.target.value)
+                        const userEntriesCopy = { ...userEntries }
+                        userEntriesCopy.name = event.target.value
+                        setUserEntries(userEntriesCopy)
                     }}
                 />
                 <Label for="nameSearch">
@@ -41,14 +44,69 @@ export const SearchGames = ({ nameSetter, multiplayerSetter }) => {
             <h6>Filter by:</h6>
 
             <FormGroup>
+                <Label for="platformSelect">
+                    Platform
+                </Label>
                 <Input
-                    id="exampleSelect"
+                    id="platformSelect"
                     name="select"
                     type="select"
+                    onChange={(event) => {
+                        const userEntriesCopy = { ...userEntries }
+                        userEntriesCopy.platform = event.target.value
+                        setUserEntries(userEntriesCopy)
+                    }}
                 >
-                    <option value="0"> Platform </option>
+                    <option value="0"> Choose to filter... </option>
                     {platforms.map(platform => {
-                        <option value={platform.id}>{platform.name}</option>
+                        return <option value={platform.id}>{platform.name}</option>
+                    })}
+                </Input>
+            </FormGroup>
+            <FormGroup>
+                <Label for="multiplayerSelect">
+                    Multiplayer Capable
+                </Label>
+                <Input
+                    id="multiplayerSelect"
+                    name="select"
+                    type="select"
+                    onChange={(event) => {
+                        const copy = { ...userEntries }
+
+                        if (event.target.value === "1") {
+                            copy.multiplayer = true
+                        } else if (event.target.value === "2") {
+                            copy.multiplayer = false
+                        } else {
+                            copy.multiplayer = null
+                        }
+                        setUserEntries(copy)
+                    }}
+                >
+                    <option value="0"> Choose to filter... </option>
+                    <option value="1"> Yes </option>
+                    <option value="2"> No </option>
+
+                </Input>
+            </FormGroup>
+            <FormGroup>
+                <Label for="tagSelect">
+                    Tag
+                </Label>
+                <Input
+                    id="tagSelect"
+                    name="select"
+                    type="select"
+                    onChange={(event) => {
+                        const userEntriesCopy = { ...userEntries }
+                        userEntriesCopy.tag = event.target.value
+                        setUserEntries(userEntriesCopy)
+                    }}
+                >
+                    <option value="0"> Choose to filter... </option>
+                    {tags.map(tag => {
+                        return <option value={tag.id}>{tag.tag}</option>
                     })}
                 </Input>
             </FormGroup>

@@ -10,28 +10,8 @@ export const TagRepo = {
         return await fetchIt(`http://localhost:8088/tags${tagId}`)
     },
 
-    async getTagsForUser() {
-        let tagIdSet = new Set()
-        let arrayOfTags = []
-        
-        const tags = await fetchIt(`http://localhost:8088/tags`)
-        const games = await GameRepo.getAll()
-        
-        const justTagIds = await games.map(game => {
-            return game.taggedGames.map(taggedGame => {
-                return taggedGame.tagId
-            })
-        })
-
-        for (const tagId of justTagIds.flat()) {
-            tagIdSet.add(tagId)
-        }
-        
-        for (const tagId of tagIdSet) {
-            arrayOfTags.push(tags.find(tag => tagId === tag.id))
-        }
-
-        return arrayOfTags
+    async getTagsForUser(userId) {
+        return await fetchIt(`http://localhost:8088/tags?userId=${userId}`)
     },
 
 
