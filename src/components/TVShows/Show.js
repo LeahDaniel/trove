@@ -8,7 +8,6 @@ import { useHistory } from "react-router";
 
 export const Show = ({ show, setShows }) => {
     const [presentShow, setShow] = useState([])
-    const [openBoolean, setOpenBoolean] = useState(false)
     const history = useHistory()
 
     //any time the show prop's id state changes (on page load) get individual show with expanded user, embedded taggedShows (with embedded tags), and embedded showPlatforms (with embedded platforms)
@@ -36,7 +35,7 @@ export const Show = ({ show, setShows }) => {
             name: presentShow.name,
             userId: presentShow.userId,
             current: true,
-            multiplayerCapable: presentShow.multiplayerCapable
+            streamingServiceId: presentShow.streamingServiceId
         }, presentShow.id)
             //after doing PUT operation, push user to the current list, where the show is now located
             .then(() => history.push("/shows/current"))
@@ -69,19 +68,10 @@ export const Show = ({ show, setShows }) => {
                         {/* display show names */}
                         {presentShow.name}
                     </CardTitle>
-                    <CardSubtitle
-                        className=" text-muted"
-                        tag="h6"
-                    >
-                        {/* display "multiplayer capable" if true */}
-                        {presentShow.multiplayerCapable === true ? "Multiplayer Capable" : ""}
-                    </CardSubtitle>
                     <CardText className="my-3">
                         {/* display platforms (if current, display as "playing", else display as "available") */}
-                        {presentShow.current ? "Playing" : "Available"} on {
-                            presentShow.showPlatforms?.map(showPlatform => {
-                                return showPlatform.platform?.name
-                            }).join(", ")
+                        {presentShow.current ? "Watching" : "Available"} on {
+                            presentShow.streamingService?.service
                         }
                     </CardText>
                     <CardText className="my-3">
@@ -102,12 +92,7 @@ export const Show = ({ show, setShows }) => {
                     */}
                     {
                         presentShow.current === false
-                            ? <Button onClick={() => {
-                                presentShow.showPlatforms?.length > 1
-                                    ? setOpenBoolean(true)
-                                    : addToCurrent()
-                            }
-                            }> Add to Current </Button>
+                            ? <Button onClick={addToCurrent}> Add to Current </Button>
                             : ""
                     }
                 </CardBody>
