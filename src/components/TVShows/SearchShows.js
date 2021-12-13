@@ -1,20 +1,17 @@
 import { useState } from "react"
 import { useEffect } from "react/cjs/react.development"
 import { Form, FormGroup, Input, Label } from "reactstrap"
-import { GameRepo } from "../../repositories/GameRepo"
+import { ShowRepo } from "../../repositories/ShowRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 
-export const SearchGames = ({ userEntries, setUserEntries }) => {
-    const [platforms, setPlatforms] = useState([])
+export const SearchShows = ({ userEntries, setUserEntries }) => {
     const [tags, setTags] = useState([])
     const userId = parseInt(localStorage.getItem("trove_user"))
 
 
     useEffect(
         () => {
-            GameRepo.getAllPlatforms()
-                .then(setPlatforms)
-                .then(() => TagRepo.getTagsForUser(userId))
+            TagRepo.getTagsForUser(userId)
                 .then(setTags)
         }, []
     )
@@ -57,9 +54,7 @@ export const SearchGames = ({ userEntries, setUserEntries }) => {
                     }}
                 >
                     <option value="0"> Choose to filter... </option>
-                    {platforms.map(platform => {
-                        return <option value={platform.id} key={platform.id}>{platform.name}</option>
-                    })}
+                    
                 </Input>
             </FormGroup>
             <FormGroup>

@@ -1,5 +1,5 @@
 import { fetchIt } from "./Fetch"
-import { GameRepo } from "./GameRepo"
+import { GameRepo } from "./ShowRepo"
 
 export const TagRepo = {
     //GETs
@@ -17,10 +17,16 @@ export const TagRepo = {
 
     //DELETEs
     async deleteTaggedGamesForOneGame(game) {
-        const taggedGames = game.taggedGames
         let promiseArray = []
-        for (const taggedGame of taggedGames) {
+        for (const taggedGame of game.taggedGames) {
             promiseArray.push(await fetchIt(`http://localhost:8088/taggedGames/${taggedGame.id}`, "DELETE"))
+        }
+        return Promise.all(promiseArray)
+    },
+    async deleteTaggedShowsForOneShow(show) {
+        let promiseArray = []
+        for (const taggedShow of show.taggedShows) {
+            promiseArray.push(await fetchIt(`http://localhost:8088/taggedShows/${taggedShow.id}`, "DELETE"))
         }
         return Promise.all(promiseArray)
     },
@@ -38,6 +44,13 @@ export const TagRepo = {
             `http://localhost:8088/taggedGames`,
             "POST",
             JSON.stringify(newTaggedGame)
+        )
+    },
+    async addTaggedShow(newTaggedShow) {
+        return await fetchIt(
+            `http://localhost:8088/taggedShows`,
+            "POST",
+            JSON.stringify(newTaggedShow)
         )
     },
 

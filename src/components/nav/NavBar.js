@@ -39,6 +39,50 @@ export const NavBar = () => {
                                 </DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
+                        <UncontrolledDropdown
+                            inNavbar
+                            nav
+                        >
+                            <DropdownToggle
+                                caret
+                                nav
+                            >
+                                TV Shows
+                            </DropdownToggle>
+                            <DropdownMenu end>
+                                <DropdownItem>
+                                    <NavLink href="/shows/current">Current</NavLink>
+                                </DropdownItem>
+                                <DropdownItem>
+                                    <NavLink href="/shows/queue">Queue</NavLink>
+                                </DropdownItem>
+                                <DropdownItem>
+                                    <NavLink href="/shows/create">Create New</NavLink>
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </UncontrolledDropdown>
+                        <UncontrolledDropdown
+                            inNavbar
+                            nav
+                        >
+                            <DropdownToggle
+                                caret
+                                nav
+                            >
+                                Books
+                            </DropdownToggle>
+                            <DropdownMenu end>
+                                <DropdownItem>
+                                    <NavLink href="/books/current">Current</NavLink>
+                                </DropdownItem>
+                                <DropdownItem>
+                                    <NavLink href="/books/queue">Queue</NavLink>
+                                </DropdownItem>
+                                <DropdownItem>
+                                    <NavLink href="/books/create">Create New</NavLink>
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </UncontrolledDropdown>
                         <NavItem >
                             <NavLink href="/login" onClick={
                                 () => {
