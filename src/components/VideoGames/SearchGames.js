@@ -7,16 +7,15 @@ import { TagRepo } from "../../repositories/TagRepo"
 export const SearchGames = ({ userEntries, setUserEntries }) => {
     const [platforms, setPlatforms] = useState([])
     const [tags, setTags] = useState([])
+    const userId = parseInt(localStorage.getItem("trove_user"))
 
 
     useEffect(
         () => {
             GameRepo.getAllPlatforms()
                 .then(setPlatforms)
-                .then(() => {
-                    TagRepo.getTagsForUser()
-                        .then(setTags)
-                })
+                .then(() => TagRepo.getTagsForUser(userId))
+                .then(setTags)
         }, []
     )
 
@@ -59,7 +58,7 @@ export const SearchGames = ({ userEntries, setUserEntries }) => {
                 >
                     <option value="0"> Choose to filter... </option>
                     {platforms.map(platform => {
-                        return <option value={platform.id}>{platform.name}</option>
+                        return <option value={platform.id} key={platform.id}>{platform.name}</option>
                     })}
                 </Input>
             </FormGroup>
@@ -106,7 +105,7 @@ export const SearchGames = ({ userEntries, setUserEntries }) => {
                 >
                     <option value="0"> Choose to filter... </option>
                     {tags.map(tag => {
-                        return <option value={tag.id}>{tag.tag}</option>
+                        return <option value={tag.id} key={tag.id}>{tag.tag}</option>
                     })}
                 </Input>
             </FormGroup>

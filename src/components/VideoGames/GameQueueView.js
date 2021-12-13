@@ -5,7 +5,7 @@ import addIcon from '../../images/AddIcon.png';
 import { useHistory } from "react-router";
 import { GameRepo } from "../../repositories/GameRepo";
 
-export const CurrentGamesView = () => {
+export const GameQueueView = () => {
     const [userEntries, setUserEntries] = useState({
         name: "",
         multiplayer: null,
@@ -19,18 +19,18 @@ export const CurrentGamesView = () => {
 
     useEffect(
         () => {
-            GameRepo.getAllCurrent()
+            GameRepo.getAllQueue()
                 .then(setGames)
         }, []
     )
     useEffect(
         () => {
             if (userEntries.name === "") {
-                GameRepo.getAllCurrent()
+                GameRepo.getAllQueue()
                     .then(setFilteredGames)
                     .then(setGames(determineFilters()))
             } else {
-                GameRepo.getAllCurrentBySearchTerm(userEntries.name)
+                GameRepo.getAllQueueBySearchTerm(userEntries.name)
                     .then(setFilteredGames)
                     .then(setGames(determineFilters()))
                     

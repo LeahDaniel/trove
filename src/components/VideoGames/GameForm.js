@@ -190,6 +190,7 @@ export const GameForm = () => {
             const noSpaces = upperCased.split(" ").join("")
             return {
                 id: tag.id,
+                userId: tag.userId,
                 tag: noSpaces
             }
         })
@@ -197,7 +198,7 @@ export const GameForm = () => {
 
         for (const enteredTag of userChoices.tagArray) {
             const neutralizedEnteredTag = enteredTag.toUpperCase().split(" ").join("")
-            let foundTag = neutralizedTagsCopy.find(tag => tag.tag === neutralizedEnteredTag)
+            let foundTag = neutralizedTagsCopy.find(tag => tag.tag === neutralizedEnteredTag && userId === tag.userId)
             if (foundTag) {
                 //post a new taggedGame object with that tag
                 TagRepo.addTaggedGame({
