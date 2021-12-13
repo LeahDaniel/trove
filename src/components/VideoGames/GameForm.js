@@ -8,6 +8,7 @@ export const GameForm = () => {
     const history = useHistory()
     const presentGame = useLocation().state
     const [platforms, setPlatforms] = useState([])
+    const userId = parseInt(localStorage.getItem("trove_user"))
     const [tags, setTags] = useState([])
     //initialize object to hold user choices from form, and/or location.state (on edit of game)
     const [userChoices, setUserChoices] = useState({
@@ -183,11 +184,13 @@ export const GameForm = () => {
     //uses the tagArray to POST to tags (if it does not yet exist), and to POST taggedGames objects.
     //tags will be evaluated as the same even if capitalization and spaces are different.
     const constructTags = (addedGame) => {
+        
         const neutralizedTagsCopy = tags.map(tag => {
             const upperCased = tag.tag.toUpperCase()
             const noSpaces = upperCased.split(" ").join("")
             return {
                 id: tag.id,
+                userId: tag.userId,
                 tag: noSpaces
             }
         })
@@ -195,7 +198,7 @@ export const GameForm = () => {
 
         for (const enteredTag of userChoices.tagArray) {
             const neutralizedEnteredTag = enteredTag.toUpperCase().split(" ").join("")
-            let foundTag = neutralizedTagsCopy.find(tag => tag.tag === neutralizedEnteredTag)
+            let foundTag = neutralizedTagsCopy.find(tag => tag.tag === neutralizedEnteredTag && userId === tag.userId)
             if (foundTag) {
                 //post a new taggedGame object with that tag
                 TagRepo.addTaggedGame({
@@ -204,7 +207,7 @@ export const GameForm = () => {
                 })
             } else {
                 //post a new tag object with that enteredTag
-                TagRepo.addTag({ tag: enteredTag })
+                TagRepo.addTag({ tag: enteredTag, userId: userId})
                     .then((newTag) => {
                         TagRepo.addTaggedGame({
                             tagId: newTag.id,

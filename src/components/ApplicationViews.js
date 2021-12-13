@@ -1,9 +1,9 @@
 import React from "react"
 import { Route } from "react-router-dom"
 import { HomePage } from "./HomePage/HomePage"
-import { CurrentGameList } from "./VideoGames/CurrentGameList"
+import { CurrentGamesView } from "./VideoGames/CurrentGamesView"
 import { GameForm } from "./VideoGames/GameForm"
-import { GameQueue } from "./VideoGames/GameQueue"
+import { GameQueueView } from "./VideoGames/GameQueueView"
 
 
 export const ApplicationViews = () => {
@@ -13,13 +13,13 @@ export const ApplicationViews = () => {
                 <HomePage/>
             </Route>
             <Route exact path="/games/current">
-                <CurrentGameList/>
+                <CurrentGamesView/>
             </Route>
             <Route exact path="/games/create">
                 <GameForm/>
             </Route>
             <Route exact path="/games/queue">
-                <GameQueue/>
+                <GameQueueView/>
             </Route>
         </>
     )

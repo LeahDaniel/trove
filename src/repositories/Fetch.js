@@ -29,6 +29,7 @@ export const fetchIt = (url, method = "GET", body = null) => {
         options.body = body
     }
 
-    //function returns a promise- the .then. Parses a fetch (with the url and options arguments as parameters) as javascript.
+    //function returns a promise- the .then. 
+    //Parses a fetch (with the url and options arguments as parameters) as javascript.
     return fetch(url, options).then(r => r.json())
 }
