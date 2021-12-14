@@ -23,17 +23,21 @@ export const GameQueueView = () => {
                 .then(setGames)
         }, []
     )
+
+    useEffect(
+        () => {
+            setGames(determineFilters())
+        }, [midFilterGames]
+    )
+
     useEffect(
         () => {
             if (userEntries.name === "") {
                 GameRepo.getAllQueue()
                     .then(setFilteredGames)
-                    .then(setGames(determineFilters()))
             } else {
                 GameRepo.getAllQueueBySearchTerm(userEntries.name)
                     .then(setFilteredGames)
-                    .then(setGames(determineFilters()))
-                    
             }
         }, [userEntries]
     )

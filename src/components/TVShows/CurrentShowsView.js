@@ -5,12 +5,10 @@ import addIcon from '../../images/AddIcon.png';
 import { useHistory } from "react-router";
 import { ShowRepo } from "../../repositories/ShowRepo";
 
-
 export const CurrentShowsView = () => {
     const [userEntries, setUserEntries] = useState({
         name: "",
-        multiplayer: null,
-        platform: "0",
+        service: "0",
         tag: "0"
     })
     const history = useHistory()
@@ -24,32 +22,33 @@ export const CurrentShowsView = () => {
                 .then(setShows)
         }, []
     )
+
+    useEffect(
+        () => {
+            setShows(determineFilters())
+        }, [midFilterShows]
+    )
+
     useEffect(
         () => {
             if (userEntries.name === "") {
                 ShowRepo.getAllCurrent()
                     .then(setFilteredShows)
-                    .then(setShows(determineFilters()))
             } else {
                 ShowRepo.getAllCurrentBySearchTerm(userEntries.name)
                     .then(setFilteredShows)
-                    .then(setShows(determineFilters()))
-                    
             }
         }, [userEntries]
     )
 
 
     const determineFilters = () => {
-        const multiplayerExist = userEntries.multiplayer !== null
-        const noMultiplayer = userEntries.multiplayer === null
-        const platformExist = userEntries.platform !== "0"
-        const noPlatform = userEntries.platform === "0"
+        const serviceExist = userEntries.service !== "0"
+        const noService = userEntries.service === "0"
         const tagExist = userEntries.tag !== "0"
         const noTag = userEntries.tag === "0"
 
-        const multiplayerBoolean = userEntries.multiplayer
-        const platformId = parseInt(userEntries.platform)
+        const serviceId = parseInt(userEntries.service)
         const tagId = parseInt(userEntries.tag)
 
         const showsByTagOnly = midFilterShows.filter(show => {
@@ -60,49 +59,20 @@ export const CurrentShowsView = () => {
                 return false
             }
         })
-        const showsByPlatformOnly = midFilterShows.filter(show => {
-            const foundShowPlatform = show.showPlatforms.find(showPlatform => showPlatform.platformId === platformId)
-            if (foundShowPlatform) {
-                return true
-            } else {
-                return false
-            }
-        })
-        const showsByMultiplayerOnly = midFilterShows.filter(show => show.multiplayerCapable === multiplayerBoolean)
-        const showsByMultiplayerAndPlatform = showsByMultiplayerOnly.filter(show => showsByPlatformOnly.includes(show))
-        const showsByMultiplayerAndTag = showsByMultiplayerOnly.filter(show => showsByTagOnly.includes(show))
-        const showsByTagAndPlatform = showsByTagOnly.filter(show => showsByPlatformOnly.includes(show))
-        const showsByAllThree = showsByTagAndPlatform.filter(show => showsByMultiplayerOnly.includes(show))
+        const showsByServiceOnly = midFilterShows.filter(show => show.streamingServiceId === serviceId)
+        const showsByTagAndService = showsByTagOnly.filter(show => showsByServiceOnly.includes(show))
 
-
-        if (noMultiplayer) {// all of the below are if the multiplayer filter has not been selected
-            // if nothing has been chosen, the value of shows state remains the same.
-            if (noPlatform && noTag) {
-                return midFilterShows
-            } else if (platformExist && noTag) {
-                return showsByPlatformOnly
-                //if a user has not been chosen and the favorites box is checked
-            } else if (noPlatform && tagExist) {
-                return showsByTagOnly
-                //if a user has been chosen AND the favorites box is checked.
-            } else if (platformExist && tagExist) {
-                return showsByTagAndPlatform
-            }
-        } else if (multiplayerExist) { //all of the below account for the multiplayer filter being selected
-            if (noPlatform && noTag) {
-                return showsByMultiplayerOnly
-            } else if (platformExist && noTag) {
-                return showsByMultiplayerAndPlatform
-                //if a user has not been chosen and the favorites box is checked
-            } else if (noPlatform && tagExist) {
-                return showsByMultiplayerAndTag
-                //if a user has been chosen AND the favorites box is checked.
-            } else if (platformExist && tagExist) {
-                return showsByAllThree
-            }
+        if (noService && noTag) {
+            return midFilterShows
+        } else if (serviceExist && noTag) {
+            return showsByServiceOnly
+            //if a user has not been chosen and the favorites box is checked
+        } else if (noService && tagExist) {
+            return showsByTagOnly
+            //if a user has been chosen AND the favorites box is checked.
+        } else if (serviceExist && tagExist) {
+            return showsByTagAndService
         }
-
-
     }
 
     return (

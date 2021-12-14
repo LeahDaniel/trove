@@ -9,7 +9,6 @@ export const SearchShows = ({ userEntries, setUserEntries }) => {
     const [streamingServices, setStreamingServices] = useState([])
     const userId = parseInt(localStorage.getItem("trove_user"))
 
-
     useEffect(
         () => {
             TagRepo.getTagsForUser(userId)
@@ -59,7 +58,7 @@ export const SearchShows = ({ userEntries, setUserEntries }) => {
                     <option value="0"> Choose to filter... </option>
                     {
                         streamingServices.map(service => {
-                            <option key={service.id} value={service.id}>{service.service}</option>
+                            return <option key={service.id} value={service.id}>{service.service}</option>
                         })
                     }
                     

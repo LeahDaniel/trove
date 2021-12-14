@@ -22,19 +22,23 @@ export const ShowQueueView = () => {
                 .then(setShows)
         }, []
     )
+
+    useEffect(
+        () => {
+            setShows(determineFilters())
+        }, [midFilterShows]
+    )
+
     useEffect(
         () => {
             if (userEntries.name === "") {
                 ShowRepo.getAllQueue()
                     .then(setFilteredShows)
-                    .then(setShows(determineFilters()))
             } else {
                 ShowRepo.getAllQueueBySearchTerm(userEntries.name)
                     .then(setFilteredShows)
-                    .then(setShows(determineFilters()))
-
             }
-        }, [userEntries]
+        }, [userEntries.name, userEntries]
     )
 
 

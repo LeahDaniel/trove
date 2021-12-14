@@ -23,17 +23,21 @@ export const CurrentGamesView = () => {
                 .then(setGames)
         }, []
     )
+
+    useEffect(
+        () => {
+            setGames(determineFilters())
+        }, [midFilterGames]
+    )
+
     useEffect(
         () => {
             if (userEntries.name === "") {
                 GameRepo.getAllCurrent()
                     .then(setFilteredGames)
-                    .then(setGames(determineFilters()))
             } else {
                 GameRepo.getAllCurrentBySearchTerm(userEntries.name)
                     .then(setFilteredGames)
-                    .then(setGames(determineFilters()))
-                    
             }
         }, [userEntries]
     )
