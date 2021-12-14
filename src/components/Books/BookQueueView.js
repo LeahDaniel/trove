@@ -26,6 +26,7 @@ export const BookQueueView = () => {
     useEffect(
         () => {
             setBooks(determineFilters())
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [midFilterBooks]
     )
 
@@ -38,6 +39,7 @@ export const BookQueueView = () => {
                 BookRepo.getAllQueueBySearchTerm(userEntries.name)
                     .then(setFilteredBooks)
             }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [userEntries.name, userEntries]
     )
 

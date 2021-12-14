@@ -27,6 +27,7 @@ export const GameQueueView = () => {
     useEffect(
         () => {
             setGames(determineFilters())
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [midFilterGames]
     )
 
@@ -39,6 +40,7 @@ export const GameQueueView = () => {
                 GameRepo.getAllQueueBySearchTerm(userEntries.name)
                     .then(setFilteredGames)
             }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [userEntries]
     )
 

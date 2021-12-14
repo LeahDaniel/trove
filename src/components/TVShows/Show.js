@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Badge, Button, Card, CardBody, CardSubtitle, CardText, CardTitle } from "reactstrap"
+import { Badge, Button, Card, CardBody, CardText, CardTitle } from "reactstrap"
 import { ShowRepo } from "../../repositories/ShowRepo"
 import deleteIcon from '../../images/DeleteIcon.png';
 import editIcon from '../../images/EditIcon.png';

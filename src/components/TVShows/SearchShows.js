@@ -15,7 +15,7 @@ export const SearchShows = ({ userEntries, setUserEntries }) => {
                 .then(setTags)
                 .then(ShowRepo.getAllStreamingServices)
                 .then(setStreamingServices)
-        }, []
+        }, [userId]
     )
 
     return (

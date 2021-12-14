@@ -26,6 +26,7 @@ export const CurrentBooksView = () => {
     useEffect(
         () => {
             setBooks(determineFilters())
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [midFilterBooks]
     )
 
@@ -38,6 +39,7 @@ export const CurrentBooksView = () => {
                 BookRepo.getAllCurrentBySearchTerm(userEntries.name)
                     .then(setFilteredBooks)
             }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [userEntries]
     )
 

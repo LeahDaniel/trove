@@ -1,5 +1,4 @@
 import { fetchIt } from "./Fetch"
-import { GameRepo } from "./ShowRepo"
 
 export const TagRepo = {
     //GETs

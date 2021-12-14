@@ -15,7 +15,7 @@ export const SearchBooks = ({ userEntries, setUserEntries }) => {
                 .then(setTags)
                 .then(() => BookRepo.getAuthorsForUser(userId))
                 .then(setAuthors)
-        }, []
+        }, [userId]
     )
 
     return (

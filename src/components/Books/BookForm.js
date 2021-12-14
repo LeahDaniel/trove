@@ -5,6 +5,7 @@ import { BookRepo } from "../../repositories/BookRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 
 export const BookForm = () => {
+
     const history = useHistory()
     const presentBook = useLocation().state
     const userId = parseInt(localStorage.getItem("trove_user"))
@@ -15,7 +16,6 @@ export const BookForm = () => {
         name: "",
         current: null,
         author: "",
-        authorId: 0,
         tagArray: []
     })
     //initialize object to control "invalid" prop on inputs
@@ -28,7 +28,6 @@ export const BookForm = () => {
     //initialize boolean to indicate whether the user is on their first form attempt (prevent form warnings on first attempt)
     const [firstAttempt, setFirstAttempt] = useState(true)
 
-
     useEffect(
         () => {
             //on page load, GET streaming services and tags
@@ -38,6 +37,7 @@ export const BookForm = () => {
                 .then(setAuthors)
                 //setInvalid on page load to account for pre-populated fields on edit.
                 .then(checkValidity)
+                // eslint-disable-next-line react-hooks/exhaustive-deps
         }, []
     )
     useEffect(
@@ -47,12 +47,14 @@ export const BookForm = () => {
                 //setUserChoices from the values of the presentBook object
                 userChoicesForPresentBook()
             }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [presentBook]
     )
     useEffect(
         () => {
             //when userChoices change (as the user interacts with form), setInvalid state so that it is always up-to-date before form submit
             checkValidity()
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [userChoices]
     )
 
@@ -65,7 +67,7 @@ export const BookForm = () => {
         //change name, current, and multiplayer values based on presentBook values
         copy.name = presentBook.name
         copy.current = presentBook.current
-        copy.author = presentBook.author?.name
+        copy.author = presentBook.author.name
 
         //create a tag array from the presentBook's associated taggedBooks, and set as userChoices.tagArray value
         let tagArray = []
@@ -83,19 +85,15 @@ export const BookForm = () => {
     //Then, POST operations to tags, taggedBooks, and bookPlatforms using the 
     //constructTags and constructBookPlatforms functions, with the edited book's id as an argument
     //Then, push user to current or queued based on if current on book is true or false
-    const editBook = evt => {
-        evt.preventDefault()
-
+    const editBook = (newAuthorId) => {
         const bookFromUserChoices = {
             name: userChoices.name,
             userId: parseInt(localStorage.getItem("trove_user")),
             current: userChoices.current,
-            authorId: userChoices.authorId
+            authorId: newAuthorId
         }
 
-
         TagRepo.deleteTaggedBooksForOneBook(presentBook)
-            .then(constructAuthor)
             .then(() => BookRepo.modifyBook(bookFromUserChoices, presentBook.id))
             .then((addedBook) => {
                 constructTags(addedBook)
@@ -113,14 +111,12 @@ export const BookForm = () => {
     //Then, POST operations to tags, taggedBooks, and bookPlatforms using the 
     //constructTags and constructBookPlatforms functions, with the posted book's id as an argument
     //Then, push user to current or queued based on if current on book is true or false
-    const constructBook = evt => {
-        evt.preventDefault()
-
+    const constructBook = (newAuthorId) => {
         const bookFromUserChoices = {
             name: userChoices.name,
             userId: parseInt(localStorage.getItem("trove_user")),
             current: userChoices.current,
-            authorId: userChoices.authorId
+            authorId: newAuthorId
         }
 
         BookRepo.addBook(bookFromUserChoices)
@@ -140,7 +136,6 @@ export const BookForm = () => {
     //uses the tagArray to POST to tags (if it does not yet exist), and to POST taggedBooks objects.
     //tags will be evaluated as the same even if capitalization and spaces are different.
     const constructTags = (addedBook) => {
-
         const neutralizedTagsCopy = tags.map(tag => {
             const upperCased = tag.tag.toUpperCase()
             const noSpaces = upperCased.split(" ").join("")
@@ -177,7 +172,8 @@ export const BookForm = () => {
         }
     }
 
-    const constructAuthor = () => {
+    const constructAuthor = (evt) => {
+        evt.preventDefault()
 
         const neutralizedAuthorsCopy = authors.map(author => {
             const upperCased = author.name.toUpperCase()
@@ -195,21 +191,20 @@ export const BookForm = () => {
 
         if (foundAuthor) {
             //set the state of the authorId using the id of the existing author object
-            const copy = { ...userChoices }
-            copy.authorId = foundAuthor.id
-            setUserChoices(copy)
+            presentBook
+                ? editBook(foundAuthor.id)
+                : constructBook(foundAuthor.id)
 
         } else {
             //post a new author object with the entered author name
             BookRepo.addAuthor({ name: userChoices.author, userId: userId })
                 .then((newAuthor) => {
-                    const copy = { ...userChoices }
-                    copy.authorId = newAuthor.id
-                    setUserChoices(copy)
+                    presentBook
+                        ? editBook(newAuthor.id)
+                        : constructBook(newAuthor.id)
                 })
 
         }
-
     }
 
     //use the userChoices values to set the invalid booleans (was the user entry a valid entry or not)
@@ -360,9 +355,7 @@ export const BookForm = () => {
 
                     //check if every key on the "invalid" object is false
                     if (Object.keys(invalid).every(key => invalid[key] === false)) {
-                        presentBook
-                            ? editBook(evt)
-                            : constructBook(evt)
+                        constructAuthor(evt)
                     }
                 }}>
                     Submit

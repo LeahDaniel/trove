@@ -16,7 +16,7 @@ export const SearchGames = ({ userEntries, setUserEntries }) => {
                 .then(setPlatforms)
                 .then(() => TagRepo.getTagsForUser(userId))
                 .then(setTags)
-        }, []
+        }, [userId]
     )
 
     return (

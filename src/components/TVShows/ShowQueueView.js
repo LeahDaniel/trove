@@ -26,6 +26,7 @@ export const ShowQueueView = () => {
     useEffect(
         () => {
             setShows(determineFilters())
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [midFilterShows]
     )
 
@@ -38,6 +39,7 @@ export const ShowQueueView = () => {
                 ShowRepo.getAllQueueBySearchTerm(userEntries.name)
                     .then(setFilteredShows)
             }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [userEntries.name, userEntries]
     )
 
