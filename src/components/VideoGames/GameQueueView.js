@@ -23,18 +23,24 @@ export const GameQueueView = () => {
                 .then(setGames)
         }, []
     )
+
+    useEffect(
+        () => {
+            setGames(determineFilters())
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [midFilterGames]
+    )
+
     useEffect(
         () => {
             if (userEntries.name === "") {
                 GameRepo.getAllQueue()
                     .then(setFilteredGames)
-                    .then(setGames(determineFilters()))
             } else {
                 GameRepo.getAllQueueBySearchTerm(userEntries.name)
                     .then(setFilteredGames)
-                    .then(setGames(determineFilters()))
-                    
             }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [userEntries]
     )
 

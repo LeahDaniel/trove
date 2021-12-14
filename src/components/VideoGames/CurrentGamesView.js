@@ -23,18 +23,24 @@ export const CurrentGamesView = () => {
                 .then(setGames)
         }, []
     )
+
+    useEffect(
+        () => {
+            setGames(determineFilters())
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [midFilterGames]
+    )
+
     useEffect(
         () => {
             if (userEntries.name === "") {
                 GameRepo.getAllCurrent()
                     .then(setFilteredGames)
-                    .then(setGames(determineFilters()))
             } else {
                 GameRepo.getAllCurrentBySearchTerm(userEntries.name)
                     .then(setFilteredGames)
-                    .then(setGames(determineFilters()))
-                    
             }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [userEntries]
     )
 

@@ -41,6 +41,7 @@ export const GameForm = () => {
                 .then(setTags)
                 //setInvalid on page load to account for pre-populated fields on edit.
                 .then(checkValidity)
+                // eslint-disable-next-line react-hooks/exhaustive-deps
         }, []
     )
     useEffect(
@@ -50,12 +51,14 @@ export const GameForm = () => {
                 //setUserChoices from the values of the presentGame object
                 userChoicesForPresentGame()
             }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [presentGame]
     )
     useEffect(
         () => {
             //when userChoices change (as the user interacts with form), setInvalid state so that it is always up-to-date before form submit
             checkValidity()
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [userChoices]
     )
 

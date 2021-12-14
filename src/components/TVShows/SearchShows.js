@@ -1,21 +1,20 @@
 import { useState } from "react"
 import { useEffect } from "react/cjs/react.development"
 import { Form, FormGroup, Input, Label } from "reactstrap"
-import { GameRepo } from "../../repositories/GameRepo"
+import { ShowRepo } from "../../repositories/ShowRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 
-export const SearchGames = ({ userEntries, setUserEntries }) => {
-    const [platforms, setPlatforms] = useState([])
+export const SearchShows = ({ userEntries, setUserEntries }) => {
     const [tags, setTags] = useState([])
+    const [streamingServices, setStreamingServices] = useState([])
     const userId = parseInt(localStorage.getItem("trove_user"))
-
 
     useEffect(
         () => {
-            GameRepo.getAllPlatforms()
-                .then(setPlatforms)
-                .then(() => TagRepo.getTagsForUser(userId))
+            TagRepo.getTagsForUser(userId)
                 .then(setTags)
+                .then(ShowRepo.getAllStreamingServices)
+                .then(setStreamingServices)
         }, [userId]
     )
 
@@ -44,7 +43,7 @@ export const SearchGames = ({ userEntries, setUserEntries }) => {
 
             <FormGroup>
                 <Label for="platformSelect">
-                    Platform
+                    Streaming Service
                 </Label>
                 <Input
                     id="platformSelect"
@@ -52,41 +51,17 @@ export const SearchGames = ({ userEntries, setUserEntries }) => {
                     type="select"
                     onChange={(event) => {
                         const userEntriesCopy = { ...userEntries }
-                        userEntriesCopy.platform = event.target.value
+                        userEntriesCopy.service = event.target.value
                         setUserEntries(userEntriesCopy)
                     }}
                 >
                     <option value="0"> Choose to filter... </option>
-                    {platforms.map(platform => {
-                        return <option value={platform.id} key={platform.id}>{platform.name}</option>
-                    })}
-                </Input>
-            </FormGroup>
-            <FormGroup>
-                <Label for="multiplayerSelect">
-                    Multiplayer Capable
-                </Label>
-                <Input
-                    id="multiplayerSelect"
-                    name="select"
-                    type="select"
-                    onChange={(event) => {
-                        const copy = { ...userEntries }
-
-                        if (event.target.value === "1") {
-                            copy.multiplayer = true
-                        } else if (event.target.value === "2") {
-                            copy.multiplayer = false
-                        } else {
-                            copy.multiplayer = null
-                        }
-                        setUserEntries(copy)
-                    }}
-                >
-                    <option value="0"> Choose to filter... </option>
-                    <option value="1"> Yes </option>
-                    <option value="2"> No </option>
-
+                    {
+                        streamingServices.map(service => {
+                            return <option key={service.id} value={service.id}>{service.service}</option>
+                        })
+                    }
+                    
                 </Input>
             </FormGroup>
             <FormGroup>
