@@ -1,5 +1,8 @@
 import React from "react"
 import { Route } from "react-router-dom"
+import { BookForm } from "./Books/BookForm"
+import { BookQueueView } from "./Books/BookQueueView"
+import { CurrentBooksView } from "./Books/CurrentBooksView"
 import { HomePage } from "./HomePage/HomePage"
 import { CurrentShowsView } from "./TVShows/CurrentShowsView"
 import { ShowForm } from "./TVShows/ShowForm"
@@ -32,6 +35,15 @@ export const ApplicationViews = () => {
             </Route>
             <Route exact path="/shows/queue">
                 <ShowQueueView/>
+            </Route>
+            <Route exact path="/books/current">
+                <CurrentBooksView/>
+            </Route>
+            <Route exact path="/books/create">
+                <BookForm/>
+            </Route>
+            <Route exact path="/books/queue">
+                <BookQueueView/>
             </Route>
         </>
     )

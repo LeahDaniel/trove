@@ -1,27 +1,28 @@
 import React, { useState, useEffect } from "react"
 import { useHistory, useLocation } from "react-router"
 import { Button, Form, FormGroup, FormText, Input, Label } from "reactstrap"
-import { ShowRepo } from "../../repositories/ShowRepo"
+import { BookRepo } from "../../repositories/BookRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 
-export const ShowForm = () => {
+export const BookForm = () => {
     const history = useHistory()
-    const presentShow = useLocation().state
-    const [streamingServices, setStreamingServices] = useState([])
+    const presentBook = useLocation().state
     const userId = parseInt(localStorage.getItem("trove_user"))
+    const [authors, setAuthors] = useState([])
     const [tags, setTags] = useState([])
-    //initialize object to hold user choices from form, and/or location.state (on edit of show)
+    //initialize object to hold user choices from form, and/or location.state (on edit of book)
     const [userChoices, setUserChoices] = useState({
         name: "",
         current: null,
-        streamingService: 0,
+        author: "",
+        authorId: 0,
         tagArray: []
     })
     //initialize object to control "invalid" prop on inputs
     const [invalid, setInvalid] = useState({
         name: true,
         current: true,
-        streaming: true,
+        author: true,
         tags: true
     })
     //initialize boolean to indicate whether the user is on their first form attempt (prevent form warnings on first attempt)
@@ -33,20 +34,20 @@ export const ShowForm = () => {
             //on page load, GET streaming services and tags
             TagRepo.getAll()
                 .then(setTags)
-                .then(() => ShowRepo.getAllStreamingServices())
-                .then(setStreamingServices)
+                .then(() => BookRepo.getAuthorsForUser(userId))
+                .then(setAuthors)
                 //setInvalid on page load to account for pre-populated fields on edit.
                 .then(checkValidity)
         }, []
     )
     useEffect(
         () => {
-            if (presentShow) {
-                //on presentShow state change (when user clicks edit to be brought to form)
-                //setUserChoices from the values of the presentShow object
-                userChoicesForPresentShow()
+            if (presentBook) {
+                //on presentBook state change (when user clicks edit to be brought to form)
+                //setUserChoices from the values of the presentBook object
+                userChoicesForPresentBook()
             }
-        }, [presentShow]
+        }, [presentBook]
     )
     useEffect(
         () => {
@@ -56,20 +57,20 @@ export const ShowForm = () => {
     )
 
 
-    //setUserChoices from the values of the presentShow object
-    const userChoicesForPresentShow = () => {
+    //setUserChoices from the values of the presentBook object
+    const userChoicesForPresentBook = () => {
         //make copy of userChoices
         const copy = { ...userChoices }
 
-        //change name, current, and multiplayer values based on presentShow values
-        copy.name = presentShow.name
-        copy.current = presentShow.current
-        copy.streamingService = presentShow.streamingServiceId
+        //change name, current, and multiplayer values based on presentBook values
+        copy.name = presentBook.name
+        copy.current = presentBook.current
+        copy.author = presentBook.author?.name
 
-        //create a tag array from the presentShow's associated taggedShows, and set as userChoices.tagArray value
+        //create a tag array from the presentBook's associated taggedBooks, and set as userChoices.tagArray value
         let tagArray = []
-        for (const taggedShow of presentShow.taggedShows) {
-            tagArray.push(taggedShow.tag.tag)
+        for (const taggedBook of presentBook.taggedBooks) {
+            tagArray.push(taggedBook.tag.tag)
         }
         copy.tagArray = tagArray
 
@@ -77,67 +78,68 @@ export const ShowForm = () => {
         setUserChoices(copy)
     }
 
-    //Deletes present taggedShows and showPlatforms for presentShow being edited. 
-    // Then, PUT operation to shows based on userChoices.
-    //Then, POST operations to tags, taggedShows, and showPlatforms using the 
-    //constructTags and constructShowPlatforms functions, with the edited show's id as an argument
-    //Then, push user to current or queued based on if current on show is true or false
-    const editShow = evt => {
+    //Deletes present taggedBooks and bookPlatforms for presentBook being edited. 
+    // Then, PUT operation to books based on userChoices.
+    //Then, POST operations to tags, taggedBooks, and bookPlatforms using the 
+    //constructTags and constructBookPlatforms functions, with the edited book's id as an argument
+    //Then, push user to current or queued based on if current on book is true or false
+    const editBook = evt => {
         evt.preventDefault()
 
-        const showFromUserChoices = {
+        const bookFromUserChoices = {
             name: userChoices.name,
             userId: parseInt(localStorage.getItem("trove_user")),
             current: userChoices.current,
-            streamingServiceId: userChoices.streamingService
+            authorId: userChoices.authorId
         }
 
 
-        TagRepo.deleteTaggedShowsForOneShow(presentShow)
-            .then(() => ShowRepo.modifyShow(showFromUserChoices, presentShow.id))
-            .then((addedShow) => {
-                constructTags(addedShow)
+        TagRepo.deleteTaggedBooksForOneBook(presentBook)
+            .then(constructAuthor)
+            .then(() => BookRepo.modifyBook(bookFromUserChoices, presentBook.id))
+            .then((addedBook) => {
+                constructTags(addedBook)
             })
             .then(() => {
                 if (userChoices.current === true) {
-                    history.push("/shows/current")
+                    history.push("/books/current")
                 } else {
-                    history.push("/shows/queue")
+                    history.push("/books/queue")
                 }
             })
     }
 
-    //POST operation to shows
-    //Then, POST operations to tags, taggedShows, and showPlatforms using the 
-    //constructTags and constructShowPlatforms functions, with the posted show's id as an argument
-    //Then, push user to current or queued based on if current on show is true or false
-    const constructShow = evt => {
+    //POST operation to books
+    //Then, POST operations to tags, taggedBooks, and bookPlatforms using the 
+    //constructTags and constructBookPlatforms functions, with the posted book's id as an argument
+    //Then, push user to current or queued based on if current on book is true or false
+    const constructBook = evt => {
         evt.preventDefault()
 
-        const showFromUserChoices = {
+        const bookFromUserChoices = {
             name: userChoices.name,
             userId: parseInt(localStorage.getItem("trove_user")),
             current: userChoices.current,
-            streamingServiceId: userChoices.streamingService
+            authorId: userChoices.authorId
         }
 
-        ShowRepo.addShow(showFromUserChoices)
-            .then((addedShow) => {
-                constructTags(addedShow)
+        BookRepo.addBook(bookFromUserChoices)
+            .then((addedBook) => {
+                constructTags(addedBook)
             })
             .then(() => {
                 if (userChoices.current === true) {
-                    history.push("/shows/current")
+                    history.push("/books/current")
                 } else {
-                    history.push("/shows/queue")
+                    history.push("/books/queue")
                 }
             })
     }
 
 
-    //uses the tagArray to POST to tags (if it does not yet exist), and to POST taggedShows objects.
+    //uses the tagArray to POST to tags (if it does not yet exist), and to POST taggedBooks objects.
     //tags will be evaluated as the same even if capitalization and spaces are different.
-    const constructTags = (addedShow) => {
+    const constructTags = (addedBook) => {
 
         const neutralizedTagsCopy = tags.map(tag => {
             const upperCased = tag.tag.toUpperCase()
@@ -154,25 +156,60 @@ export const ShowForm = () => {
             const neutralizedEnteredTag = enteredTag.toUpperCase().split(" ").join("")
             let foundTag = neutralizedTagsCopy.find(tag => tag.tag === neutralizedEnteredTag && userId === tag.userId)
             if (foundTag) {
-                //post a new taggedShow object with that tag
-                TagRepo.addTaggedShow({
+                //post a new taggedBook object with that tag
+                TagRepo.addTaggedBook({
                     tagId: foundTag.id,
-                    showId: addedShow.id
+                    bookId: addedBook.id
                 })
             } else {
                 //post a new tag object with that enteredTag
                 TagRepo.addTag({ tag: enteredTag, userId: userId })
                     .then((newTag) => {
-                        TagRepo.addTaggedShow({
+                        TagRepo.addTaggedBook({
                             tagId: newTag.id,
-                            showId: addedShow.id
+                            bookId: addedBook.id
                         })
                     })
 
-                //post a new taggedShow object with the tag object made above
+                //post a new taggedBook object with the tag object made above
 
             }
         }
+    }
+
+    const constructAuthor = () => {
+
+        const neutralizedAuthorsCopy = authors.map(author => {
+            const upperCased = author.name.toUpperCase()
+            const noSpaces = upperCased.split(" ").join("")
+            return {
+                id: author.id,
+                userId: author.userId,
+                name: noSpaces
+            }
+        })
+
+        const neutralizedEnteredAuthor = userChoices.author.toUpperCase().split(" ").join("")
+
+        let foundAuthor = neutralizedAuthorsCopy.find(author => author.name === neutralizedEnteredAuthor)
+
+        if (foundAuthor) {
+            //set the state of the authorId using the id of the existing author object
+            const copy = { ...userChoices }
+            copy.authorId = foundAuthor.id
+            setUserChoices(copy)
+
+        } else {
+            //post a new author object with the entered author name
+            BookRepo.addAuthor({ name: userChoices.author, userId: userId })
+                .then((newAuthor) => {
+                    const copy = { ...userChoices }
+                    copy.authorId = newAuthor.id
+                    setUserChoices(copy)
+                })
+
+        }
+
     }
 
     //use the userChoices values to set the invalid booleans (was the user entry a valid entry or not)
@@ -191,10 +228,10 @@ export const ShowForm = () => {
             invalidCopy.tags = false
         }
         //multiplayer
-        if (userChoices.streamingService === 0) {
-            invalidCopy.streaming = true
+        if (userChoices.author === "") {
+            invalidCopy.author = true
         } else {
-            invalidCopy.streaming = false
+            invalidCopy.author = false
         }
         //current
         if (userChoices.current === null) {
@@ -209,16 +246,16 @@ export const ShowForm = () => {
     return (
         <Form className="m-4 p-2">
             {
-                presentShow
-                    ? <h3> Edit a Show</h3>
-                    : <h3> Add a New Show</h3>
+                presentBook
+                    ? <h3> Edit a Book</h3>
+                    : <h3> Add a New Book</h3>
             }
             <FormGroup className="mt-4" row>
-                <Label for="showTitle">
-                    Show Title
+                <Label for="bookTitle">
+                    Book Title
                 </Label>
                 <Input
-                    id="showTitle"
+                    id="bookTitle"
                     name="title"
                     //if this is not the first attempt at filling out the form, allow the 
                     //input to be marked as invalid (if the invalid state is true)
@@ -238,12 +275,12 @@ export const ShowForm = () => {
             </FormGroup>
             <FormGroup row>
                 <Label
-                    for="showTags"
+                    for="bookTags"
                 >
                     Genre Tags
                 </Label>
                 <Input
-                    id="showTags"
+                    id="bookTags"
                     type="textarea"
                     invalid={!firstAttempt ? invalid.tags : false}
                     value={userChoices.tagArray.join(", ")}
@@ -259,34 +296,19 @@ export const ShowForm = () => {
             </FormGroup>
             <FormGroup>
                 <Label for="exampleSelect">
-                    Streaming Service
+                    Author
                 </Label>
                 <Input
-                    id="currentSelect"
-                    type="select"
-                    invalid={!firstAttempt ? invalid.streaming : false}
-                    value={userChoices.streamingService}
+                    id="bookTags"
+                    type="text"
+                    invalid={!firstAttempt ? invalid.author : false}
+                    value={userChoices.author}
                     onChange={(event) => {
                         const copy = { ...userChoices }
-                        copy.streamingService = parseInt(event.target.value)
+                        copy.author = event.target.value
                         setUserChoices(copy)
                     }}
-                >
-                    <option value="0">
-                        Choose an option...
-                    </option>
-                    {
-                        streamingServices.map(service => {
-                            return <option value={service.id} key={service.id}>
-                                {service.service}
-                            </option>
-                        })
-
-                    }
-                </Input>
-                <FormText>
-                    Select the service you are currently watching the show on.
-                </FormText>
+                />
             </FormGroup>
             <FormGroup>
                 <Label for="exampleSelect">
@@ -327,7 +349,7 @@ export const ShowForm = () => {
                     </option>
                 </Input>
                 <FormText className="mb-2">
-                    Have you started this show (current) or are you thinking of watching it in the future (queued)?
+                    Have you started this book (current) or are you thinking of watching it in the future (queued)?
                 </FormText>
             </FormGroup>
             <FormGroup>
@@ -338,15 +360,15 @@ export const ShowForm = () => {
 
                     //check if every key on the "invalid" object is false
                     if (Object.keys(invalid).every(key => invalid[key] === false)) {
-                        presentShow
-                            ? editShow(evt)
-                            : constructShow(evt)
+                        presentBook
+                            ? editBook(evt)
+                            : constructBook(evt)
                     }
                 }}>
                     Submit
                 </Button>
-                {presentShow
-                    //if there is a presentShow object (user was pushed to form from edit button), allow them to go back to the previous page they were on (the appropriate list)
+                {presentBook
+                    //if there is a presentBook object (user was pushed to form from edit button), allow them to go back to the previous page they were on (the appropriate list)
                     ? <Button onClick={() => { history.goBack() }}>
                         Cancel
                     </Button>

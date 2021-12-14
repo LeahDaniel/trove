@@ -30,6 +30,13 @@ export const TagRepo = {
         }
         return Promise.all(promiseArray)
     },
+    async deleteTaggedBooksForOneBook(book) {
+        let promiseArray = []
+        for (const taggedBook of book.taggedBooks) {
+            promiseArray.push(await fetchIt(`http://localhost:8088/taggedBooks/${taggedBook.id}`, "DELETE"))
+        }
+        return Promise.all(promiseArray)
+    },
 
     //POSTs
     async addTag(newTag) {
@@ -51,6 +58,13 @@ export const TagRepo = {
             `http://localhost:8088/taggedShows`,
             "POST",
             JSON.stringify(newTaggedShow)
+        )
+    },
+    async addTaggedBook(newTaggedBook) {
+        return await fetchIt(
+            `http://localhost:8088/taggedBooks`,
+            "POST",
+            JSON.stringify(newTaggedBook)
         )
     },
 
