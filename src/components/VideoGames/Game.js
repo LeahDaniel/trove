@@ -7,7 +7,7 @@ import { useHistory } from "react-router";
 import { PlatformModal } from "./PlatformModal";
 
 
-export const Game = ({ game, setGames }) => {
+export const Game = ({ game, setGames}) => {
     const [presentGame, setGame] = useState([])
     const [openBoolean, setOpenBoolean] = useState(false)
     const history = useHistory()
@@ -16,6 +16,7 @@ export const Game = ({ game, setGames }) => {
     useEffect(() => {
         GameRepo.get(game.id)
             .then(setGame)
+            
     }, [game.id])
 
     //delete game by id. If a current game, set games with current games, else set games with queued games (to update state appropriately based on current user view)

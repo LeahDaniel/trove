@@ -4,6 +4,7 @@ import { SearchGames } from "./SearchGames"
 import addIcon from '../../images/AddIcon.png';
 import { useHistory } from "react-router";
 import { GameRepo } from "../../repositories/GameRepo";
+import { Card, Spinner } from "reactstrap";
 
 export const GameQueueView = () => {
     const [userEntries, setUserEntries] = useState({
@@ -15,12 +16,15 @@ export const GameQueueView = () => {
     const history = useHistory()
     const [games, setGames] = useState([])
     const [midFilterGames, setFilteredGames] = useState([])
-
+    const [userAttemptedSearch, setAttemptBoolean] = useState(false)
+    const [isLoading, setLoading] = useState(true)
 
     useEffect(
         () => {
             GameRepo.getAllQueue()
                 .then(setGames)
+                .then(() => setLoading(false))
+                
         }, []
     )
 
@@ -40,10 +44,15 @@ export const GameQueueView = () => {
                 GameRepo.getAllQueueBySearchTerm(userEntries.name)
                     .then(setFilteredGames)
             }
+
+            if (userEntries.name !== "" || userEntries.multiplayer !== null || userEntries.platform !== "0" || userEntries.tag !== "0") {
+                setAttemptBoolean(true)
+            } else {
+                setAttemptBoolean(false)
+            }
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [userEntries]
     )
-
 
     const determineFilters = () => {
         const multiplayerExist = userEntries.multiplayer !== null
@@ -110,25 +119,33 @@ export const GameQueueView = () => {
 
     }
 
+
+
     return (
+        <>
+            <div className="row">
+                {
+                    isLoading
+                        ? < Card className="col-7 d-flex align-items-center justify-content-center border-0"/>
+                        :<GameList games={games} setGames={setGames} userAttemptedSearch={userAttemptedSearch}/>
+                }
+                <div className="col-5 px-3 pe-5">
+                    {/* clickable "add" image to bring user to form */}
+                    <div className="row">
+                        <div className="col-8"></div>
+                        <div className="col-4 pt-5">
+                            <img src={addIcon} alt="Add" style={{ maxWidth: 40, alignSelf: "flex-end" }}
+                                onClick={
+                                    () => history.push("/games/create")
+                                } />
+                        </div>
 
-        <div className="row">
-            <GameList games={games} setGames={setGames} />
-            <div className="col-5 px-3 pe-5">
-                {/* clickable "add" image to bring user to form */}
-                <div className="row">
-                    <div className="col-8"></div>
-                    <div className="col-4 pt-5">
-                        <img src={addIcon} alt="Add" style={{ maxWidth: 40, alignSelf: "flex-end" }}
-                            onClick={
-                                () => history.push("/games/create")
-                            } />
                     </div>
-
+                    <SearchGames setUserEntries={setUserEntries} userEntries={userEntries} />
                 </div>
-                <SearchGames setUserEntries={setUserEntries} userEntries={userEntries} />
             </div>
-        </div>
+
+        </>
 
     )
 }
