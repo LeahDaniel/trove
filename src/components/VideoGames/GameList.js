@@ -2,10 +2,10 @@ import React from "react"
 import { Card } from "reactstrap"
 import { Game } from "./Game"
 
-export const GameList = ({ setGames, games }) => {
+export const GameList = ({ setGames, games}) => {
     return (
         <>
-            {
+            {   
                 games.length > 0
                     ? <div className="mx-4">
                         {
