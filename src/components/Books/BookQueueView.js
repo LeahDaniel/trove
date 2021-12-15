@@ -78,14 +78,20 @@ export const BookQueueView = () => {
     }
 
     return (
-        <div className="d-flex flex-row flex-wrap">
+        <div className="row">
             <BookList books={books} setBooks={setBooks} />
-            <div>
+            <div className="col-5 px-3 pe-5">
                 {/* clickable "add" image to bring user to form */}
-                <img className="m-4" src={addIcon} alt="Add" style={{ maxWidth: 40, alignSelf: "flex-end" }}
-                    onClick={
-                        () => history.push("/books/create")
-                    } />
+                <div className="row">
+                    <div className="col-8"></div>
+                    <div className="col-4 pt-5">
+                        <img src={addIcon} alt="Add" style={{ maxWidth: 40, alignSelf: "flex-end" }}
+                            onClick={
+                                () => history.push("/books/create")
+                            } />
+                    </div>
+
+                </div>
                 <SearchBooks setUserEntries={setUserEntries} userEntries={userEntries} />
             </div>
         </div>
