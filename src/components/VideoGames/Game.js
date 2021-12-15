@@ -58,8 +58,7 @@ export const Game = ({ game, setGames }) => {
             >
                 {
                     setGames
-                        ? ""
-                        : <div style={{ alignSelf: "flex-end" }} className="mt-2 mb-0">
+                        ? <div style={{ alignSelf: "flex-end" }} className="mt-2 mb-0">
                             {/* onClick of delete button (trash icon) call deleteGame function with argument of the id of the present game. */}
                             <img className="me-3" src={deleteIcon} alt="Delete" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
                                 () => { return deleteGame(presentGame.id) }
@@ -74,11 +73,12 @@ export const Game = ({ game, setGames }) => {
                                 }
                             } />
                         </div>
+                        : ""
                 }
 
 
-                <CardBody style={{ paddingTop: 0, marginTop: 0 }}>
-                    <CardTitle tag="h4" className="mb-3 mt-0">
+                <CardBody className="mt-0 pt-0">
+                    <CardTitle tag="h4" className={setGames? "mb-3 mt-0" :  "my-3 pt-3"}>
                         {/* display game names */}
                         {presentGame.name}
                     </CardTitle>
@@ -114,7 +114,7 @@ export const Game = ({ game, setGames }) => {
                         If the present game has only one platform, call the addToCurrent function on this button.
                     */}
                     {
-                        presentGame.current === false && !setGames
+                        presentGame.current === false && setGames
                             ? <Button onClick={() => {
                                 presentGame.gamePlatforms?.length > 1
                                     ? setOpenBoolean(true)

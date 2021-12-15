@@ -37,6 +37,7 @@ export const HomePage = () => {
             setGames(gamesArray)
             setShows(showsArray)
             setBooks(booksArray)
+            
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [midFilterGames, midFilterBooks, midFilterShows]
     )
@@ -74,8 +75,14 @@ export const HomePage = () => {
             for (const game of midFilterGames){
                 let booleanArray = []
                 userEntries.tags.forEach(tagId => {
-                    booleanArray.push(game.taggedGames?.find(taggedGame => taggedGame.tagId === tagId))
+                    const foundGame = game.taggedGames?.find(taggedGame => taggedGame.tagId === tagId)
+                    if(foundGame){
+                        booleanArray.push(true)
+                    } else{
+                        booleanArray.push(false)
+                    }
                 })
+                
                 if (booleanArray.every(boolean => boolean === true)) {
                     newGameArray.push(game)
                 }
@@ -83,7 +90,12 @@ export const HomePage = () => {
             for (const show of midFilterShows){
                 let booleanArray = []
                 userEntries.tags.forEach(tagId => {
-                    booleanArray.push(show.taggedShows?.find(taggedShow => taggedShow.tagId === tagId))
+                    const foundShow = show.taggedShows?.find(taggedShow => taggedShow.tagId === tagId)
+                    if(foundShow){
+                        booleanArray.push(true)
+                    } else{
+                        booleanArray.push(false)
+                    }
                 })
                 if (booleanArray.every(boolean => boolean === true)) {
                     newShowArray.push(show)
@@ -92,17 +104,22 @@ export const HomePage = () => {
             for (const book of midFilterBooks){
                 let booleanArray = []
                 userEntries.tags.forEach(tagId => {
-                    booleanArray.push(book.taggedBooks?.find(taggedBook => taggedBook.tagId === tagId))
+                    const foundBook = book.taggedBooks?.find(taggedBook => taggedBook.tagId === tagId)
+                    if(foundBook){
+                        booleanArray.push(true)
+                    } else{
+                        booleanArray.push(false)
+                    }
                 })
                 if (booleanArray.every(boolean => boolean === true)) {
                     newBookArray.push(book)
                 }
             }
-
+            
             return [newGameArray, newShowArray, newBookArray]
 
         } else if (noTags) {
-
+            
             return [midFilterGames, midFilterShows, midFilterBooks]
 
         }
@@ -119,7 +136,7 @@ export const HomePage = () => {
                     <li>Option to add a new entry</li>
                 </ul>
             </div>
-            <div>
+            <div className="pt-5 mx-4">
                 <FilterForm userEntries={userEntries} setUserEntries={setUserEntries} />
                 <SearchResults games={games} shows={shows} books={books} />
             </div>

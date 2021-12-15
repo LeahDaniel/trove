@@ -47,24 +47,29 @@ export const Show = ({ show, setShows }) => {
                 body
                 color="light"
             >
-                <div style={{ alignSelf: "flex-end" }} className="mt-2 mb-0">
-                    {/* onClick of delete button (trash icon) call deleteShow function with argument of the id of the present show. */}
-                    <img className="me-3" src={deleteIcon} alt="Delete" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
-                        () => { return deleteShow(presentShow.id) }
-                    } />
-                    {/* onClick of the edit button, push user to form route, and send along state of the presentShow to the location */}
-                    <img className="me-1" src={editIcon} alt="Edit" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
-                        () => {
-                            history.push({
-                                pathname: "/shows/create",
-                                state: presentShow
-                            })
-                        }
-                    } />
-                </div>
+                {
+                    setShows
+                        ?
+                        <div style={{ alignSelf: "flex-end" }} className="mt-2 mb-0">
+                            {/* onClick of delete button (trash icon) call deleteShow function with argument of the id of the present show. */}
+                            <img className="me-3" src={deleteIcon} alt="Delete" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
+                                () => { return deleteShow(presentShow.id) }
+                            } />
+                            {/* onClick of the edit button, push user to form route, and send along state of the presentShow to the location */}
+                            <img className="me-1" src={editIcon} alt="Edit" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
+                                () => {
+                                    history.push({
+                                        pathname: "/shows/create",
+                                        state: presentShow
+                                    })
+                                }
+                            } />
+                        </div>
+                        : ""
+                }
 
-                <CardBody style={{ paddingTop: 0, marginTop: 0 }}>
-                    <CardTitle tag="h4" className="mb-3 mt-0">
+                <CardBody className="mt-0 pt-0">
+                    <CardTitle tag="h4" className={setShows? "mb-3 mt-0" :  "my-3 pt-3"}>
                         {/* display show names */}
                         {presentShow.name}
                     </CardTitle>
@@ -91,7 +96,7 @@ export const Show = ({ show, setShows }) => {
                         If the present show has only one platform, call the addToCurrent function on this button.
                     */}
                     {
-                        presentShow.current === false
+                        presentShow.current === false && setShows
                             ? <Button onClick={addToCurrent}> Add to Current </Button>
                             : ""
                     }
