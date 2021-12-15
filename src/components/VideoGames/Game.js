@@ -56,21 +56,26 @@ export const Game = ({ game, setGames }) => {
                 body
                 color="light"
             >
-                <div style={{ alignSelf: "flex-end" }} className="mt-2 mb-0">
-                    {/* onClick of delete button (trash icon) call deleteGame function with argument of the id of the present game. */}
-                    <img className="me-3" src={deleteIcon} alt="Delete" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
-                        () => { return deleteGame(presentGame.id) }
-                    } />
-                    {/* onClick of the edit button, push user to form route, and send along state of the presentGame to the location */}
-                    <img className="me-1" src={editIcon} alt="Edit" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
-                        () => {
-                            history.push({
-                                pathname: "/games/create",
-                                state: presentGame
-                            })
-                        }
-                    } />
-                </div>
+                {
+                    setGames
+                        ? ""
+                        : <div style={{ alignSelf: "flex-end" }} className="mt-2 mb-0">
+                            {/* onClick of delete button (trash icon) call deleteGame function with argument of the id of the present game. */}
+                            <img className="me-3" src={deleteIcon} alt="Delete" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
+                                () => { return deleteGame(presentGame.id) }
+                            } />
+                            {/* onClick of the edit button, push user to form route, and send along state of the presentGame to the location */}
+                            <img className="me-1" src={editIcon} alt="Edit" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
+                                () => {
+                                    history.push({
+                                        pathname: "/games/create",
+                                        state: presentGame
+                                    })
+                                }
+                            } />
+                        </div>
+                }
+
 
                 <CardBody style={{ paddingTop: 0, marginTop: 0 }}>
                     <CardTitle tag="h4" className="mb-3 mt-0">
@@ -109,7 +114,7 @@ export const Game = ({ game, setGames }) => {
                         If the present game has only one platform, call the addToCurrent function on this button.
                     */}
                     {
-                        presentGame.current === false
+                        presentGame.current === false && !setGames
                             ? <Button onClick={() => {
                                 presentGame.gamePlatforms?.length > 1
                                     ? setOpenBoolean(true)

@@ -1,11 +1,21 @@
 import React from "react"
+import { useEffect } from "react/cjs/react.development"
 import { Card } from "reactstrap"
 import { Game } from "./Game"
 
-export const GameList = ({ setGames, games }) => {
+export const GameList = ({ setGames, games, matchingGames }) => {
+    useEffect(
+        () => {
+            if(matchingGames){
+                setGames(matchingGames)
+            }
+        },
+        []
+    )
+    
     return (
         <>
-            {
+            {   
                 games.length > 0
                     ? <div className="mx-4">
                         {
