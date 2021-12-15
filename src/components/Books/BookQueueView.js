@@ -61,7 +61,7 @@ export const BookQueueView = () => {
                 return false
             }
         })
-        const booksByAuthorOnly = midFilterBooks.filter(book => book.streamingAuthorId === authorId)
+        const booksByAuthorOnly = midFilterBooks.filter(book => book.authorId === authorId)
         const booksByTagAndAuthor = booksByTagOnly.filter(book => booksByAuthorOnly.includes(book))
 
         if (noAuthor && noTag) {

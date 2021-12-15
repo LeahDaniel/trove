@@ -12,9 +12,27 @@ export const SearchBooks = ({ userEntries, setUserEntries }) => {
     useEffect(
         () => {
             TagRepo.getTagsForUser(userId)
-                .then(setTags)
+                .then(result => {
+                    const sorted = result.sort((a, b) => {
+                        const tagA = a.tag.toLowerCase()
+                        const tagB = b.tag.toLowerCase()
+                        if (tagA < tagB) { return -1 }
+                        if (tagA > tagB) { return 1 }
+                        return 0 //default return value (no sorting)
+                    })
+                    setTags(sorted)
+                })
                 .then(() => BookRepo.getAuthorsForUser(userId))
-                .then(setAuthors)
+                .then(result => {
+                    const sorted = result.sort((a, b) => {
+                        const nameA = a.name.toLowerCase()
+                        const nameB = b.name.toLowerCase()
+                        if (nameA < nameB) { return -1 }
+                        if (nameA > nameB) { return 1 }
+                        return 0 //default return value (no sorting)
+                    })
+                    setAuthors(sorted)
+                })
         }, [userId]
     )
 
@@ -40,11 +58,11 @@ export const SearchBooks = ({ userEntries, setUserEntries }) => {
             </FormGroup>
             {' '}
             <FormGroup>
-                <Label for="platformSelect">
+                <Label for="authorSelect">
                     Author
                 </Label>
                 <Input
-                    id="platformSelect"
+                    id="authorSelect"
                     name="select"
                     type="select"
                     onChange={(event) => {
@@ -56,7 +74,7 @@ export const SearchBooks = ({ userEntries, setUserEntries }) => {
                     <option value="0"> Select one... </option>
                     {
                         authors.map(author => {
-                            return <option key={author.id} value={author.id}>{author.author}</option>
+                            return <option key={author.id} value={author.id}>{author.name}</option>
                         })
                     }
 

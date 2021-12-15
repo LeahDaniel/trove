@@ -13,14 +13,32 @@ export const SearchGames = ({ userEntries, setUserEntries }) => {
     useEffect(
         () => {
             GameRepo.getAllPlatforms()
-                .then(setPlatforms)
+                .then(result => {
+                    const sorted = result.sort((a, b) => {
+                        const nameA = a.name.toLowerCase()
+                        const nameB = b.name.toLowerCase()
+                        if (nameA < nameB) { return -1 }
+                        if (nameA > nameB) { return 1 }
+                        return 0 //default return value (no sorting)
+                    })
+                    setPlatforms(sorted)
+                })
                 .then(() => TagRepo.getTagsForUser(userId))
-                .then(setTags)
+                .then(result => {
+                    const sorted = result.sort((a, b) => {
+                        const tagA = a.tag.toLowerCase()
+                        const tagB = b.tag.toLowerCase()
+                        if (tagA < tagB) { return -1 }
+                        if (tagA > tagB) { return 1 }
+                        return 0 //default return value (no sorting)
+                    })
+                    setTags(sorted)
+                })
         }, [userId]
     )
 
     return (
-        <Form className="pb-5 mt-5 px-2 bg-light border"inline>
+        <Form className="pb-5 mt-5 px-2 bg-light border" inline>
 
             <h5 className="text-center py-3">Filters</h5>
 
