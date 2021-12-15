@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useHistory, useLocation } from "react-router"
-import { Button, Form, FormGroup, FormText, Input, Label } from "reactstrap"
+import { Alert, Button, Form, FormGroup, FormText, Input, Label } from "reactstrap"
 import { BookRepo } from "../../repositories/BookRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 
@@ -27,6 +27,7 @@ export const BookForm = () => {
     })
     //initialize boolean to indicate whether the user is on their first form attempt (prevent form warnings on first attempt)
     const [firstAttempt, setFirstAttempt] = useState(true)
+    const [alert, setAlert] = useState(false)
 
     useEffect(
         () => {
@@ -37,7 +38,7 @@ export const BookForm = () => {
                 .then(setAuthors)
                 //setInvalid on page load to account for pre-populated fields on edit.
                 .then(checkValidity)
-                // eslint-disable-next-line react-hooks/exhaustive-deps
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, []
     )
     useEffect(
@@ -347,6 +348,26 @@ export const BookForm = () => {
                     Have you started this book (current) or are you thinking of watching it in the future (queued)?
                 </FormText>
             </FormGroup>
+            {
+                alert && presentBook
+                    ?
+                    <div>
+                        <Alert
+                            color="danger"
+                        >
+                            Please complete all fields. If you do not have any changes to make, please click "Cancel"
+                        </Alert>
+                    </div>
+                    : alert && !presentBook
+                        ? <div>
+                            <Alert
+                                color="danger"
+                            >
+                                Please complete all fields before submitting.
+                            </Alert>
+                        </div>
+                        : ""
+            }
             <FormGroup>
                 <Button onClick={(evt) => {
                     evt.preventDefault()
@@ -356,6 +377,8 @@ export const BookForm = () => {
                     //check if every key on the "invalid" object is false
                     if (Object.keys(invalid).every(key => invalid[key] === false)) {
                         constructAuthor(evt)
+                    } else {
+                        setAlert(true)
                     }
                 }}>
                     Submit

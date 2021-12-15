@@ -4,6 +4,7 @@ import { SearchShows } from "./SearchShows"
 import addIcon from '../../images/AddIcon.png';
 import { useHistory } from "react-router";
 import { ShowRepo } from "../../repositories/ShowRepo";
+import { Card, Spinner } from "reactstrap";
 
 export const ShowQueueView = () => {
     const [userEntries, setUserEntries] = useState({
@@ -14,12 +15,17 @@ export const ShowQueueView = () => {
     const history = useHistory()
     const [shows, setShows] = useState([])
     const [midFilterShows, setFilteredShows] = useState([])
+    const [userAttemptedSearch, setAttemptBoolean] = useState(false)
+    const [isLoading, setLoading] = useState(true)
 
 
     useEffect(
         () => {
             ShowRepo.getAllQueue()
                 .then(setShows)
+                .then(() => {
+                    setLoading(false);
+                })
         }, []
     )
 
@@ -39,8 +45,14 @@ export const ShowQueueView = () => {
                 ShowRepo.getAllQueueBySearchTerm(userEntries.name)
                     .then(setFilteredShows)
             }
+
+            if (userEntries.name !== "" || userEntries.service !== "0" || userEntries.tag !== "0") {
+                setAttemptBoolean(true)
+            } else {
+                setAttemptBoolean(false)
+            }
             // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [userEntries.name, userEntries]
+        }, [userEntries]
     )
 
 
@@ -79,7 +91,11 @@ export const ShowQueueView = () => {
 
     return (
         <div className="row">
-            <ShowList shows={shows} setShows={setShows} />
+            {
+                isLoading
+                    ? < Card className="col-7 d-flex align-items-center justify-content-center border-0"/>
+                    :<ShowList shows={shows} setShows={setShows} userAttemptedSearch={userAttemptedSearch} />
+            }
             <div className="col-5 px-3 pe-5">
                 {/* clickable "add" image to bring user to form */}
                 <div className="row">

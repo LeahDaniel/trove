@@ -16,6 +16,7 @@ export const HomePage = () => {
     const [midFilterGames, setFilteredGames] = useState([])
     const [midFilterShows, setFilteredShows] = useState([])
     const [midFilterBooks, setFilteredBooks] = useState([])
+    const [userAttemptedSearch, setAttemptBoolean] = useState(false)
 
 
     useEffect(
@@ -56,6 +57,12 @@ export const HomePage = () => {
                     .then(setFilteredShows)
                 BookRepo.getAllBySearchTerm(userEntries.title)
                     .then(setFilteredBooks)
+            }
+
+            if(userEntries.title!== "" || userEntries.tags.size > 0){
+                setAttemptBoolean(true)
+            } else {
+                setAttemptBoolean(false)
             }
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [userEntries]
@@ -134,9 +141,9 @@ export const HomePage = () => {
                     <li>Option to add a new entry</li>
                 </ul>
             </div>
-            <div className="pt-5 mx-4">
+            <div className="p-5 m-5 bg-light border">
                 <FilterForm userEntries={userEntries} setUserEntries={setUserEntries} />
-                <SearchResults games={games} shows={shows} books={books} />
+                <SearchResults games={games} shows={shows} books={books} userAttemptedSearch={userAttemptedSearch}/>
             </div>
         </>
     )

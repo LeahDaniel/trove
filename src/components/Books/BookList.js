@@ -2,7 +2,7 @@ import React from "react"
 import { Card, CardBody, CardTitle } from "reactstrap"
 import { Book } from "./Book"
 
-export const BookList = ({ setBooks, books }) => {
+export const BookList = ({ setBooks, books, userAttemptedSearch }) => {
     return (
         <>
             {
@@ -16,9 +16,13 @@ export const BookList = ({ setBooks, books }) => {
                         body
                         className="col-7 px-3 ps-5 border-0"
                     >
-                        <CardBody className="d-flex align-items-center">
-                            <CardTitle tag="h2" className="d-flex align-items-center">
-                                No Results Found
+                        <CardBody className="d-flex align-items-center justify-content-center">
+                            <CardTitle tag="h5" className="text-center text-muted">
+                                {
+                                    userAttemptedSearch
+                                        ? "No Results Found"
+                                        : "Your list is empty. Add an item with the plus (+) button."
+                                }
                             </CardTitle>
                         </CardBody>
                     </Card>

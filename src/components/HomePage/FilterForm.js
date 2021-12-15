@@ -35,7 +35,7 @@ export const FilterForm = ({ userEntries, setUserEntries }) => {
 
     return (
         <Form inline>
-            <FormGroup floating>
+            <FormGroup floating >
                 <Input
                     id="titleSearch"
                     type="search"
@@ -45,13 +45,16 @@ export const FilterForm = ({ userEntries, setUserEntries }) => {
                         userEntriesCopy.title = event.target.value
                         setUserEntries(userEntriesCopy)
                     }}
+                    
                 />
                 <Label for="titleSearch">
                     Search by Title
                 </Label>
             </FormGroup>
+
             {
-                tags.map(tag => {
+                tags.length > 0
+                ? tags.map(tag => {
                     return <FormGroup key={`tag--${tag.id}`} check inline>
                         <Input
                             className="tagCheckbox"
@@ -65,6 +68,7 @@ export const FilterForm = ({ userEntries, setUserEntries }) => {
                         </Label>
                     </FormGroup>
                 })
+                : ""
             }
         </Form>
     )

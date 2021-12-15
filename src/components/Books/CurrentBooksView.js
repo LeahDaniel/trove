@@ -4,6 +4,7 @@ import { SearchBooks } from "./SearchBooks"
 import addIcon from '../../images/AddIcon.png';
 import { useHistory } from "react-router";
 import { BookRepo } from "../../repositories/BookRepo";
+import { Card, Spinner } from "reactstrap";
 
 export const CurrentBooksView = () => {
     const [userEntries, setUserEntries] = useState({
@@ -14,12 +15,17 @@ export const CurrentBooksView = () => {
     const history = useHistory()
     const [books, setBooks] = useState([])
     const [midFilterBooks, setFilteredBooks] = useState([])
+    const [userAttemptedSearch, setAttemptBoolean] = useState(false)
+    const [isLoading, setLoading] = useState(true)
 
 
     useEffect(
         () => {
             BookRepo.getAllCurrent()
                 .then(setBooks)
+                .then(() => {
+                    setLoading(false);
+                })
         }, []
     )
 
@@ -38,6 +44,12 @@ export const CurrentBooksView = () => {
             } else {
                 BookRepo.getAllCurrentBySearchTerm(userEntries.name)
                     .then(setFilteredBooks)
+            }
+
+            if (userEntries.name !== "" || userEntries.author !== "0" || userEntries.tag !== "0") {
+                setAttemptBoolean(true)
+            } else {
+                setAttemptBoolean(false)
             }
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [userEntries]
@@ -79,7 +91,11 @@ export const CurrentBooksView = () => {
 
     return (
         <div className="row">
-            <BookList books={books} setBooks={setBooks} />
+            {
+                isLoading
+                    ? < Card className="col-7 d-flex align-items-center justify-content-center border-0"/>
+                    : <BookList books={books} setBooks={setBooks} userAttemptedSearch={userAttemptedSearch} />
+            }
             <div className="col-5 px-3 pe-5">
                 {/* clickable "add" image to bring user to form */}
                 <div className="row">

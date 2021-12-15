@@ -4,6 +4,7 @@ import { SearchGames } from "./SearchGames"
 import addIcon from '../../images/AddIcon.png';
 import { useHistory } from "react-router";
 import { GameRepo } from "../../repositories/GameRepo";
+import { Card, Spinner } from "reactstrap";
 
 export const CurrentGamesView = () => {
     const [userEntries, setUserEntries] = useState({
@@ -15,12 +16,17 @@ export const CurrentGamesView = () => {
     const history = useHistory()
     const [games, setGames] = useState([])
     const [midFilterGames, setFilteredGames] = useState([])
+    const [userAttemptedSearch, setAttemptBoolean] = useState(false)
+    const [isLoading, setLoading] = useState(true)
 
 
     useEffect(
         () => {
             GameRepo.getAllCurrent()
                 .then(setGames)
+                .then(() => {
+                    setLoading(false);
+                })
         }, []
     )
 
@@ -39,6 +45,12 @@ export const CurrentGamesView = () => {
             } else {
                 GameRepo.getAllCurrentBySearchTerm(userEntries.name)
                     .then(setFilteredGames)
+            }
+
+            if (userEntries.name !== "" || userEntries.multiplayer !== null || userEntries.platform !== "0" || userEntries.tag !== "0") {
+                setAttemptBoolean(true)
+            } else {
+                setAttemptBoolean(false)
             }
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [userEntries]
@@ -112,7 +124,11 @@ export const CurrentGamesView = () => {
 
     return (
         <div className="row">
-            <GameList games={games} setGames={setGames} />
+            {
+                isLoading
+                    ? < Card className="col-7 d-flex align-items-center justify-content-center border-0"/>
+                    :<GameList games={games} setGames={setGames} userAttemptedSearch={userAttemptedSearch} />
+            }
             <div className="col-5 px-3 pe-5">
                 {/* clickable "add" image to bring user to form */}
                 <div className="row">
