@@ -12,9 +12,27 @@ export const SearchShows = ({ userEntries, setUserEntries }) => {
     useEffect(
         () => {
             TagRepo.getTagsForUser(userId)
-                .then(setTags)
+                .then(result => {
+                    const sorted = result.sort((a, b) => {
+                        const tagA = a.tag.toLowerCase()
+                        const tagB = b.tag.toLowerCase()
+                        if (tagA < tagB) { return -1 }
+                        if (tagA > tagB) { return 1 }
+                        return 0 //default return value (no sorting)
+                    })
+                    setTags(sorted)
+                })
                 .then(ShowRepo.getAllStreamingServices)
-                .then(setStreamingServices)
+                .then(result => {
+                    const sorted = result.sort((a, b) => {
+                        const serviceA = a.service.toLowerCase()
+                        const serviceB = b.service.toLowerCase()
+                        if (serviceA < serviceB) { return -1 }
+                        if (serviceA > serviceB) { return 1 }
+                        return 0 //default return value (no sorting)
+                    })
+                    setStreamingServices(sorted)
+                })
         }, [userId]
     )
 
@@ -59,7 +77,7 @@ export const SearchShows = ({ userEntries, setUserEntries }) => {
                             return <option key={service.id} value={service.id}>{service.service}</option>
                         })
                     }
-                    
+
                 </Input>
             </FormGroup>
             <FormGroup>
