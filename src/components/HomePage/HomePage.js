@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from "react-router";
 import { GameRepo } from "../../repositories/GameRepo"
 import { ShowRepo } from "../../repositories/ShowRepo"
 import { BookRepo } from "../../repositories/BookRepo"
@@ -7,7 +6,6 @@ import { FilterForm } from './FilterForm';
 import { SearchResults } from './SearchResults';
 
 export const HomePage = () => {
-    const history = useHistory()
     const [userEntries, setUserEntries] = useState({
         title: "",
         tags: new Set()

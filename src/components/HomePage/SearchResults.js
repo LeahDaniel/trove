@@ -29,12 +29,18 @@ export const SearchResults = ({ games, shows, books }) => {
             {/* <h2 className="mt-5">Games</h2> */}
             <div>
                 {
-                    games.length > 0
+                    currentGames.length > 0
                         ?
                         <>
                             <h3 className="mt-5">Current Games</h3>
                             <div>{currentGames.map(game => <Game key={game.id} game={game} />)}</div>
-
+                        </>
+                        : ""
+                }
+                {
+                    queuedGames.length > 0
+                        ?
+                        <>
                             <h3 className="mt-5">Queued Games</h3>
                             <div>{queuedGames.map(game => <Game key={game.id} game={game} />)}</div>
                         </>
@@ -43,11 +49,18 @@ export const SearchResults = ({ games, shows, books }) => {
             </div>
             <div>
                 {
-                    shows.length > 0
+                    currentShows.length > 0
                         ?
                         <>
                             <h3 className="mt-5">Current Shows</h3>
                             <div>{currentShows.map(show => <Show key={show.id} show={show} />)}</div>
+                        </>
+                        : ""
+                }
+                {
+                    queuedShows.length > 0
+                        ?
+                        <>
                             <h3 className="mt-5">Queued Shows</h3>
                             <div>{queuedShows.map(show => <Show key={show.id} show={show} />)}</div>
                         </>
@@ -56,11 +69,18 @@ export const SearchResults = ({ games, shows, books }) => {
             </div>
             <div>
                 {
-                    books.length > 0
+                    currentBooks.length > 0
                         ?
                         <>
                             <h3 className="mt-5">Current Books</h3>
                             <div>{currentBooks.map(book => <Book key={book.id} book={book} />)}</div>
+                        </>
+                        : ""
+                }
+                {
+                    queuedBooks.length > 0
+                        ?
+                        <>
                             <h3 className="mt-5">Queued Books</h3>
                             <div>{queuedBooks.map(book => <Book key={book.id} book={book} />)}</div>
                         </>
