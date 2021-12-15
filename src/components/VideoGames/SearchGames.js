@@ -20,28 +20,26 @@ export const SearchGames = ({ userEntries, setUserEntries }) => {
     )
 
     return (
-        <Form inline>
-            <h6>Search by:</h6>
+        <Form className="pb-5 mt-5 px-2 bg-light border"inline>
 
-            <FormGroup floating>
+            <h5 className="text-center py-3">Filters</h5>
+
+            <FormGroup>
+                <Label for="nameSearch">
+                    Search by Title
+                </Label>
                 <Input
                     id="nameSearch"
                     type="search"
-                    placeholder="Title"
+                    placeholder="Title contains..."
                     onChange={(event) => {
                         const userEntriesCopy = { ...userEntries }
                         userEntriesCopy.name = event.target.value
                         setUserEntries(userEntriesCopy)
                     }}
                 />
-                <Label for="nameSearch">
-                    Title
-                </Label>
             </FormGroup>
             {' '}
-
-            <h6>Filter by:</h6>
-
             <FormGroup>
                 <Label for="platformSelect">
                     Platform
@@ -56,7 +54,7 @@ export const SearchGames = ({ userEntries, setUserEntries }) => {
                         setUserEntries(userEntriesCopy)
                     }}
                 >
-                    <option value="0"> Choose to filter... </option>
+                    <option value="0"> Select one... </option>
                     {platforms.map(platform => {
                         return <option value={platform.id} key={platform.id}>{platform.name}</option>
                     })}
@@ -83,7 +81,7 @@ export const SearchGames = ({ userEntries, setUserEntries }) => {
                         setUserEntries(copy)
                     }}
                 >
-                    <option value="0"> Choose to filter... </option>
+                    <option value="0"> Select one... </option>
                     <option value="1"> Yes </option>
                     <option value="2"> No </option>
 
@@ -103,7 +101,7 @@ export const SearchGames = ({ userEntries, setUserEntries }) => {
                         setUserEntries(userEntriesCopy)
                     }}
                 >
-                    <option value="0"> Choose to filter... </option>
+                    <option value="0"> Select one... </option>
                     {tags.map(tag => {
                         return <option value={tag.id} key={tag.id}>{tag.tag}</option>
                     })}

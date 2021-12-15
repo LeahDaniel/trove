@@ -42,7 +42,7 @@ export const Show = ({ show, setShows }) => {
     }
 
     return (
-        <div className="mt-5">
+        <div className="mt-4">
             <Card
                 body
                 color="light"
