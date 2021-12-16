@@ -1,21 +1,21 @@
 import { Form, FormGroup, Input, Label } from "reactstrap"
 
-export const TagSearch = ({ setUserEntry }) => {
+export const TagSearch = ({ setUserEntry, userEntry }) => {
     return (
         <Form inline>
-            <FormGroup floating >
+            <FormGroup >
                 <Input
                     id="titleSearch"
                     type="search"
-                    placeholder="Search by Title"
+                    placeholder="Search..."
+                    bsSize="sm"
+                    className="fs-6 "
+                    value={userEntry}
                     onChange={(event) => {
                         setUserEntry(event.target.value)
                     }}
                     
                 />
-                <Label for="titleSearch">
-                    Search by Title
-                </Label>
             </FormGroup>
         </Form>
     )

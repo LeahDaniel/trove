@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react"
-import { Card, CardBody, CardTitle, FormGroup, Input } from "reactstrap"
+import { Card, CardBody, CardTitle, FormGroup, Input, Label } from "reactstrap"
 import { TagRepo } from "../../repositories/TagRepo"
 import deleteIcon from '../../images/DeleteIcon.png';
 import editIcon from '../../images/EditIcon.png';
 
 
-export const Tag = ({ tag, setTags, userEntry }) => {
+export const Tag = ({ tag, setTags, setUserEntry }) => {
     const [presentTag, setTag] = useState([])
     const [userEdit, setUserEdit] = useState("")
     const [openEditBox, setOpenEditBoolean] = useState(false)
@@ -17,24 +17,38 @@ export const Tag = ({ tag, setTags, userEntry }) => {
             .then(setTag)
     }, [tag.id])
 
-    //PUT operation to modify a tag from queued to current (false to true). Called in button click.
-    const addToCurrent = () => {
-
-    }
 
     return (
         <>
 
             {/* display tag names */}
-            <h5 className="col-4 pe-3 py-2 border-top">{presentTag.tag}</h5>
+            <div className="col-2 my-2">
+                {/* onClick of the edit button, push user to form route, and send along state of the presentTag to the location */}
+                <img className="ms-1" src={editIcon} alt="Edit" style={{ maxWidth: 20, maxHeight: 20 }} onClick={
+                    () => {
+                        setOpenEditBoolean(!openEditBox)
+                    }
+                } />
+                {/* onClick of delete button (trash icon) call deleteTag function with argument of the id of the present tag. */}
+                <img className="ms-1" src={deleteIcon} alt="Delete" style={{ maxWidth: 20, maxHeight: 20 }} onClick={
+                    () => {
+                        TagRepo.deleteTag(presentTag.id)
+                            .then(() => TagRepo.getTagsForUser(userId))
+                            .then(setTags)
+                    }
+                } />
+            </div>
+            <h5 className="col-4 pe-3 my-2">{presentTag.tag}</h5>
 
             {
                 openEditBox
-                    ? <FormGroup className="col-6 border-top py-2">
+                    ? <FormGroup className="col-6 my-2 p-0">
                         <Input
                             id="tagEdit"
                             type="text"
-                            placeholder="Press Enter to submit..."
+                            bsSize="sm"
+                            className="fs-6"
+                            placeholder="Press enter to submit..."
                             onKeyUp={(event) => {
                                 if (event.key === "Enter") {
                                     TagRepo.editTag({
@@ -45,31 +59,16 @@ export const Tag = ({ tag, setTags, userEntry }) => {
                                         .then(() => TagRepo.get(tag.id))
                                         .then(setTag)
                                         .then(() => setOpenEditBoolean(!openEditBox))
+                                        .then(setUserEntry(""))
                                 } else {
                                     setUserEdit(event.target.value)
                                 }
                             }}
                         />
                     </FormGroup>
-                    : <p className="col-6 border-top py-2"></p>
+                    : <p className="col-6 my-2"></p>
             }
 
-            <div className="col-2 py-2 border-top">
-                {/* onClick of delete button (trash icon) call deleteTag function with argument of the id of the present tag. */}
-                <img className="ms-1" src={deleteIcon} alt="Delete" style={{ maxWidth: 20, maxHeight: 20 }} onClick={
-                    () => {
-                        TagRepo.deleteTag(presentTag.id)
-                            .then(() => TagRepo.getTagsForUser(userId))
-                            .then(setTags)
-                    }
-                } />
-                {/* onClick of the edit button, push user to form route, and send along state of the presentTag to the location */}
-                <img className="ms-1"  src={editIcon} alt="Edit" style={{ maxWidth: 20, maxHeight: 20 }} onClick={
-                    () => {
-                        setOpenEditBoolean(!openEditBox)
-                    }
-                } />
-            </div>
         </>
 
     )

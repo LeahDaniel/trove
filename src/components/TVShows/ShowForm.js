@@ -3,6 +3,7 @@ import { useHistory, useLocation } from "react-router"
 import { Button, Form, FormGroup, FormText, Input, Label } from "reactstrap"
 import { ShowRepo } from "../../repositories/ShowRepo"
 import { TagRepo } from "../../repositories/TagRepo"
+import CreatableSelect from 'react-select/creatable'
 
 export const ShowForm = () => {
     const history = useHistory()
@@ -22,7 +23,6 @@ export const ShowForm = () => {
         name: true,
         current: true,
         streaming: true,
-        tags: true
     })
     //initialize boolean to indicate whether the user is on their first form attempt (prevent form warnings on first attempt)
     const [firstAttempt, setFirstAttempt] = useState(true)
@@ -31,13 +31,13 @@ export const ShowForm = () => {
     useEffect(
         () => {
             //on page load, GET streaming services and tags
-            TagRepo.getAll()
+            TagRepo.getTagsForUser(userId)
                 .then(setTags)
                 .then(() => ShowRepo.getAllStreamingServices())
                 .then(setStreamingServices)
                 //setInvalid on page load to account for pre-populated fields on edit.
                 .then(checkValidity)
-                // eslint-disable-next-line react-hooks/exhaustive-deps
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, []
     )
     useEffect(
@@ -72,7 +72,7 @@ export const ShowForm = () => {
         //create a tag array from the presentShow's associated taggedShows, and set as userChoices.tagArray value
         let tagArray = []
         for (const taggedShow of presentShow.taggedShows) {
-            tagArray.push(taggedShow.tag.tag)
+            tagArray.push({ label: taggedShow.tag.tag, value: taggedShow.tag.id })
         }
         copy.tagArray = tagArray
 
@@ -141,38 +141,23 @@ export const ShowForm = () => {
     //uses the tagArray to POST to tags (if it does not yet exist), and to POST taggedShows objects.
     //tags will be evaluated as the same even if capitalization and spaces are different.
     const constructTags = (addedShow) => {
-
-        const neutralizedTagsCopy = tags.map(tag => {
-            const upperCased = tag.tag.toUpperCase()
-            const noSpaces = upperCased.split(" ").join("")
-            return {
-                id: tag.id,
-                userId: tag.userId,
-                tag: noSpaces
-            }
-        })
-
-
         for (const enteredTag of userChoices.tagArray) {
-            const neutralizedEnteredTag = enteredTag.toUpperCase().split(" ").join("")
-            let foundTag = neutralizedTagsCopy.find(tag => tag.tag === neutralizedEnteredTag && userId === tag.userId)
-            if (foundTag) {
-                //post a new taggedShow object with that tag
-                TagRepo.addTaggedShow({
-                    tagId: foundTag.id,
-                    showId: addedShow.id
-                })
-            } else {
+            if (enteredTag.__isNew__) {
                 //post a new tag object with that enteredTag
-                TagRepo.addTag({ tag: enteredTag, userId: userId })
+                TagRepo.addTag({ tag: enteredTag.value, userId: userId })
                     .then((newTag) => {
                         TagRepo.addTaggedShow({
                             tagId: newTag.id,
                             showId: addedShow.id
                         })
                     })
-
                 //post a new taggedShow object with the tag object made above
+            } else {
+                //post a new taggedShow object with that tag
+                TagRepo.addTaggedShow({
+                    tagId: parseInt(enteredTag.value),
+                    showId: addedShow.id
+                })
 
             }
         }
@@ -187,12 +172,7 @@ export const ShowForm = () => {
         } else {
             invalidCopy.name = false
         }
-        //tags
-        if (userChoices.tagArray.length === 0) {
-            invalidCopy.tags = true
-        } else {
-            invalidCopy.tags = false
-        }
+    
         //multiplayer
         if (userChoices.streamingService === 0) {
             invalidCopy.streaming = true
@@ -239,26 +219,34 @@ export const ShowForm = () => {
                     className="mb-2"
                 />
             </FormGroup>
-            <FormGroup row>
-                <Label
-                    for="showTags"
-                >
-                    Genre Tags
-                </Label>
-                <Input
-                    id="showTags"
-                    type="textarea"
-                    invalid={!firstAttempt ? invalid.tags : false}
-                    value={userChoices.tagArray.join(", ")}
-                    onChange={(event) => {
+            <FormGroup>
+                <Label>Genre Tags</Label>
+                <CreatableSelect
+                    isMulti
+                    isClearable
+                    value={userChoices.tagArray}
+                    theme={theme => ({
+                        ...theme,
+                        borderRadius: 0,
+                        color: "green",
+                        colors: {
+                            ...theme.colors,
+                            primary: "#b90000",
+                            primary25: "#c9cad0",
+                            primary50: "#c9cad0"
+                        }
+                    })}
+                    options={
+                        tags.map(tag => ({ label: tag.tag, value: tag.id }))
+                    }
+                    onChange={optionChoices => {
                         const copy = { ...userChoices }
-                        copy.tagArray = event.target.value.split(", ")
+                        copy.tagArray = optionChoices
                         setUserChoices(copy)
                     }}
+                    id="tagSelect"
+                    placeholder="Select or create tags..."
                 />
-                <FormText className="mb-2">
-                    Enter tag names, separated by commas and spaces. Ex: "horror, RPG, first-person shooter"
-                </FormText>
             </FormGroup>
             <FormGroup>
                 <Label for="exampleSelect">

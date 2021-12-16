@@ -41,8 +41,8 @@ export const TagView = () => {
     return (
         <>
             <div className="p-5 m-5 bg-light">
-                <TagSearch setUserEntry={setUserEntry} />
-                <TagList tags={tags} setTags={setTags} userAttemptedSearch={userAttemptedSearch} userEntry={userEntry} />
+                <TagSearch setUserEntry={setUserEntry} userEntry={userEntry} />
+                <TagList tags={tags} setTags={setTags} userAttemptedSearch={userAttemptedSearch} setUserEntry={setUserEntry} />
                 <div className='row justify-content-center'>
                     {
                         openBoolean

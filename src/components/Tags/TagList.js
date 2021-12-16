@@ -2,14 +2,14 @@ import React from "react"
 import { Card, CardBody, CardTitle } from "reactstrap"
 import { Tag } from "./Tag"
 
-export const TagList = ({tags, setTags, userAttemptedSearch, userEntry }) => {
+export const TagList = ({tags, setTags, userAttemptedSearch, setUserEntry }) => {
     return (
         <>
             {
                 tags?.length > 0
                     ? <div className=" ps-3 mt-4 w-100 row" >
                         {
-                            tags.map(tag => <Tag key={tag.id} tag={tag} setTags={setTags} userEntry={userEntry}/>)
+                            tags.map(tag => <Tag key={tag.id} tag={tag} setTags={setTags} setUserEntry={setUserEntry}/>)
                         }
                     </div>
                     : <Card
