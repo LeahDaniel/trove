@@ -6,11 +6,15 @@ export const TagRepo = {
         return await fetchIt(`http://localhost:8088/tags`)
     },
     async get(tagId) {
-        return await fetchIt(`http://localhost:8088/tags${tagId}`)
+        return await fetchIt(`http://localhost:8088/tags/${tagId}`)
     },
 
     async getTagsForUser(userId) {
         return await fetchIt(`http://localhost:8088/tags?userId=${userId}`)
+    },
+
+    async getTagsForUserBySearchTerm(userId, searchTerm) {
+        return await fetchIt(`http://localhost:8088/tags?userId=${userId}&tag_like=${searchTerm}`)
     },
 
     async getTaggedBooks() {
@@ -27,6 +31,12 @@ export const TagRepo = {
 
 
     //DELETEs
+    async deleteTag(tagId) {
+        return await fetchIt(
+            `http://localhost:8088/tags/${tagId}`,
+            "DELETE"
+        )
+    },
     async deleteTaggedGamesForOneGame(game) {
         let promiseArray = []
         for (const taggedGame of game.taggedGames) {
@@ -80,8 +90,14 @@ export const TagRepo = {
     },
 
 
-
-    
+    //PUT
+    async editTag(tagObj, tagId) {
+        return await fetchIt(
+            `http://localhost:8088/tags/${tagId}`,
+            "PUT",
+            JSON.stringify(tagObj)
+        )
+    },
 
 }
 

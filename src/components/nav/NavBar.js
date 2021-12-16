@@ -84,6 +84,9 @@ export const NavBar = () => {
                             </DropdownMenu>
                         </UncontrolledDropdown>
                         <NavItem >
+                            <NavLink href="/tags">Tags</NavLink>
+                        </NavItem>
+                        <NavItem >
                             <NavLink href="/login" onClick={
                                 () => {
                                     localStorage.removeItem("trove_user")
