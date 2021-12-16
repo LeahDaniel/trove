@@ -35,18 +35,11 @@ export const Register = (props) => {
             })
     }
 
-    const updateUser = (evt) => {
-        const copy = { ...user }
-        copy[evt.target.id] = evt.target.value
-        setUser(copy)
-    }
-
     const postDefaultTags = (createdUser) => {
-        const defaultTagArray = ["Action", "Adventure", "Comedy", "Crime", "Drama", "Mystery", "Fantasy", "Historical", "Horror", "Romance", "Science Fiction",
-            "Thriller", "Western", "Platformer", "Shooter", "Stealth", "Survival", "Rhythm", "Battle Royale", "RPG", "MMO", "Life Sim", "Construction and Management Sim",
-            "Vehicle Sim", "Strategy", "MOBA", "Tower Defense", "Turn-based Strategy", "Racing", "Esports", "Casual",
-            "Board/Card Game", "Casino", "Idle", "Puzzle", "Logic", "Party", "Trivia", "Educational", "Sandbox",
-            "Creative", "Open world"
+        const defaultTagArray = ["Action", "Adventure", "Comedy", "Drama", "Mystery", 
+            "Fantasy", "Historical", "Horror", "Romance", "Science Fiction", "Thriller", 
+            "Western", "Platformer", "Shooter", "Survival", "Battle Royale", "RPG", 
+            "Simulator", "Strategy", "Esports", "Casual", "Educational", "Sandbox", "Open world"
         ]
         let promiseArray = []
         for (const item of defaultTagArray) {
@@ -62,6 +55,12 @@ export const Register = (props) => {
                     history.push("/")
                 }
             })
+    }
+
+    const updateUser = (evt) => {
+        const copy = { ...user }
+        copy[evt.target.id] = evt.target.value
+        setUser(copy)
     }
 
     return (

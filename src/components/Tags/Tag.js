@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Card, CardBody, CardTitle, FormGroup, Input, Label } from "reactstrap"
+import {FormGroup, Input } from "reactstrap"
 import { TagRepo } from "../../repositories/TagRepo"
 import deleteIcon from '../../images/DeleteIcon.png';
 import editIcon from '../../images/EditIcon.png';
@@ -22,7 +22,7 @@ export const Tag = ({ tag, setTags, setUserEntry }) => {
         <>
 
             {/* display tag names */}
-            <div className="col-2 my-2">
+            <div className="col-1 my-2">
                 {/* onClick of the edit button, push user to form route, and send along state of the presentTag to the location */}
                 <img className="ms-1" src={editIcon} alt="Edit" style={{ maxWidth: 20, maxHeight: 20 }} onClick={
                     () => {
@@ -38,7 +38,7 @@ export const Tag = ({ tag, setTags, setUserEntry }) => {
                     }
                 } />
             </div>
-            <h5 className="col-4 pe-3 my-2">{presentTag.tag}</h5>
+            <h5 className="col-5 pe-3 my-2">{presentTag.tag}</h5>
 
             {
                 openEditBox

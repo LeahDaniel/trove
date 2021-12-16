@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, FormGroup, Input, Label } from 'reactstrap';
+import { Button, Card, FormGroup, Input, Label } from 'reactstrap';
 import { TagRepo } from '../../repositories/TagRepo';
 import { TagList } from './TagList';
 import { TagSearch } from './TagSearch';
@@ -10,6 +10,7 @@ export const TagView = () => {
     const [openBoolean, setOpenBoolean] = useState(false)
     const [tags, setTags] = useState([])
     const [userAttemptedSearch, setAttemptBoolean] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     const userId = parseInt(localStorage.getItem("trove_user"))
 
     useEffect(
@@ -25,6 +26,7 @@ export const TagView = () => {
                     })
                     setTags(sorted)
                 })
+                .then(() => setIsLoading(false))
         }, [userId]
     )
 
@@ -51,7 +53,11 @@ export const TagView = () => {
         <>
             <div className="p-5 m-5 bg-light">
                 <TagSearch setUserEntry={setUserEntry} userEntry={userEntry} />
-                <TagList tags={tags} setTags={setTags} userAttemptedSearch={userAttemptedSearch} setUserEntry={setUserEntry} />
+                {
+                    isLoading
+                        ? < Card className="col-7 d-flex align-items-center justify-content-center border-0" />
+                        : <TagList tags={tags} setTags={setTags} userAttemptedSearch={userAttemptedSearch} setUserEntry={setUserEntry} />
+                }
                 <div className='row justify-content-center'>
                     {
                         openBoolean

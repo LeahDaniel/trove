@@ -1,4 +1,4 @@
-import { Form, FormGroup, Input, Label } from "reactstrap"
+import { Form, FormGroup, Input } from "reactstrap"
 
 export const TagSearch = ({ setUserEntry, userEntry }) => {
     return (
