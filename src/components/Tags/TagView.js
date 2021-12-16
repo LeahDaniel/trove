@@ -23,6 +23,7 @@ export const TagView = () => {
                 .then(setTags)
             } else {
                 TagRepo.getTagsForUserBySearchTerm(userId, userEntry)
+                .then(setTags)
             }
 
             if (userEntry !== "") {
@@ -38,7 +39,7 @@ export const TagView = () => {
         <>
             <div className="p-5 m-5 bg-light border">
                 <TagSearch setUserEntry={setUserEntry} />
-                <TagList tags={tags} setTags={setTags} userAttemptedSearch={userAttemptedSearch} />
+                <TagList tags={tags} setTags={setTags} userAttemptedSearch={userAttemptedSearch} userEntry={userEntry}/>
             </div>
         </>
     )

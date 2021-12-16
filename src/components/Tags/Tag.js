@@ -5,7 +5,7 @@ import deleteIcon from '../../images/DeleteIcon.png';
 import editIcon from '../../images/EditIcon.png';
 
 
-export const Tag = ({ tag, setTagList }) => {
+export const Tag = ({ tag, setTags, userEntry }) => {
     const [presentTag, setTag] = useState([])
     const [userEdit, setUserEdit] = useState("")
     const [openEditBox, setOpenEditBoolean] = useState(false)
@@ -19,15 +19,7 @@ export const Tag = ({ tag, setTagList }) => {
 
     //PUT operation to modify a tag from queued to current (false to true). Called in button click.
     const addToCurrent = () => {
-        TagRepo.editTag({
-            tag: userEdit,
-            userId: userId,
-        }, presentTag.id)
-            //after doing PUT operation, update state
-            .then(() => {
-                TagRepo.getTagsForUser(userId)
-            })
-            .then(setTagList)
+        
     }
 
     return (
@@ -42,7 +34,7 @@ export const Tag = ({ tag, setTagList }) => {
                         () => {
                             TagRepo.deleteTag(presentTag.id)
                                 .then(TagRepo.getTagsForUser(userId))
-                                .then(setTagList)
+                                .then(setTags)
                         }
                     } />
                     {/* onClick of the edit button, push user to form route, and send along state of the presentTag to the location */}
@@ -66,9 +58,17 @@ export const Tag = ({ tag, setTagList }) => {
                                     id="tagEdit"
                                     type="text"
                                     placeholder="Enter new tag..."
-                                    onKeyPress={(event) => {
+                                    onKeyUp={(event) => {
                                         if (event.key === "Enter") {
-                                            addToCurrent()
+                                            TagRepo.editTag({
+                                                tag: userEdit,
+                                                userId: userId,
+                                            }, presentTag.id)
+                                                //after doing PUT operation, update state
+                                                .then(() => {
+                                                    TagRepo.getTagsForUser(userId)
+                                                })
+                                                .then(setTags)
                                         } else {
                                             setUserEdit(event.target.value)
                                         }

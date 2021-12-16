@@ -1,24 +1,15 @@
 import React from "react"
-import { useEffect, useState } from "react/cjs/react.development"
 import { Card, CardBody, CardTitle } from "reactstrap"
 import { Tag } from "./Tag"
 
-export const TagList = ({tags, userAttemptedSearch }) => {
-    const [tagList, setTagList] = useState([])
-
-    useEffect(
-        () => {
-            setTagList(tags)
-        }, [tags]
-    )
-
+export const TagList = ({tags, setTags, userAttemptedSearch, userEntry }) => {
     return (
         <>
             {
-                tags.length > 0
+                tags?.length > 0
                     ? <div className="col-7 px-3 ps-5" >
                         {
-                            tagList.map(tag => <Tag key={tag.id} tag={tag} setTagList={setTagList} />)
+                            tags.map(tag => <Tag key={tag.id} tag={tag} setTags={setTags} userEntry={userEntry}/>)
                         }
                     </div>
                     : <Card
