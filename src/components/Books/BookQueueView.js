@@ -4,7 +4,8 @@ import { SearchBooks } from "./SearchBooks"
 import addIcon from '../../images/AddIcon.png';
 import { useHistory } from "react-router";
 import { BookRepo } from "../../repositories/BookRepo";
-import { Card, Spinner } from "reactstrap";
+import { Card } from "reactstrap";
+import { TagRepo } from "../../repositories/TagRepo";
 
 export const BookQueueView = () => {
     const [userEntries, setUserEntries] = useState({
@@ -14,9 +15,11 @@ export const BookQueueView = () => {
     })
     const history = useHistory()
     const [books, setBooks] = useState([])
+    const [taggedBooks, setTaggedBooks] = useState([])
     const [midFilterBooks, setFilteredBooks] = useState([])
     const [userAttemptedSearch, setAttemptBoolean] = useState(false)
     const [isLoading, setLoading] = useState(true)
+
 
 
     useEffect(
@@ -25,6 +28,11 @@ export const BookQueueView = () => {
                 .then(setBooks)
                 .then(() => {
                     setLoading(false);
+                })
+                .then(() => TagRepo.getTaggedBooks())
+                .then(result => {
+                    const onlyQueued = result.filter(taggedBook => taggedBook.book?.current === false)
+                    setTaggedBooks(onlyQueued)
                 })
         }, []
     )
@@ -108,7 +116,7 @@ export const BookQueueView = () => {
                     </div>
 
                 </div>
-                <SearchBooks setUserEntries={setUserEntries} userEntries={userEntries} />
+                <SearchBooks setUserEntries={setUserEntries} userEntries={userEntries} taggedBooks={taggedBooks}/>
             </div>
         </div>
     )

@@ -4,9 +4,10 @@ import { Form, FormGroup, Input, Label } from "reactstrap"
 import { ShowRepo } from "../../repositories/ShowRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 
-export const SearchShows = ({ userEntries, setUserEntries }) => {
+export const SearchShows = ({ userEntries, setUserEntries, taggedShows }) => {
     const [tags, setTags] = useState([])
     const [streamingServices, setStreamingServices] = useState([])
+    const [tagsForShows, setTagsForShows] = useState([])
     const userId = parseInt(localStorage.getItem("trove_user"))
 
     useEffect(
@@ -23,17 +24,22 @@ export const SearchShows = ({ userEntries, setUserEntries }) => {
                     setTags(sorted)
                 })
                 .then(ShowRepo.getAllStreamingServices)
-                .then(result => {
-                    const sorted = result.sort((a, b) => {
-                        const serviceA = a.service.toLowerCase()
-                        const serviceB = b.service.toLowerCase()
-                        if (serviceA < serviceB) { return -1 }
-                        if (serviceA > serviceB) { return 1 }
-                        return 0 //default return value (no sorting)
-                    })
-                    setStreamingServices(sorted)
-                })
+                .then(setStreamingServices)
         }, [userId]
+    )
+
+    useEffect(
+        () => {
+            const newArray = tags.filter(tag => {
+                const foundTag = taggedShows.find(taggedShow => taggedShow.tagId === tag.id)
+                if(foundTag){
+                    return true
+                } else {
+                    return false
+                }
+            })
+            setTagsForShows(newArray)
+        }, [taggedShows, tags]
     )
 
     return (
@@ -95,7 +101,7 @@ export const SearchShows = ({ userEntries, setUserEntries }) => {
                     }}
                 >
                     <option value="0"> Select one... </option>
-                    {tags.map(tag => {
+                    {tagsForShows.map(tag => {
                         return <option value={tag.id} key={tag.id}>{tag.tag}</option>
                     })}
                 </Input>
