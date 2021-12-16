@@ -7,21 +7,21 @@ export const TagList = ({tags, setTags, userAttemptedSearch, userEntry }) => {
         <>
             {
                 tags?.length > 0
-                    ? <div className="col-7 px-3 ps-5" >
+                    ? <div className=" ps-3 mt-4 w-100 row" >
                         {
                             tags.map(tag => <Tag key={tag.id} tag={tag} setTags={setTags} userEntry={userEntry}/>)
                         }
                     </div>
                     : <Card
                         body
-                        className="col-7 px-3 ps-5 border-0"
+                        className="row justify-content-center"
                     >
-                        <CardBody className="d-flex align-items-center justify-content-center">
-                            <CardTitle tag="h5" className="text-center text-muted">
+                        <CardBody className="col-12">
+                            <CardTitle tag="h5" className="text-center text-muted ">
                                 {
                                     userAttemptedSearch
                                         ? "No Results Found"
-                                        : "Your list is empty. Add an item with the plus (+) button."
+                                        : "Your list is empty. Add an item with the button below."
                                 }
                             </CardTitle>
                         </CardBody>

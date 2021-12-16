@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { Button, FormGroup, Input, Label } from 'reactstrap';
 import { TagRepo } from '../../repositories/TagRepo';
 import { TagList } from './TagList';
 import { TagSearch } from './TagSearch';
 
 export const TagView = () => {
     const [userEntry, setUserEntry] = useState("")
+    const [newTagString, setNewTagString] = useState("")
+    const [openBoolean, setOpenBoolean] = useState(false)
     const [tags, setTags] = useState([])
     const [userAttemptedSearch, setAttemptBoolean] = useState(false)
     const userId = parseInt(localStorage.getItem("trove_user"))
@@ -20,10 +23,10 @@ export const TagView = () => {
         () => {
             if (userEntry === "") {
                 TagRepo.getTagsForUser(userId)
-                .then(setTags)
+                    .then(setTags)
             } else {
                 TagRepo.getTagsForUserBySearchTerm(userId, userEntry)
-                .then(setTags)
+                    .then(setTags)
             }
 
             if (userEntry !== "") {
@@ -37,9 +40,38 @@ export const TagView = () => {
 
     return (
         <>
-            <div className="p-5 m-5 bg-light border">
+            <div className="p-5 m-5 bg-light">
                 <TagSearch setUserEntry={setUserEntry} />
-                <TagList tags={tags} setTags={setTags} userAttemptedSearch={userAttemptedSearch} userEntry={userEntry}/>
+                <TagList tags={tags} setTags={setTags} userAttemptedSearch={userAttemptedSearch} userEntry={userEntry} />
+                <div className='row justify-content-center'>
+                    {
+                        openBoolean
+                        ? <FormGroup className="col-10 mt-4">
+                            <Label>New Tag Name</Label>
+                            <Input
+                                id="tagEdit"
+                                type="text"
+                                placeholder="Press Enter to submit..."
+                                onKeyUp={(event) => {
+                                    if (event.key === "Enter") {
+                                        TagRepo.addTag({
+                                            tag: newTagString,
+                                            userId: userId,
+                                        })
+                                            //after doing PUT operation, update state
+                                            .then(() => TagRepo.getTagsForUser(userId))
+                                            .then(setTags)
+                                            .then(() => setOpenBoolean(!openBoolean))
+                                    } else {
+                                        setNewTagString(event.target.value)
+                                    }
+                                }}
+                            />
+                        </FormGroup>
+                        : <Button className="col-4 mt-4" onClick={() => setOpenBoolean(!openBoolean)}>Add A New Tag</Button>
+                    }
+                    
+                </div>
             </div>
         </>
     )
