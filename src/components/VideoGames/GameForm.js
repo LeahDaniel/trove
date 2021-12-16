@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react"
 import { useHistory, useLocation } from "react-router"
-import { Button, Form, FormGroup, FormText, Input, Label } from "reactstrap"
+import { Alert, Button, Form, FormGroup, FormText, Input, Label } from "reactstrap"
 import { GameRepo } from "../../repositories/GameRepo"
 import { TagRepo } from "../../repositories/TagRepo"
+import CreatableSelect from 'react-select/creatable'
 
 export const GameForm = () => {
     const history = useHistory()
@@ -26,10 +27,10 @@ export const GameForm = () => {
         multiplayer: true,
         multiPlatforms: true,
         singlePlatform: true,
-        tags: true
     })
     //initialize boolean to indicate whether the user is on their first form attempt (prevent form warnings on first attempt)
     const [firstAttempt, setFirstAttempt] = useState(true)
+    const [alert, setAlert] = useState(false)
 
 
     useEffect(
@@ -37,11 +38,20 @@ export const GameForm = () => {
             //on page load, GET platforms and tags
             GameRepo.getAllPlatforms()
                 .then(setPlatforms)
-                .then(() => TagRepo.getAll())
-                .then(setTags)
+                .then(() => TagRepo.getTagsForUser(userId))
+                .then(result => {
+                    const sorted = result.sort((a, b) => {
+                        const tagA = a.tag.toLowerCase()
+                        const tagB = b.tag.toLowerCase()
+                        if (tagA < tagB) { return -1 }
+                        if (tagA > tagB) { return 1 }
+                        return 0 //default return value (no sorting)
+                    })
+                    setTags(sorted)
+                })
                 //setInvalid on page load to account for pre-populated fields on edit.
                 .then(checkValidity)
-                // eslint-disable-next-line react-hooks/exhaustive-deps
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, []
     )
     useEffect(
@@ -84,10 +94,9 @@ export const GameForm = () => {
         //create a tag array from the presentGame's associated taggedGames, and set as userChoices.tagArray value
         let tagArray = []
         for (const taggedGame of presentGame.taggedGames) {
-            tagArray.push(taggedGame.tag.tag)
+            tagArray.push({ label: taggedGame.tag.tag, value: taggedGame.tag.id })
         }
         copy.tagArray = tagArray
-
         //if a current game (only one platform possible), change chosenCurrentPlatform value based on platformId of first (and only) gamePlatform
         if (presentGame.current === true) {
             copy.chosenCurrentPlatform = presentGame.gamePlatforms[0].platformId
@@ -181,44 +190,30 @@ export const GameForm = () => {
                 platformId: userChoices.chosenCurrentPlatform
             }
             GameRepo.addGamePlatform(newGamePlatform)
-        } 
+        }
     }
 
     //uses the tagArray to POST to tags (if it does not yet exist), and to POST taggedGames objects.
     //tags will be evaluated as the same even if capitalization and spaces are different.
     const constructTags = (addedGame) => {
-        
-        const neutralizedTagsCopy = tags.map(tag => {
-            const upperCased = tag.tag.toUpperCase()
-            const noSpaces = upperCased.split(" ").join("")
-            return {
-                id: tag.id,
-                userId: tag.userId,
-                tag: noSpaces
-            }
-        })
-
 
         for (const enteredTag of userChoices.tagArray) {
-            const neutralizedEnteredTag = enteredTag.toUpperCase().split(" ").join("")
-            let foundTag = neutralizedTagsCopy.find(tag => tag.tag === neutralizedEnteredTag && userId === tag.userId)
-            if (foundTag) {
-                //post a new taggedGame object with that tag
-                TagRepo.addTaggedGame({
-                    tagId: foundTag.id,
-                    gameId: addedGame.id
-                })
-            } else {
+            if (enteredTag.__isNew__) {
                 //post a new tag object with that enteredTag
-                TagRepo.addTag({ tag: enteredTag, userId: userId})
+                TagRepo.addTag({ tag: enteredTag.value, userId: userId })
                     .then((newTag) => {
                         TagRepo.addTaggedGame({
                             tagId: newTag.id,
                             gameId: addedGame.id
                         })
                     })
-
                 //post a new taggedGame object with the tag object made above
+            } else {
+                //post a new taggedGame object with that tag
+                TagRepo.addTaggedGame({
+                    tagId: parseInt(enteredTag.value),
+                    gameId: addedGame.id
+                })
 
             }
         }
@@ -232,12 +227,6 @@ export const GameForm = () => {
             invalidCopy.name = true
         } else {
             invalidCopy.name = false
-        }
-        //tags
-        if (userChoices.tagArray.length === 0) {
-            invalidCopy.tags = true
-        } else {
-            invalidCopy.tags = false
         }
         //multiplayer
         if (userChoices.multiplayerCapable === null) {
@@ -293,26 +282,23 @@ export const GameForm = () => {
                     className="mb-2"
                 />
             </FormGroup>
-            <FormGroup row>
-                <Label
-                    for="gameTags"
-                >
-                    Genre Tags
-                </Label>
-                <Input
-                    id="gameTags"
-                    type="textarea"
-                    invalid={!firstAttempt ? invalid.tags : false}
-                    value={userChoices.tagArray.join(", ")}
-                    onChange={(event) => {
+            <FormGroup>
+                <Label>Genre Tags</Label>
+                <CreatableSelect
+                    isMulti
+                    isClearable
+                    value={userChoices.tagArray}
+                    options={
+                        tags.map(tag => ({ label: tag.tag, value: tag.id }))
+                    }
+                    onChange={optionChoices => {
                         const copy = { ...userChoices }
-                        copy.tagArray = event.target.value.split(", ")
+                        copy.tagArray = optionChoices
                         setUserChoices(copy)
                     }}
+                    id="tagSelect"
+                    placeholder="Select or create tags..."
                 />
-                <FormText className="mb-2">
-                    Enter tag names, separated by commas and spaces. Ex: "horror, RPG, first-person shooter"
-                </FormText>
             </FormGroup>
             <FormGroup>
                 <Label for="multiplayerSelect">
@@ -467,6 +453,26 @@ export const GameForm = () => {
                             </FormText>
                         </FormGroup>
             }
+            {
+                alert && presentGame
+                    ?
+                    <div>
+                        <Alert
+                            color="danger"
+                        >
+                            Please complete all required (!) fields. If you have no edits, click "Cancel".
+                        </Alert>
+                    </div>
+                    : alert && !presentGame
+                        ? <div>
+                            <Alert
+                                color="danger"
+                            >
+                                Please complete all required (!) fields before submitting.
+                            </Alert>
+                        </div>
+                        : ""
+            }
             <FormGroup>
                 <Button onClick={(evt) => {
                     evt.preventDefault()
@@ -478,12 +484,14 @@ export const GameForm = () => {
                         presentGame
                             ? editGame(evt)
                             : constructGame(evt)
+                    } else {
+                        setAlert(true)
                     }
                 }}>
                     Submit
                 </Button>
                 {presentGame
-                //if there is a presentGame object (user was pushed to form from edit button), allow them to go back to the previous page they were on (the appropriate list)
+                    //if there is a presentGame object (user was pushed to form from edit button), allow them to go back to the previous page they were on (the appropriate list)
                     ? <Button onClick={() => { history.goBack() }}>
                         Cancel
                     </Button>

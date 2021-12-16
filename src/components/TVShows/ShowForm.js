@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useHistory, useLocation } from "react-router"
-import { Button, Form, FormGroup, FormText, Input, Label } from "reactstrap"
+import { Alert, Button, Form, FormGroup, FormText, Input, Label } from "reactstrap"
 import { ShowRepo } from "../../repositories/ShowRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 import CreatableSelect from 'react-select/creatable'
@@ -26,14 +26,24 @@ export const ShowForm = () => {
     })
     //initialize boolean to indicate whether the user is on their first form attempt (prevent form warnings on first attempt)
     const [firstAttempt, setFirstAttempt] = useState(true)
+    const [alert, setAlert] = useState(false)
 
 
     useEffect(
         () => {
             //on page load, GET streaming services and tags
             TagRepo.getTagsForUser(userId)
-                .then(setTags)
-                .then(() => ShowRepo.getAllStreamingServices())
+                .then(result => {
+                    const sorted = result.sort((a, b) => {
+                        const tagA = a.tag.toLowerCase()
+                        const tagB = b.tag.toLowerCase()
+                        if (tagA < tagB) { return -1 }
+                        if (tagA > tagB) { return 1 }
+                        return 0 //default return value (no sorting)
+                    })
+                    setTags(sorted)
+                })
+                .then(ShowRepo.getAllStreamingServices)
                 .then(setStreamingServices)
                 //setInvalid on page load to account for pre-populated fields on edit.
                 .then(checkValidity)
@@ -172,7 +182,7 @@ export const ShowForm = () => {
         } else {
             invalidCopy.name = false
         }
-    
+
         //multiplayer
         if (userChoices.streamingService === 0) {
             invalidCopy.streaming = true
@@ -225,17 +235,6 @@ export const ShowForm = () => {
                     isMulti
                     isClearable
                     value={userChoices.tagArray}
-                    theme={theme => ({
-                        ...theme,
-                        borderRadius: 0,
-                        color: "green",
-                        colors: {
-                            ...theme.colors,
-                            primary: "#b90000",
-                            primary25: "#c9cad0",
-                            primary50: "#c9cad0"
-                        }
-                    })}
                     options={
                         tags.map(tag => ({ label: tag.tag, value: tag.id }))
                     }
@@ -321,6 +320,26 @@ export const ShowForm = () => {
                     Have you started this show (current) or are you thinking of watching it in the future (queued)?
                 </FormText>
             </FormGroup>
+            {
+                alert && presentShow
+                    ?
+                    <div>
+                        <Alert
+                            color="danger"
+                        >
+                            Please complete all required (!) fields. If you have no edits, click "Cancel".
+                        </Alert>
+                    </div>
+                    : alert && !presentShow
+                        ? <div>
+                            <Alert
+                                color="danger"
+                            >
+                                Please complete all required (!) fields before submitting.
+                            </Alert>
+                        </div>
+                        : ""
+            }
             <FormGroup>
                 <Button onClick={(evt) => {
                     evt.preventDefault()
@@ -332,6 +351,8 @@ export const ShowForm = () => {
                         presentShow
                             ? editShow(evt)
                             : constructShow(evt)
+                    } else {
+                        setAlert(true)
                     }
                 }}>
                     Submit

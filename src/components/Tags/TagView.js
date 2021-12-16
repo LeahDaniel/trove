@@ -15,7 +15,16 @@ export const TagView = () => {
     useEffect(
         () => {
             TagRepo.getTagsForUser(userId)
-                .then(setTags)
+                .then(result => {
+                    const sorted = result.sort((a, b) => {
+                        const tagA = a.tag.toLowerCase()
+                        const tagB = b.tag.toLowerCase()
+                        if (tagA < tagB) { return -1 }
+                        if (tagA > tagB) { return 1 }
+                        return 0 //default return value (no sorting)
+                    })
+                    setTags(sorted)
+                })
         }, [userId]
     )
 
@@ -46,31 +55,31 @@ export const TagView = () => {
                 <div className='row justify-content-center'>
                     {
                         openBoolean
-                        ? <FormGroup className="col-10 mt-4">
-                            <Label>New Tag Name</Label>
-                            <Input
-                                id="tagEdit"
-                                type="text"
-                                placeholder="Press Enter to submit..."
-                                onKeyUp={(event) => {
-                                    if (event.key === "Enter") {
-                                        TagRepo.addTag({
-                                            tag: newTagString,
-                                            userId: userId,
-                                        })
-                                            //after doing PUT operation, update state
-                                            .then(() => TagRepo.getTagsForUser(userId))
-                                            .then(setTags)
-                                            .then(() => setOpenBoolean(!openBoolean))
-                                    } else {
-                                        setNewTagString(event.target.value)
-                                    }
-                                }}
-                            />
-                        </FormGroup>
-                        : <Button className="col-4 mt-4" onClick={() => setOpenBoolean(!openBoolean)}>Add A New Tag</Button>
+                            ? <FormGroup className="col-10 mt-4">
+                                <Label>New Tag Name</Label>
+                                <Input
+                                    id="tagEdit"
+                                    type="text"
+                                    placeholder="Press Enter to submit..."
+                                    onKeyUp={(event) => {
+                                        if (event.key === "Enter") {
+                                            TagRepo.addTag({
+                                                tag: newTagString,
+                                                userId: userId,
+                                            })
+                                                //after doing PUT operation, update state
+                                                .then(() => TagRepo.getTagsForUser(userId))
+                                                .then(setTags)
+                                                .then(() => setOpenBoolean(!openBoolean))
+                                        } else {
+                                            setNewTagString(event.target.value)
+                                        }
+                                    }}
+                                />
+                            </FormGroup>
+                            : <Button className="col-4 mt-4" onClick={() => setOpenBoolean(!openBoolean)}>Add A New Tag</Button>
                     }
-                    
+
                 </div>
             </div>
         </>

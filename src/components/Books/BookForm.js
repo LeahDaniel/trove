@@ -3,6 +3,7 @@ import { useHistory, useLocation } from "react-router"
 import { Alert, Button, Form, FormGroup, FormText, Input, Label } from "reactstrap"
 import { BookRepo } from "../../repositories/BookRepo"
 import { TagRepo } from "../../repositories/TagRepo"
+import CreatableSelect from 'react-select/creatable'
 
 export const BookForm = () => {
 
@@ -23,7 +24,6 @@ export const BookForm = () => {
         name: true,
         current: true,
         author: true,
-        tags: true
     })
     //initialize boolean to indicate whether the user is on their first form attempt (prevent form warnings on first attempt)
     const [firstAttempt, setFirstAttempt] = useState(true)
@@ -32,10 +32,28 @@ export const BookForm = () => {
     useEffect(
         () => {
             //on page load, GET streaming services and tags
-            TagRepo.getAll()
-                .then(setTags)
+            TagRepo.getTagsForUser(userId)
+                .then(result => {
+                    const sorted = result.sort((a, b) => {
+                        const tagA = a.tag.toLowerCase()
+                        const tagB = b.tag.toLowerCase()
+                        if (tagA < tagB) { return -1 }
+                        if (tagA > tagB) { return 1 }
+                        return 0 //default return value (no sorting)
+                    })
+                    setTags(sorted)
+                })
                 .then(() => BookRepo.getAuthorsForUser(userId))
-                .then(setAuthors)
+                .then(result => {
+                    const sorted = result.sort((a, b) => {
+                        const nameA = a.name.toLowerCase()
+                        const nameB = b.name.toLowerCase()
+                        if (nameA < nameB) { return -1 }
+                        if (nameA > nameB) { return 1 }
+                        return 0 //default return value (no sorting)
+                    })
+                    setAuthors(sorted)
+                })
                 //setInvalid on page load to account for pre-populated fields on edit.
                 .then(checkValidity)
             // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -73,7 +91,7 @@ export const BookForm = () => {
         //create a tag array from the presentBook's associated taggedBooks, and set as userChoices.tagArray value
         let tagArray = []
         for (const taggedBook of presentBook.taggedBooks) {
-            tagArray.push(taggedBook.tag.tag)
+            tagArray.push({ label: taggedBook.tag.tag, value: taggedBook.tag.id })
         }
         copy.tagArray = tagArray
 
@@ -137,37 +155,23 @@ export const BookForm = () => {
     //uses the tagArray to POST to tags (if it does not yet exist), and to POST taggedBooks objects.
     //tags will be evaluated as the same even if capitalization and spaces are different.
     const constructTags = (addedBook) => {
-        const neutralizedTagsCopy = tags.map(tag => {
-            const upperCased = tag.tag.toUpperCase()
-            const noSpaces = upperCased.split(" ").join("")
-            return {
-                id: tag.id,
-                userId: tag.userId,
-                tag: noSpaces
-            }
-        })
-
-
         for (const enteredTag of userChoices.tagArray) {
-            const neutralizedEnteredTag = enteredTag.toUpperCase().split(" ").join("")
-            let foundTag = neutralizedTagsCopy.find(tag => tag.tag === neutralizedEnteredTag && userId === tag.userId)
-            if (foundTag) {
-                //post a new taggedBook object with that tag
-                TagRepo.addTaggedBook({
-                    tagId: foundTag.id,
-                    bookId: addedBook.id
-                })
-            } else {
+            if (enteredTag.__isNew__) {
                 //post a new tag object with that enteredTag
-                TagRepo.addTag({ tag: enteredTag, userId: userId })
+                TagRepo.addTag({ tag: enteredTag.value, userId: userId })
                     .then((newTag) => {
                         TagRepo.addTaggedBook({
                             tagId: newTag.id,
                             bookId: addedBook.id
                         })
                     })
-
                 //post a new taggedBook object with the tag object made above
+            } else {
+                //post a new taggedBook object with that tag
+                TagRepo.addTaggedBook({
+                    tagId: parseInt(enteredTag.value),
+                    bookId: addedBook.id
+                })
 
             }
         }
@@ -217,12 +221,6 @@ export const BookForm = () => {
         } else {
             invalidCopy.name = false
         }
-        //tags
-        if (userChoices.tagArray.length === 0) {
-            invalidCopy.tags = true
-        } else {
-            invalidCopy.tags = false
-        }
         //multiplayer
         if (userChoices.author === "") {
             invalidCopy.author = true
@@ -269,26 +267,23 @@ export const BookForm = () => {
                     className="mb-2"
                 />
             </FormGroup>
-            <FormGroup row>
-                <Label
-                    for="bookTags"
-                >
-                    Genre Tags
-                </Label>
-                <Input
-                    id="bookTags"
-                    type="textarea"
-                    invalid={!firstAttempt ? invalid.tags : false}
-                    value={userChoices.tagArray.join(", ")}
-                    onChange={(event) => {
+            <FormGroup>
+                <Label>Genre Tags</Label>
+                <CreatableSelect
+                    isMulti
+                    isClearable
+                    value={userChoices.tagArray}
+                    options={
+                        tags.map(tag => ({ label: tag.tag, value: tag.id }))
+                    }
+                    onChange={optionChoices => {
                         const copy = { ...userChoices }
-                        copy.tagArray = event.target.value.split(", ")
+                        copy.tagArray = optionChoices
                         setUserChoices(copy)
                     }}
+                    id="tagSelect"
+                    placeholder="Select or create tags..."
                 />
-                <FormText className="mb-2">
-                    Enter tag names, separated by commas and spaces. Ex: "horror, RPG, first-person shooter"
-                </FormText>
             </FormGroup>
             <FormGroup>
                 <Label for="exampleSelect">
@@ -355,7 +350,7 @@ export const BookForm = () => {
                         <Alert
                             color="danger"
                         >
-                            Please complete all fields. If you do not have any changes to make, please click "Cancel"
+                            Please complete all required (!) fields. If you have no edits, click "Cancel".
                         </Alert>
                     </div>
                     : alert && !presentBook
@@ -363,7 +358,7 @@ export const BookForm = () => {
                             <Alert
                                 color="danger"
                             >
-                                Please complete all fields before submitting.
+                                Please complete all required (!) fields before submitting.
                             </Alert>
                         </div>
                         : ""

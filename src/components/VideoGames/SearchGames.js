@@ -14,16 +14,7 @@ export const SearchGames = ({ userEntries, setUserEntries, taggedGames }) => {
     useEffect(
         () => {
             GameRepo.getAllPlatforms()
-                .then(result => {
-                    const sorted = result.sort((a, b) => {
-                        const nameA = a.name.toLowerCase()
-                        const nameB = b.name.toLowerCase()
-                        if (nameA < nameB) { return -1 }
-                        if (nameA > nameB) { return 1 }
-                        return 0 //default return value (no sorting)
-                    })
-                    setPlatforms(sorted)
-                })
+                .then(setPlatforms)
                 .then(() => TagRepo.getTagsForUser(userId))
                 .then(result => {
                     const sorted = result.sort((a, b) => {

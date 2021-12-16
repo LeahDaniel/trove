@@ -24,16 +24,7 @@ export const SearchShows = ({ userEntries, setUserEntries, taggedShows }) => {
                     setTags(sorted)
                 })
                 .then(ShowRepo.getAllStreamingServices)
-                .then(result => {
-                    const sorted = result.sort((a, b) => {
-                        const serviceA = a.service.toLowerCase()
-                        const serviceB = b.service.toLowerCase()
-                        if (serviceA < serviceB) { return -1 }
-                        if (serviceA > serviceB) { return 1 }
-                        return 0 //default return value (no sorting)
-                    })
-                    setStreamingServices(sorted)
-                })
+                .then(setStreamingServices)
         }, [userId]
     )
 
