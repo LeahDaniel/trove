@@ -4,8 +4,9 @@ import { Form, FormGroup, Input, Label } from "reactstrap"
 import { BookRepo } from "../../repositories/BookRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 
-export const SearchBooks = ({ userEntries, setUserEntries }) => {
+export const SearchBooks = ({ userEntries, setUserEntries, taggedBooks }) => {
     const [tags, setTags] = useState([])
+    const [tagsForBooks, setTagsForBooks] = useState([])
     const [authors, setAuthors] = useState([])
     const userId = parseInt(localStorage.getItem("trove_user"))
 
@@ -32,9 +33,24 @@ export const SearchBooks = ({ userEntries, setUserEntries }) => {
                         return 0 //default return value (no sorting)
                     })
                     setAuthors(sorted)
-                })
+                })   
         }, [userId]
     )
+
+    useEffect(
+        () => {
+            const newArray = tags.filter(tag => {
+                const foundTag = taggedBooks.find(taggedBook => taggedBook.tagId === tag.id)
+                if(foundTag){
+                    return true
+                } else {
+                    return false
+                }
+            })
+            setTagsForBooks(newArray)
+        }, [taggedBooks, tags]
+    )
+
 
     return (
         <Form className="pb-5 mt-5 px-2 bg-light border" inline>
@@ -95,7 +111,7 @@ export const SearchBooks = ({ userEntries, setUserEntries }) => {
                     }}
                 >
                     <option value="0"> Select one... </option>
-                    {tags.map(tag => {
+                    {tagsForBooks.map(tag => {
                         return <option value={tag.id} key={tag.id}>{tag.tag}</option>
                     })}
                 </Input>

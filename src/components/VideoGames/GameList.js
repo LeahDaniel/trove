@@ -1,5 +1,5 @@
 import React from "react"
-import { Card, CardBody, CardImg, CardTitle } from "reactstrap"
+import { Card, CardBody, CardTitle } from "reactstrap"
 import { Game } from "./Game"
 
 export const GameList = ({ setGames, games, userAttemptedSearch }) => {

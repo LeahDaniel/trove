@@ -4,7 +4,8 @@ import { SearchGames } from "./SearchGames"
 import addIcon from '../../images/AddIcon.png';
 import { useHistory } from "react-router";
 import { GameRepo } from "../../repositories/GameRepo";
-import { Card, Spinner } from "reactstrap";
+import { Card } from "reactstrap";
+import { TagRepo } from "../../repositories/TagRepo";
 
 export const GameQueueView = () => {
     const [userEntries, setUserEntries] = useState({
@@ -18,12 +19,18 @@ export const GameQueueView = () => {
     const [midFilterGames, setFilteredGames] = useState([])
     const [userAttemptedSearch, setAttemptBoolean] = useState(false)
     const [isLoading, setLoading] = useState(true)
+    const [taggedGames, setTaggedGames] = useState([])
 
     useEffect(
         () => {
             GameRepo.getAllQueue()
                 .then(setGames)
                 .then(() => setLoading(false))
+                .then(() => TagRepo.getTaggedGames())
+                .then(result => {
+                    const onlyQueued = result.filter(taggedGame => taggedGame.game?.current === false)
+                    setTaggedGames(onlyQueued)
+                })
                 
         }, []
     )
@@ -141,7 +148,7 @@ export const GameQueueView = () => {
                         </div>
 
                     </div>
-                    <SearchGames setUserEntries={setUserEntries} userEntries={userEntries} />
+                    <SearchGames setUserEntries={setUserEntries} userEntries={userEntries} taggedGames={taggedGames}/>
                 </div>
             </div>
 

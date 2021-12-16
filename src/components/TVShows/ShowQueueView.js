@@ -4,7 +4,8 @@ import { SearchShows } from "./SearchShows"
 import addIcon from '../../images/AddIcon.png';
 import { useHistory } from "react-router";
 import { ShowRepo } from "../../repositories/ShowRepo";
-import { Card, Spinner } from "reactstrap";
+import { Card} from "reactstrap";
+import { TagRepo } from "../../repositories/TagRepo";
 
 export const ShowQueueView = () => {
     const [userEntries, setUserEntries] = useState({
@@ -17,7 +18,7 @@ export const ShowQueueView = () => {
     const [midFilterShows, setFilteredShows] = useState([])
     const [userAttemptedSearch, setAttemptBoolean] = useState(false)
     const [isLoading, setLoading] = useState(true)
-
+    const [taggedShows, setTaggedShows] = useState([])
 
     useEffect(
         () => {
@@ -25,6 +26,11 @@ export const ShowQueueView = () => {
                 .then(setShows)
                 .then(() => {
                     setLoading(false);
+                })
+                .then(() => TagRepo.getTaggedShows())
+                .then(result => {
+                    const onlyQueued = result.filter(taggedShow => taggedShow.show?.current === false)
+                    setTaggedShows(onlyQueued)
                 })
         }, []
     )
@@ -108,7 +114,7 @@ export const ShowQueueView = () => {
                     </div>
 
                 </div>
-                <SearchShows setUserEntries={setUserEntries} userEntries={userEntries} />
+                <SearchShows setUserEntries={setUserEntries} userEntries={userEntries} taggedShows={taggedShows}/>
             </div>
         </div>
     )

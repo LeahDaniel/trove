@@ -4,7 +4,8 @@ import { SearchGames } from "./SearchGames"
 import addIcon from '../../images/AddIcon.png';
 import { useHistory } from "react-router";
 import { GameRepo } from "../../repositories/GameRepo";
-import { Card, Spinner } from "reactstrap";
+import { Card } from "reactstrap";
+import { TagRepo } from "../../repositories/TagRepo";
 
 export const CurrentGamesView = () => {
     const [userEntries, setUserEntries] = useState({
@@ -18,7 +19,7 @@ export const CurrentGamesView = () => {
     const [midFilterGames, setFilteredGames] = useState([])
     const [userAttemptedSearch, setAttemptBoolean] = useState(false)
     const [isLoading, setLoading] = useState(true)
-
+    const [taggedGames, setTaggedGames] = useState([])
 
     useEffect(
         () => {
@@ -26,6 +27,11 @@ export const CurrentGamesView = () => {
                 .then(setGames)
                 .then(() => {
                     setLoading(false);
+                })
+                .then(() => TagRepo.getTaggedGames())
+                .then(result => {
+                    const onlyCurrent = result.filter(taggedGame => taggedGame.game?.current === true)
+                    setTaggedGames(onlyCurrent)
                 })
         }, []
     )
@@ -141,7 +147,7 @@ export const CurrentGamesView = () => {
                     </div>
 
                 </div>
-                <SearchGames setUserEntries={setUserEntries} userEntries={userEntries} />
+                <SearchGames setUserEntries={setUserEntries} userEntries={userEntries} taggedGames={taggedGames}/>
             </div>
         </div>
     )

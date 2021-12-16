@@ -4,9 +4,10 @@ import { Form, FormGroup, Input, Label } from "reactstrap"
 import { GameRepo } from "../../repositories/GameRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 
-export const SearchGames = ({ userEntries, setUserEntries }) => {
+export const SearchGames = ({ userEntries, setUserEntries, taggedGames }) => {
     const [platforms, setPlatforms] = useState([])
     const [tags, setTags] = useState([])
+    const [tagsForGames, setTagsForGames] = useState([])
     const userId = parseInt(localStorage.getItem("trove_user"))
 
 
@@ -35,6 +36,20 @@ export const SearchGames = ({ userEntries, setUserEntries }) => {
                     setTags(sorted)
                 })
         }, [userId]
+    )
+
+    useEffect(
+        () => {
+            const newArray = tags.filter(tag => {
+                const foundTag = taggedGames.find(taggedGame => taggedGame.tagId === tag.id)
+                if(foundTag){
+                    return true
+                } else {
+                    return false
+                }
+            })
+            setTagsForGames(newArray)
+        }, [taggedGames, tags]
     )
 
     return (
@@ -120,7 +135,7 @@ export const SearchGames = ({ userEntries, setUserEntries }) => {
                     }}
                 >
                     <option value="0"> Select one... </option>
-                    {tags.map(tag => {
+                    {tagsForGames.map(tag => {
                         return <option value={tag.id} key={tag.id}>{tag.tag}</option>
                     })}
                 </Input>

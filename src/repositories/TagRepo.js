@@ -13,6 +13,18 @@ export const TagRepo = {
         return await fetchIt(`http://localhost:8088/tags?userId=${userId}`)
     },
 
+    async getTaggedBooks() {
+        return await fetchIt(`http://localhost:8088/taggedBooks?_expand=book`)
+    },
+
+    async getTaggedGames() {
+        return await fetchIt(`http://localhost:8088/taggedGames?_expand=game`)
+    },
+
+    async getTaggedShows() {
+        return await fetchIt(`http://localhost:8088/taggedShows?_expand=show`)
+    },
+
 
     //DELETEs
     async deleteTaggedGamesForOneGame(game) {
