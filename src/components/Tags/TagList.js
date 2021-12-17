@@ -1,22 +1,22 @@
 import React from "react"
-import { Card, CardBody, CardTitle } from "reactstrap"
+import { Card, CardBody, CardTitle, Container, Row } from "reactstrap"
 import { Tag } from "./Tag"
 
 export const TagList = ({tags, setTags, userAttemptedSearch, setUserEntry }) => {
     return (
-        <>
+        <Container>
+            
             {
                 tags?.length > 0
-                    ? <div className=" ps-3 mt-4 w-100 row" >
+                    ? <Row>
                         {
                             tags.map(tag => <Tag key={tag.id} tag={tag} setTags={setTags} setUserEntry={setUserEntry}/>)
                         }
-                    </div>
+                    </Row>
                     : <Card
                         body
-                        className="row justify-content-center"
                     >
-                        <CardBody className="col-12">
+                        <CardBody>
                             <CardTitle tag="h5" className="text-center text-muted ">
                                 {
                                     userAttemptedSearch
@@ -29,7 +29,7 @@ export const TagList = ({tags, setTags, userAttemptedSearch, setUserEntry }) => 
 
             }
             {/* Full list of tag cards. Pass state of tag and the setter function to the individual tag card component */}
-
-        </>
+            
+        </Container>
     )
 }

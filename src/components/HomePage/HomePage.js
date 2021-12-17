@@ -132,7 +132,7 @@ export const HomePage = () => {
 
     return (
         <>
-            <div className="pt-5 mx-4">
+            <div className="pt-5 mx-5 ps-5">
                 <p>Please use the navigation bar above to find the list of media you'd like to look through.</p>
                 <p className="pt-3">Each media type has a:</p>
                 <ul>
