@@ -148,7 +148,7 @@ export const GameQueueView = () => {
                     }>
                         <img src={addIcon} alt="Add" style={{ maxWidth: 25 }} className="me-2"
                         />
-                        Add an Entry
+                        Add Game
                     </Button>
                 </div>
 

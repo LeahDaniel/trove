@@ -117,7 +117,7 @@ export const CurrentShowsView = () => {
                     }>
                         <img src={addIcon} alt="Add" style={{ maxWidth: 25 }} className="me-2"
                         />
-                        Add an Entry
+                        Add Show
                     </Button>
                 </div>
 

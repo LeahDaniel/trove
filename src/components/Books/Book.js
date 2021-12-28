@@ -3,6 +3,7 @@ import { Badge, Button, Card, CardBody, CardSubtitle, CardText, CardTitle } from
 import { BookRepo } from "../../repositories/BookRepo"
 import deleteIcon from '../../images/DeleteIcon.png';
 import editIcon from '../../images/EditIcon.png';
+import moveIcon from '../../images/MoveFolder3.png';
 import { useHistory } from "react-router";
 
 
@@ -51,15 +52,19 @@ export const Book = ({ book, setBooks }) => {
                     setBooks
                         ?
                         <div style={{ alignSelf: "flex-end" }} className="mt-2 mb-0">
-                            {/* onClick of delete button (trash icon) call deleteBook function with argument of the id of the present book. */}
-                            <button className="imgButton">
-                                <img src={deleteIcon} alt="Delete" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
-                                    () => { return deleteBook(presentBook.id) }
-                                } />
+                            {/* 
+                                If the present book is in the queue, display a "Add to Current" button.
+                            */}
+                            {
+                                presentBook.current === false && setBooks
+                                ? <button className="imgButton">
+                                <img src={moveIcon} alt="Move to Current" style={{ maxWidth: 40, maxHeight: 40 }} onClick={addToCurrent}/>
                             </button>
+                                : ""
+                            }
                             {/* onClick of the edit button, push user to form route, and send along state of the presentBook to the location */}
                             <button className="imgButton">
-                                <img src={editIcon} alt="Edit" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
+                                <img src={editIcon} alt="Edit" style={{ maxWidth: 35, maxHeight: 35 }} onClick={
                                     () => {
                                         history.push({
                                             pathname: "/books/create",
@@ -68,13 +73,19 @@ export const Book = ({ book, setBooks }) => {
                                     }
                                 } />
                             </button>
+                            {/* onClick of delete button (trash icon) call deleteBook function with argument of the id of the present book. */}
+                            <button className="imgButton">
+                                <img src={deleteIcon} alt="Delete" style={{ maxWidth: 35, maxHeight: 35 }} onClick={
+                                    () => { return deleteBook(presentBook.id) }
+                                } />
+                            </button>
 
                         </div>
                         : ""
                 }
 
                 <CardBody className="mt-0 pt-0">
-                    <CardTitle tag="h4" className={setBooks? "mb-3 mt-0" :  "my-3 pt-3"}>
+                    <CardTitle tag="h4" className={setBooks ? "mb-3 mt-0" : "my-3 pt-3"}>
                         {/* display book names */}
                         {presentBook.name}
                     </CardTitle>
@@ -94,17 +105,7 @@ export const Book = ({ book, setBooks }) => {
                             })
                         }
                     </CardText>
-                    {/* 
-                        If the present book is in the queue, display a "Add to Current" button.
-                        If the present book has more than one book platform, display a modal that allows the user
-                        to select one platform, then call the addToCurrent function on the modal. 
-                        If the present book has only one platform, call the addToCurrent function on this button.
-                    */}
-                    {
-                        presentBook.current === false && setBooks
-                            ? <Button onClick={addToCurrent}> Add to Current </Button>
-                            : ""
-                    }
+
                 </CardBody>
             </Card>
         </div>

@@ -116,7 +116,7 @@ export const CurrentBooksView = () => {
                     }>
                         <img src={addIcon} alt="Add" style={{ maxWidth: 25 }} className="me-2"
                         />
-                        Add an Entry
+                        Add Book
                     </Button>
                 </div>
 
