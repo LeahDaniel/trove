@@ -4,7 +4,7 @@ import { SearchShows } from "./SearchShows"
 import addIcon from '../../images/AddIcon.png';
 import { useHistory } from "react-router";
 import { ShowRepo } from "../../repositories/ShowRepo";
-import { Card } from "reactstrap";
+import { Button, Card } from "reactstrap";
 import { TagRepo } from "../../repositories/TagRepo";
 
 export const CurrentShowsView = () => {
@@ -108,26 +108,27 @@ export const CurrentShowsView = () => {
     }
 
     return (
-        <div className="row">
+        <div className="row justify-content-evenly">
+            <div className="col-3">
+                {/* clickable "add" image to bring user to form */}
+                <div className="row justify-content-center mt-5">
+                    <Button className="col-6" onClick={
+                        () => history.push("/shows/create")
+                    }>
+                        <img src={addIcon} alt="Add" style={{ maxWidth: 25 }} className="me-2"
+                        />
+                        Add an Entry
+                    </Button>
+                </div>
+
+                <SearchShows setUserEntries={setUserEntries} userEntries={userEntries} taggedShows={taggedShows} />
+            </div>
             {
                 isLoading
                     ? < Card className="col-7 d-flex align-items-center justify-content-center border-0" />
                     : <ShowList shows={shows} setShows={setShows} userAttemptedSearch={userAttemptedSearch} />
             }
-            <div className="col-5 px-3 pe-5">
-                {/* clickable "add" image to bring user to form */}
-                <div className="row">
-                    <div className="col-8"></div>
-                    <div className="col-4 pt-5">
-                        <img src={addIcon} alt="Add" style={{ maxWidth: 40, alignSelf: "flex-end" }}
-                            onClick={
-                                () => history.push("/shows/create")
-                            } />
-                    </div>
 
-                </div>
-                <SearchShows setUserEntries={setUserEntries} userEntries={userEntries} taggedShows={taggedShows} />
-            </div>
         </div>
     )
 }

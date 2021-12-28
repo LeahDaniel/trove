@@ -52,18 +52,23 @@ export const Show = ({ show, setShows }) => {
                         ?
                         <div style={{ alignSelf: "flex-end" }} className="mt-2 mb-0">
                             {/* onClick of delete button (trash icon) call deleteShow function with argument of the id of the present show. */}
-                            <img className="me-3" src={deleteIcon} alt="Delete" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
-                                () => { return deleteShow(presentShow.id) }
-                            } />
+                            <button className="imgButton">
+                                <img src={deleteIcon} alt="Delete" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
+                                    () => { return deleteShow(presentShow.id) }
+                                } />
+                            </button>
                             {/* onClick of the edit button, push user to form route, and send along state of the presentShow to the location */}
-                            <img className="me-1" src={editIcon} alt="Edit" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
-                                () => {
-                                    history.push({
-                                        pathname: "/shows/create",
-                                        state: presentShow
-                                    })
-                                }
-                            } />
+                            <button className="imgButton">
+                                <img src={editIcon} alt="Edit" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
+                                    () => {
+                                        history.push({
+                                            pathname: "/shows/create",
+                                            state: presentShow
+                                        })
+                                    }
+                                } />
+                            </button>
+
                         </div>
                         : ""
                 }

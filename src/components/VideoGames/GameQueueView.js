@@ -4,7 +4,7 @@ import { SearchGames } from "./SearchGames"
 import addIcon from '../../images/AddIcon.png';
 import { useHistory } from "react-router";
 import { GameRepo } from "../../repositories/GameRepo";
-import { Card } from "reactstrap";
+import { Button, Card } from "reactstrap";
 import { TagRepo } from "../../repositories/TagRepo";
 
 export const GameQueueView = () => {
@@ -139,30 +139,27 @@ export const GameQueueView = () => {
 
 
     return (
-        <>
-            <div className="row">
-                {
-                    isLoading
-                        ? < Card className="col-7 d-flex align-items-center justify-content-center border-0"/>
-                        :<GameList games={games} setGames={setGames} userAttemptedSearch={userAttemptedSearch}/>
-                }
-                <div className="col-5 px-3 pe-5">
-                    {/* clickable "add" image to bring user to form */}
-                    <div className="row">
-                        <div className="col-8"></div>
-                        <div className="col-4 pt-5">
-                            <img src={addIcon} alt="Add" style={{ maxWidth: 40, alignSelf: "flex-end" }}
-                                onClick={
-                                    () => history.push("/games/create")
-                                } />
-                        </div>
-
-                    </div>
-                    <SearchGames setUserEntries={setUserEntries} userEntries={userEntries} taggedGames={taggedGames}/>
+        <div className="row justify-content-evenly">
+            <div className="col-3">
+                {/* clickable "add" image to bring user to form */}
+                <div className="row justify-content-center mt-5">
+                    <Button className="col-6" onClick={
+                        () => history.push("/games/create")
+                    }>
+                        <img src={addIcon} alt="Add" style={{ maxWidth: 25 }} className="me-2"
+                        />
+                        Add an Entry
+                    </Button>
                 </div>
+
+                <SearchGames setUserEntries={setUserEntries} userEntries={userEntries} taggedGames={taggedGames} />
             </div>
+            {
+                isLoading
+                    ? < Card className="col-7 d-flex align-items-center justify-content-center border-0" />
+                    : <GameList games={games} setGames={setGames} userAttemptedSearch={userAttemptedSearch} />
+            }
 
-        </>
-
+        </div>
     )
 }

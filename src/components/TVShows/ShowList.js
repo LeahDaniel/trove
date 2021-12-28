@@ -1,5 +1,4 @@
 import React from "react"
-import { Card, CardBody, CardTitle } from "reactstrap"
 import { Show } from "./Show"
 
 export const ShowList = ({ setShows, shows, userAttemptedSearch }) => {
@@ -7,25 +6,22 @@ export const ShowList = ({ setShows, shows, userAttemptedSearch }) => {
         <>
             {
                 shows.length > 0
-                    ? <div className="col-7 px-3 ps-5" >
+                    ? <div className="col-7 mt-4" >
                         {
                             shows.map(show => <Show key={show.id} show={show} setShows={setShows} />)
                         }
                     </div>
-                    : <Card
-                        body
-                        className="col-7 px-3 ps-5 border-0"
+                    : <div
+                        className="col-7 mt-4 border-0 d-flex align-items-center justify-content-center"
                     >
-                        <CardBody className="d-flex align-items-center justify-content-center">
-                            <CardTitle tag="h5" className="text-center text-muted">
-                                {
-                                    userAttemptedSearch
-                                        ? "No Results Found"
-                                        : "Your list is empty. Add an item with the plus (+) button."
-                                }
-                            </CardTitle>
-                        </CardBody>
-                    </Card>
+                        <h5 className="text-center text-muted">
+                            {
+                                userAttemptedSearch
+                                    ? "No Results Found"
+                                    : "Your list is empty. Add an item with the plus (+) button."
+                            }
+                        </h5>
+                    </div>
 
             }
             {/* Full list of show cards. Pass state of show and the setter function to the individual show card component */}

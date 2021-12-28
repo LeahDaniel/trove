@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useEffect } from "react/cjs/react.development"
-import { Button, ButtonGroup, Form, FormGroup, Input, Label } from "reactstrap"
+import { Button, Form, FormGroup, Input, Label } from "reactstrap"
 import { GameRepo } from "../../repositories/GameRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 
@@ -63,7 +63,7 @@ export const SearchGames = ({ userEntries, setUserEntries, taggedGames }) => {
     }
 
     return (
-        <Form className="pb-5 mt-5 px-2 bg-light border" inline>
+        <Form className="pb-2 mt-5 px-2 bg-light border" inline>
 
             <h5 className="text-center py-3">Filters</h5>
 
@@ -132,25 +132,32 @@ export const SearchGames = ({ userEntries, setUserEntries, taggedGames }) => {
 
                 </Input>
             </FormGroup>
-            {
-                tagsForGames.length > 0
-                    ? tagsForGames.map(tag => {
-                        return <ButtonGroup key={`tag--${tag.id}`}>
-                            <Button
-                                active={userEntries.tags.has(tag.id) ? true : false}
-                                color="info"
-                                style={{ color: "#000000", borderRadius: '20px' }}
-                                outline
-                                size="sm"
-                                className="m-2"
-                                onClick={() => setTag(tag.id)}
-                            >
-                                {tag.tag}
-                            </Button>
-                        </ButtonGroup>
-                    })
-                    : ""
-            }
+            <FormGroup >
+                <Label>
+                    Tags
+                </Label>
+                <div>
+                    {
+                        tagsForGames.length > 0
+                            ? tagsForGames.map(tag => {
+                                return <Button
+                                    key={`tag--${tag.id}`}
+                                    active={userEntries.tags.has(tag.id) ? true : false}
+                                    color="info"
+                                    style={{ color: "#000000", borderRadius: '20px' }}
+                                    outline
+                                    size="sm"
+                                    className="m-2"
+                                    onClick={() => setTag(tag.id)}
+                                >
+                                    {tag.tag}
+                                </Button>
+
+                            })
+                            : ""
+                    }
+                </div>
+            </FormGroup>
             <FormGroup className='row justify-content-center'>
                 <Button
                     onClick={() => {
@@ -164,9 +171,9 @@ export const SearchGames = ({ userEntries, setUserEntries, taggedGames }) => {
                         setUserEntries(userEntriesCopy)
                     }
                     }
-                    className="col-4 mt-4"
+                    className="col-4 mt-2"
                 >
-                    Clear Filters
+                    Clear
                 </Button>
             </FormGroup>
         </Form>

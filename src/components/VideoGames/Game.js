@@ -7,7 +7,7 @@ import { useHistory } from "react-router";
 import { PlatformModal } from "./PlatformModal";
 
 
-export const Game = ({ game, setGames}) => {
+export const Game = ({ game, setGames }) => {
     const [presentGame, setGame] = useState([])
     const [openBoolean, setOpenBoolean] = useState(false)
     const history = useHistory()
@@ -16,7 +16,7 @@ export const Game = ({ game, setGames}) => {
     useEffect(() => {
         GameRepo.get(game.id)
             .then(setGame)
-            
+
     }, [game.id])
 
     //delete game by id. If a current game, set games with current games, else set games with queued games (to update state appropriately based on current user view)
@@ -61,25 +61,30 @@ export const Game = ({ game, setGames}) => {
                     setGames
                         ? <div style={{ alignSelf: "flex-end" }} className="mt-2 mb-0">
                             {/* onClick of delete button (trash icon) call deleteGame function with argument of the id of the present game. */}
-                            <img className="me-3" src={deleteIcon} alt="Delete" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
-                                () => { return deleteGame(presentGame.id) }
-                            } />
+                            <button className="imgButton">
+                                <img src={deleteIcon} alt="Delete" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
+                                    () => { return deleteGame(presentGame.id) }
+                                } />
+                            </button>
                             {/* onClick of the edit button, push user to form route, and send along state of the presentGame to the location */}
-                            <img className="me-1" src={editIcon} alt="Edit" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
-                                () => {
-                                    history.push({
-                                        pathname: "/games/create",
-                                        state: presentGame
-                                    })
-                                }
-                            } />
+                            <button className="imgButton">
+                                <img src={editIcon} alt="Edit" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
+                                    () => {
+                                        history.push({
+                                            pathname: "/games/create",
+                                            state: presentGame
+                                        })
+                                    }
+                                } />
+                            </button>
+
                         </div>
                         : ""
                 }
 
 
                 <CardBody className="mt-0 pt-0">
-                    <CardTitle tag="h4" className={setGames? "mb-3 mt-0" :  "my-3 pt-3"}>
+                    <CardTitle tag="h4" className={setGames ? "mb-3 mt-0" : "my-3 pt-3"}>
                         {/* display game names */}
                         {presentGame.name}
                     </CardTitle>

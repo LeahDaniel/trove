@@ -2,3 +2,14 @@ a{
     color:inherit;
     text-decoration: none;
 }
+
+.imgButton {
+    background-color: transparent;
+    border-radius: 0;
+    border-color: transparent;
+
+    flex : 1;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center
+}

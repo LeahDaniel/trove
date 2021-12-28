@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useEffect } from "react/cjs/react.development"
-import { Button, ButtonGroup, Form, FormGroup, Input, Label } from "reactstrap"
+import { Button, Form, FormGroup, Input, Label } from "reactstrap"
 import { BookRepo } from "../../repositories/BookRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 
@@ -33,7 +33,7 @@ export const SearchBooks = ({ userEntries, setUserEntries, taggedBooks }) => {
                         return 0 //default return value (no sorting)
                     })
                     setAuthors(sorted)
-                })   
+                })
         }, [userId]
     )
 
@@ -41,7 +41,7 @@ export const SearchBooks = ({ userEntries, setUserEntries, taggedBooks }) => {
         () => {
             const newArray = tags.filter(tag => {
                 const foundTag = taggedBooks.find(taggedBook => taggedBook.tagId === tag.id)
-                if(foundTag){
+                if (foundTag) {
                     return true
                 } else {
                     return false
@@ -61,7 +61,7 @@ export const SearchBooks = ({ userEntries, setUserEntries, taggedBooks }) => {
     }
 
     return (
-        <Form className="pb-5 mt-5 px-2 bg-light border" inline>
+        <Form className="pb-2 mt-5 px-3 bg-light border" inline>
 
             <h5 className="text-center py-3">Filters</h5>
 
@@ -105,25 +105,33 @@ export const SearchBooks = ({ userEntries, setUserEntries, taggedBooks }) => {
 
                 </Input>
             </FormGroup>
-            {
-                tagsForBooks.length > 0
-                    ? tagsForBooks.map(tag => {
-                        return <ButtonGroup key={`tag--${tag.id}`}>
-                            <Button
-                                active={userEntries.tags.has(tag.id) ? true : false}
-                                color="info"
-                                style={{ color: "#000000", borderRadius: '20px' }}
-                                outline
-                                size="sm"
-                                className="m-2"
-                                onClick={() => setTag(tag.id)}
-                            >
-                                {tag.tag}
-                            </Button>
-                        </ButtonGroup>
-                    })
-                    : ""
-            }
+            <FormGroup>
+                <Label>
+                    Tags
+                </Label>
+                <div>
+                    {
+                        tagsForBooks.length > 0
+                            ? tagsForBooks.map(tag => {
+                                return <Button
+                                    key={`tag--${tag.id}`}
+                                    active={userEntries.tags.has(tag.id) ? true : false}
+                                    color="info"
+                                    style={{ color: "#000000", borderRadius: '20px' }}
+                                    outline
+                                    size="sm"
+                                    className="m-2"
+                                    onClick={() => setTag(tag.id)}
+                                >
+                                    {tag.tag}
+                                </Button>
+
+
+                            })
+                            : ""
+                    }
+                </div>
+            </FormGroup>
             <FormGroup className='row justify-content-center'>
                 <Button
                     onClick={() => {
@@ -136,9 +144,9 @@ export const SearchBooks = ({ userEntries, setUserEntries, taggedBooks }) => {
                         setUserEntries(userEntriesCopy)
                     }
                     }
-                    className="col-4 mt-4"
+                    className="col-4 mt-2"
                 >
-                    Clear Filters
+                    Clear
                 </Button>
             </FormGroup>
         </Form>

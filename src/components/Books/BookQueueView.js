@@ -4,7 +4,7 @@ import { SearchBooks } from "./SearchBooks"
 import addIcon from '../../images/AddIcon.png';
 import { useHistory } from "react-router";
 import { BookRepo } from "../../repositories/BookRepo";
-import { Card } from "reactstrap";
+import { Button, Card } from "reactstrap";
 import { TagRepo } from "../../repositories/TagRepo";
 
 export const BookQueueView = () => {
@@ -108,26 +108,27 @@ export const BookQueueView = () => {
     }
 
     return (
-        <div className="row">
+        <div className="row justify-content-evenly">
+            <div className="col-3">
+                {/* clickable "add" image to bring user to form */}
+                <div className="row justify-content-center mt-5">
+                    <Button className="col-6" onClick={
+                        () => history.push("/books/create")
+                    }>
+                        <img src={addIcon} alt="Add" style={{ maxWidth: 25 }} className="me-2"
+                        />
+                        Add an Entry
+                    </Button>
+                </div>
+
+                <SearchBooks setUserEntries={setUserEntries} userEntries={userEntries} taggedBooks={taggedBooks} />
+            </div>
             {
                 isLoading
-                    ? < Card className="col-7 d-flex align-items-center justify-content-center border-0"/>
+                    ? < Card className="col-7 d-flex align-items-center justify-content-center border-0" />
                     : <BookList books={books} setBooks={setBooks} userAttemptedSearch={userAttemptedSearch} />
             }
-            <div className="col-5 px-3 pe-5">
-                {/* clickable "add" image to bring user to form */}
-                <div className="row">
-                    <div className="col-8"></div>
-                    <div className="col-4 pt-5">
-                        <img src={addIcon} alt="Add" style={{ maxWidth: 40, alignSelf: "flex-end" }}
-                            onClick={
-                                () => history.push("/books/create")
-                            } />
-                    </div>
 
-                </div>
-                <SearchBooks setUserEntries={setUserEntries} userEntries={userEntries} taggedBooks={taggedBooks}/>
-            </div>
         </div>
     )
 }
