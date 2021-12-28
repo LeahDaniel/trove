@@ -11,7 +11,7 @@ export const ShowQueueView = () => {
     const [userEntries, setUserEntries] = useState({
         name: "",
         service: "0",
-        tag: "0"
+        tags: new Set()
     })
     const history = useHistory()
     const [shows, setShows] = useState([])
@@ -65,32 +65,43 @@ export const ShowQueueView = () => {
     const determineFilters = () => {
         const serviceExist = userEntries.service !== "0"
         const noService = userEntries.service === "0"
-        const tagExist = userEntries.tag !== "0"
-        const noTag = userEntries.tag === "0"
+        const tagsExist = userEntries.tags.size > 0
+        const noTags = userEntries.tags.size === 0
 
         const serviceId = parseInt(userEntries.service)
-        const tagId = parseInt(userEntries.tag)
 
-        const showsByTagOnly = midFilterShows.filter(show => {
-            const foundTaggedShow = show.taggedShows?.find(taggedShow => taggedShow.tagId === tagId)
-            if (foundTaggedShow) {
-                return true
-            } else {
-                return false
+        const showsByTagOnly = () => {
+            let newShowArray = []
+
+            for (const show of midFilterShows) {
+                let booleanArray = []
+                userEntries.tags.forEach(tagId => {
+                    const foundShow = show.taggedShows?.find(taggedShow => taggedShow.tagId === tagId)
+                    if (foundShow) {
+                        booleanArray.push(true)
+                    } else {
+                        booleanArray.push(false)
+                    }
+                })
+                if (booleanArray.every(boolean => boolean === true)) {
+                    newShowArray.push(show)
+                }
             }
-        })
-        const showsByServiceOnly = midFilterShows.filter(show => show.streamingServiceId === serviceId)
-        const showsByTagAndService = showsByTagOnly.filter(show => showsByServiceOnly.includes(show))
+            return newShowArray
+        }
 
-        if (noService && noTag) {
+        const showsByServiceOnly = midFilterShows.filter(show => show.streamingServiceId === serviceId)
+        const showsByTagAndService = showsByTagOnly().filter(show => showsByServiceOnly.includes(show))
+
+        if (noService && noTags) {
             return midFilterShows
-        } else if (serviceExist && noTag) {
+        } else if (serviceExist && noTags) {
             return showsByServiceOnly
             //if a user has not been chosen and the favorites box is checked
-        } else if (noService && tagExist) {
-            return showsByTagOnly
+        } else if (noService && tagsExist) {
+            return showsByTagOnly()
             //if a user has been chosen AND the favorites box is checked.
-        } else if (serviceExist && tagExist) {
+        } else if (serviceExist && tagsExist) {
             return showsByTagAndService
         }
     }

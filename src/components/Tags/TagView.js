@@ -49,6 +49,34 @@ export const TagView = () => {
         }, [userEntry, userId]
     )
 
+    const constructTag = (enteredTag) => {
+        const neutralizedTagsCopy = tags.map(tag => {
+            const upperCased = tag.tag.toUpperCase()
+            const noSpaces = upperCased.split(" ").join("")
+            return {
+                id: tag.id,
+                tag: noSpaces
+            }
+        })
+
+        const neutralizedEnteredTag = enteredTag.toUpperCase().split(" ").join("")
+        let foundTag = neutralizedTagsCopy.find(tag => tag.tag === neutralizedEnteredTag)
+        if (foundTag) {
+            window.alert("Your list already contains this tag.")
+        } else {
+            //post a new tag object with that enteredTag
+            TagRepo.addTag({
+                tag: enteredTag,
+                userId: userId,
+            })
+                //after doing PUT operation, update state
+                .then(() => TagRepo.getTagsForUser(userId))
+                .then(setTags)
+                .then(() => setOpenBoolean(!openBoolean))
+        }
+
+    }
+
     return (
 
         <div className="p-5 m-5 bg-light">
@@ -69,14 +97,7 @@ export const TagView = () => {
                                 placeholder="Press Enter to submit..."
                                 onKeyUp={(event) => {
                                     if (event.key === "Enter") {
-                                        TagRepo.addTag({
-                                            tag: newTagString,
-                                            userId: userId,
-                                        })
-                                            //after doing PUT operation, update state
-                                            .then(() => TagRepo.getTagsForUser(userId))
-                                            .then(setTags)
-                                            .then(() => setOpenBoolean(!openBoolean))
+                                        constructTag(newTagString)
                                     } else {
                                         setNewTagString(event.target.value)
                                     }

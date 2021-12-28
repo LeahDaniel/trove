@@ -441,7 +441,6 @@ export const GameForm = () => {
                                                 setPlatform(platform.id)
                                             }}
                                         />
-                                        {' '}
                                         <Label check>
                                             {platform.name}
                                         </Label>
