@@ -238,156 +238,156 @@ export const BookForm = () => {
     }
 
     return (
-        <Form className="m-4 p-2">
-            {
-                presentBook
-                    ? <h3> Edit a Book</h3>
-                    : <h3> Add a New Book</h3>
-            }
-            <FormGroup className="mt-4" row>
-                <Label for="bookTitle">
-                    Book Title
-                </Label>
-                <Input
-                    id="bookTitle"
-                    name="title"
-                    //if this is not the first attempt at filling out the form, allow the 
-                    //input to be marked as invalid (if the invalid state is true)
-                    //Otherwise, do not mark field as invalid
-                    invalid={!firstAttempt ? invalid.name : false}
-                    //set value based on userChoices to allow form to pre-populate if user was pushed to form from edit button
-                    //and so that the displayed entry changes as the user edits it (because of onChange)
-                    value={userChoices.name}
-                    //on change on field, set userChoices
-                    onChange={(event) => {
-                        const copy = { ...userChoices }
-                        copy.name = event.target.value
-                        setUserChoices(copy)
-                    }}
-                    className="mb-2"
-                />
-            </FormGroup>
-            <FormGroup>
-                <Label>Genre Tags</Label>
-                <CreatableSelect
-                    isMulti
-                    isClearable
-                    value={userChoices.tagArray}
-                    options={
-                        tags.map(tag => ({ label: tag.tag, value: tag.id }))
-                    }
-                    onChange={optionChoices => {
-                        const copy = { ...userChoices }
-                        copy.tagArray = optionChoices
-                        setUserChoices(copy)
-                    }}
-                    id="tagSelect"
-                    placeholder="Select or create tags..."
-                />
-            </FormGroup>
-            <FormGroup>
-                <Label for="exampleSelect">
-                    Author
-                </Label>
-                <Input
-                    id="bookTags"
-                    type="text"
-                    invalid={!firstAttempt ? invalid.author : false}
-                    value={userChoices.author}
-                    onChange={(event) => {
-                        const copy = { ...userChoices }
-                        copy.author = event.target.value
-                        setUserChoices(copy)
-                    }}
-                />
-            </FormGroup>
-            <FormGroup>
-                <Label for="exampleSelect">
-                    Current or Queued?
-                </Label>
-                <Input
-                    id="currentSelect"
-                    type="select"
-                    invalid={!firstAttempt ? invalid.current : false}
-                    value={userChoices.current === null
-                        ? "Choose an option..."
-                        : userChoices.current === true
-                            ? "Current"
-                            : "Queued"
-                    }
-                    onChange={(event) => {
-                        const copy = { ...userChoices }
-
-                        if (event.target.value === "Current") {
-                            copy.current = true
-                        } else if (event.target.value === "Queued") {
-                            copy.current = false
-                        } else {
-                            copy.current = null
+        <div className="row justify-content-center">
+            <Form className="m-4 p-2 col-9">
+                {
+                    presentBook
+                        ? <h3> Edit a Book</h3>
+                        : <h3> Add a New Book</h3>
+                }
+                <FormGroup className="mt-4">
+                    <Label for="bookTitle">
+                        Book Title
+                    </Label>
+                    <Input
+                        id="bookTitle"
+                        name="title"
+                        //if this is not the first attempt at filling out the form, allow the 
+                        //input to be marked as invalid (if the invalid state is true)
+                        //Otherwise, do not mark field as invalid
+                        invalid={!firstAttempt ? invalid.name : false}
+                        //set value based on userChoices to allow form to pre-populate if user was pushed to form from edit button
+                        //and so that the displayed entry changes as the user edits it (because of onChange)
+                        value={userChoices.name}
+                        //on change on field, set userChoices
+                        onChange={(event) => {
+                            const copy = { ...userChoices }
+                            copy.name = event.target.value
+                            setUserChoices(copy)
+                        }}
+                        className="mb-2"
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Label>Genre Tags</Label>
+                    <CreatableSelect
+                        isMulti
+                        isClearable
+                        value={userChoices.tagArray}
+                        options={
+                            tags.map(tag => ({ label: tag.tag, value: tag.id }))
                         }
-                        setUserChoices(copy)
-                    }
-                    }
-                >
-                    <option>
-                        Choose an option...
-                    </option>
-                    <option>
-                        Current
-                    </option>
-                    <option>
-                        Queued
-                    </option>
-                </Input>
-                <FormText className="mb-2">
-                    Have you started this book (current) or are you thinking of watching it in the future (queued)?
-                </FormText>
-            </FormGroup>
-            {
-                alert && presentBook
-                    ?
-                    <div>
-                        <Alert
-                            color="danger"
-                        >
-                            Please complete all required (!) fields. If you have no edits, click "Cancel".
-                        </Alert>
-                    </div>
-                    : alert && !presentBook
-                        ? <div>
+                        onChange={optionChoices => {
+                            const copy = { ...userChoices }
+                            copy.tagArray = optionChoices
+                            setUserChoices(copy)
+                        }}
+                        id="tagSelect"
+                        placeholder="Select or create tags..."
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Label for="exampleSelect">
+                        Author
+                    </Label>
+                    <Input
+                        id="bookTags"
+                        type="text"
+                        invalid={!firstAttempt ? invalid.author : false}
+                        value={userChoices.author}
+                        onChange={(event) => {
+                            const copy = { ...userChoices }
+                            copy.author = event.target.value
+                            setUserChoices(copy)
+                        }}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Label for="exampleSelect">
+                        Current or Queued?
+                    </Label>
+                    <Input
+                        id="currentSelect"
+                        type="select"
+                        invalid={!firstAttempt ? invalid.current : false}
+                        value={userChoices.current === null
+                            ? "Choose an option..."
+                            : userChoices.current === true
+                                ? "Current"
+                                : "Queued"
+                        }
+                        onChange={(event) => {
+                            const copy = { ...userChoices }
+
+                            if (event.target.value === "Current") {
+                                copy.current = true
+                            } else if (event.target.value === "Queued") {
+                                copy.current = false
+                            } else {
+                                copy.current = null
+                            }
+                            setUserChoices(copy)
+                        }
+                        }
+                    >
+                        <option>
+                            Choose an option...
+                        </option>
+                        <option>
+                            Current
+                        </option>
+                        <option>
+                            Queued
+                        </option>
+                    </Input>
+                    <FormText className="mb-2">
+                        Have you started this book (current) or are you thinking of watching it in the future (queued)?
+                    </FormText>
+                </FormGroup>
+                {
+                    alert && presentBook
+                        ?
+                        <div>
                             <Alert
                                 color="danger"
                             >
-                                Please complete all required (!) fields before submitting.
+                                Please complete all required (!) fields. If you have no edits, click "Cancel".
                             </Alert>
                         </div>
-                        : ""
-            }
-            <FormGroup>
-                <Button onClick={(evt) => {
-                    evt.preventDefault()
-
-                    setFirstAttempt(false)
-
-                    //check if every key on the "invalid" object is false
-                    if (Object.keys(invalid).every(key => invalid[key] === false)) {
-                        constructAuthor(evt)
-                    } else {
-                        setAlert(true)
-                    }
-                }}>
-                    Submit
-                </Button>
-                {presentBook
-                    //if there is a presentBook object (user was pushed to form from edit button), allow them to go back to the previous page they were on (the appropriate list)
-                    ? <Button onClick={() => { history.goBack() }}>
-                        Cancel
-                    </Button>
-                    : ""
+                        : alert && !presentBook
+                            ? <div>
+                                <Alert
+                                    color="danger"
+                                >
+                                    Please complete all required (!) fields before submitting.
+                                </Alert>
+                            </div>
+                            : ""
                 }
+                <FormGroup>
+                    <Button onClick={(evt) => {
+                        evt.preventDefault()
 
+                        setFirstAttempt(false)
 
-            </FormGroup>
-        </Form >
+                        //check if every key on the "invalid" object is false
+                        if (Object.keys(invalid).every(key => invalid[key] === false)) {
+                            constructAuthor(evt)
+                        } else {
+                            setAlert(true)
+                        }
+                    }}>
+                        Submit
+                    </Button>
+                    {presentBook
+                        //if there is a presentBook object (user was pushed to form from edit button), allow them to go back to the previous page they were on (the appropriate list)
+                        ? <Button onClick={() => { history.goBack() }} className="ms-3">
+                            Cancel
+                        </Button>
+                        : ""
+                    }
+                </FormGroup>
+            </Form >
+        </div>
     )
 }

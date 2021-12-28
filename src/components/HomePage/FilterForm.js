@@ -34,60 +34,71 @@ export const FilterForm = ({ userEntries, setUserEntries }) => {
     }
 
     return (
-        <Form inline>
-            <FormGroup floating >
-                <Input
-                    id="titleSearch"
-                    type="search"
-                    placeholder="Search by Title"
-                    value={userEntries.title}
-                    onChange={(event) => {
-                        const userEntriesCopy = { ...userEntries }
-                        userEntriesCopy.title = event.target.value
-                        setUserEntries(userEntriesCopy)
-                    }}
+        <div className="col-3">
+            <Form  className="pb-2 mt-5 px-3 bg-light border" inline>
 
-                />
-                <Label for="titleSearch">
-                    Search by Title
-                </Label>
-            </FormGroup>
+                <h5 className="text-center py-3">Filters</h5>
 
-            {
-                tags.length > 0
-                    ? tags.map(tag => {
-                        return <ButtonGroup key={`tag--${tag.id}`}>
-                            <Button
-                                active={userEntries.tags.has(tag.id) ? true : false}
-                                color="info"
-                                style={{color: "#000000", borderRadius:'20px'}}
-                                outline
-                                size="sm"
-                                className="m-2"
-                                onClick={() => setTag(tag.id)}
-                            >
-                                {tag.tag}
-                            </Button>
-                        </ButtonGroup>
-                    })
-                    : ""
-            }
-            <FormGroup className='row justify-content-center'>
-                <Button
-                    onClick={() => {
-                        let userEntriesCopy = { ...userEntries }
-                        userEntriesCopy = {
-                            title: "",
-                            tags: new Set()
+                <FormGroup>
+                    <Label for="titleSearch">
+                        Search by Title
+                    </Label>
+                    <Input
+                        id="titleSearch"
+                        type="search"
+                        placeholder="Title contains..."
+                        value={userEntries.title}
+                        onChange={(event) => {
+                            const userEntriesCopy = { ...userEntries }
+                            userEntriesCopy.title = event.target.value
+                            setUserEntries(userEntriesCopy)
+                        }}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Label>
+                        Tags
+                    </Label>
+                    <div>
+                        {
+                            tags.length > 0
+                                ? tags.map(tag => {
+                                    return <Button
+                                        key={`tag--${tag.id}`}
+                                        active={userEntries.tags.has(tag.id) ? true : false}
+                                        color="info"
+                                        style={{ color: "#000000", borderRadius: '20px' }}
+                                        outline
+                                        size="sm"
+                                        className="m-2"
+                                        onClick={() => setTag(tag.id)}
+                                    >
+                                        {tag.tag}
+                                    </Button>
+
+
+                                })
+                                : ""
                         }
-                        setUserEntries(userEntriesCopy)
-                    }
-                    }
-                    className="col-1 mt-4"  
-                >
-                    Clear Filters
-                </Button>
-            </FormGroup>
-        </Form>
+                    </div>
+                </FormGroup>
+                <FormGroup className='row justify-content-center'>
+                    <Button
+                        onClick={() => {
+                            let userEntriesCopy = { ...userEntries }
+                            userEntriesCopy = {
+                                name: "",
+                                tags: new Set()
+                            }
+                            setUserEntries(userEntriesCopy)
+                        }
+                        }
+                        className="col-4 mt-2"
+                    >
+                        Clear
+                    </Button>
+                </FormGroup>
+            </Form>
+        </div>
     )
 }

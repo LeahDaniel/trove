@@ -253,252 +253,252 @@ export const GameForm = () => {
     }
 
     return (
-        <Form className="m-4 p-2">
-            {
-                presentGame
-                    ? <h3> Edit a Game</h3>
-                    : <h3> Add a New Game</h3>
-            }
-            <FormGroup className="mt-4" row>
-                <Label for="gameTitle">
-                    Game Title
-                </Label>
-                <Input
-                    id="gameTitle"
-                    name="title"
-                    //if this is not the first attempt at filling out the form, allow the 
-                    //input to be marked as invalid (if the invalid state is true)
-                    //Otherwise, do not mark field as invalid
-                    invalid={!firstAttempt ? invalid.name : false}
-                    //set value based on userChoices to allow form to pre-populate if user was pushed to form from edit button
-                    //and so that the displayed entry changes as the user edits it (because of onChange)
-                    value={userChoices.name}
-                    //on change on field, set userChoices
-                    onChange={(event) => {
-                        const copy = { ...userChoices }
-                        copy.name = event.target.value
-                        setUserChoices(copy)
-                    }}
-                    className="mb-2"
-                />
-            </FormGroup>
-            <FormGroup>
-                <Label>Genre Tags</Label>
-                <CreatableSelect
-                    isMulti
-                    isClearable
-                    value={userChoices.tagArray}
-                    options={
-                        tags.map(tag => ({ label: tag.tag, value: tag.id }))
-                    }
-                    onChange={optionChoices => {
-                        const copy = { ...userChoices }
-                        copy.tagArray = optionChoices
-                        setUserChoices(copy)
-                    }}
-                    id="tagSelect"
-                    placeholder="Select or create tags..."
-                />
-            </FormGroup>
-            <FormGroup>
-                <Label for="multiplayerSelect">
-                    Multiplayer Capable?
-                </Label>
-                <Input
-                    id="multiplayerSelect"
-                    type="select"
-                    invalid={!firstAttempt ? invalid.multiplayer : false}
-                    value={userChoices.multiplayerCapable === null
-                        ? "Choose an option..."
-                        : userChoices.multiplayerCapable === true
-                            ? "Yes"
-                            : "No"
-                    }
-                    onChange={(event) => {
-                        const copy = { ...userChoices }
-
-                        if (event.target.value === "Yes") {
-                            copy.multiplayerCapable = true
-                        } else if (event.target.value === "No") {
-                            copy.multiplayerCapable = false
-                        } else {
-                            copy.multiplayerCapable = null
+        <div className="row justify-content-center">
+            <Form className="m-4 p-2 col-9">
+                {
+                    presentGame
+                        ? <h3> Edit a Game</h3>
+                        : <h3> Add a New Game</h3>
+                }
+                <FormGroup className="mt-4">
+                    <Label for="gameTitle">
+                        Game Title
+                    </Label>
+                    <Input
+                        id="gameTitle"
+                        name="title"
+                        //if this is not the first attempt at filling out the form, allow the 
+                        //input to be marked as invalid (if the invalid state is true)
+                        //Otherwise, do not mark field as invalid
+                        invalid={!firstAttempt ? invalid.name : false}
+                        //set value based on userChoices to allow form to pre-populate if user was pushed to form from edit button
+                        //and so that the displayed entry changes as the user edits it (because of onChange)
+                        value={userChoices.name}
+                        //on change on field, set userChoices
+                        onChange={(event) => {
+                            const copy = { ...userChoices }
+                            copy.name = event.target.value
+                            setUserChoices(copy)
+                        }}
+                        className="mb-2"
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Label>Genre Tags</Label>
+                    <CreatableSelect
+                        isMulti
+                        isClearable
+                        value={userChoices.tagArray}
+                        options={
+                            tags.map(tag => ({ label: tag.tag, value: tag.id }))
                         }
-                        setUserChoices(copy)
-                    }
-                    }
-                >
-                    <option>
-                        Choose an option...
-                    </option>
-                    <option>
-                        Yes
-                    </option>
-                    <option>
-                        No
-                    </option>
-                </Input>
-                <FormText className="mb-2">
-                    Does this game have an option for multiplayer (online or local)?
-                </FormText>
-            </FormGroup>
-            <FormGroup>
-                <Label for="exampleSelect">
-                    Current or Queued?
-                </Label>
-                <Input
-                    id="currentSelect"
-                    type="select"
-                    invalid={!firstAttempt ? invalid.current : false}
-                    value={userChoices.current === null
-                        ? "Choose an option..."
-                        : userChoices.current === true
-                            ? "Current"
-                            : "Queued"
-                    }
-                    onChange={(event) => {
-                        const copy = { ...userChoices }
-
-                        if (event.target.value === "Current") {
-                            copy.current = true
-                            copy.chosenPlatforms.clear()
-                        } else if (event.target.value === "Queued") {
-                            copy.current = false
-                            copy.chosenCurrentPlatform = 0
-                        } else {
-                            copy.current = null
-                            copy.chosenCurrentPlatform = 0
-                            copy.chosenPlatforms.clear()
+                        onChange={optionChoices => {
+                            const copy = { ...userChoices }
+                            copy.tagArray = optionChoices
+                            setUserChoices(copy)
+                        }}
+                        id="tagSelect"
+                        placeholder="Select or create tags..."
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Label for="multiplayerSelect">
+                        Multiplayer Capable?
+                    </Label>
+                    <Input
+                        id="multiplayerSelect"
+                        type="select"
+                        invalid={!firstAttempt ? invalid.multiplayer : false}
+                        value={userChoices.multiplayerCapable === null
+                            ? "Choose an option..."
+                            : userChoices.multiplayerCapable === true
+                                ? "Yes"
+                                : "No"
                         }
-                        setUserChoices(copy)
-                    }
-                    }
-                >
-                    <option>
-                        Choose an option...
-                    </option>
-                    <option>
-                        Current
-                    </option>
-                    <option>
-                        Queued
-                    </option>
-                </Input>
-                <FormText className="mb-2">
-                    Have you started this game (current) or are you thinking of playing it in the future (queued)?
-                </FormText>
-            </FormGroup>
-            {
-                userChoices.current === null ? "" :
-                    userChoices.current === true
-                        ? <FormGroup>
-                            <Label for="exampleSelect">
-                                Platform
-                            </Label>
-                            <Input
-                                id="currentSelect"
-                                type="select"
-                                invalid={!firstAttempt ? invalid.singlePlatform : false}
-                                value={userChoices.chosenCurrentPlatform}
-                                onChange={(event) => {
-                                    const copy = { ...userChoices }
-                                    copy.chosenCurrentPlatform = parseInt(event.target.value)
-                                    setUserChoices(copy)
-                                }}
+                        onChange={(event) => {
+                            const copy = { ...userChoices }
+
+                            if (event.target.value === "Yes") {
+                                copy.multiplayerCapable = true
+                            } else if (event.target.value === "No") {
+                                copy.multiplayerCapable = false
+                            } else {
+                                copy.multiplayerCapable = null
+                            }
+                            setUserChoices(copy)
+                        }
+                        }
+                    >
+                        <option>
+                            Choose an option...
+                        </option>
+                        <option>
+                            Yes
+                        </option>
+                        <option>
+                            No
+                        </option>
+                    </Input>
+                    <FormText className="mb-2">
+                        Does this game have an option for multiplayer (online or local)?
+                    </FormText>
+                </FormGroup>
+                <FormGroup>
+                    <Label for="exampleSelect">
+                        Current or Queued?
+                    </Label>
+                    <Input
+                        id="currentSelect"
+                        type="select"
+                        invalid={!firstAttempt ? invalid.current : false}
+                        value={userChoices.current === null
+                            ? "Choose an option..."
+                            : userChoices.current === true
+                                ? "Current"
+                                : "Queued"
+                        }
+                        onChange={(event) => {
+                            const copy = { ...userChoices }
+
+                            if (event.target.value === "Current") {
+                                copy.current = true
+                                copy.chosenPlatforms.clear()
+                            } else if (event.target.value === "Queued") {
+                                copy.current = false
+                                copy.chosenCurrentPlatform = 0
+                            } else {
+                                copy.current = null
+                                copy.chosenCurrentPlatform = 0
+                                copy.chosenPlatforms.clear()
+                            }
+                            setUserChoices(copy)
+                        }
+                        }
+                    >
+                        <option>
+                            Choose an option...
+                        </option>
+                        <option>
+                            Current
+                        </option>
+                        <option>
+                            Queued
+                        </option>
+                    </Input>
+                    <FormText className="mb-2">
+                        Have you started this game (current) or are you thinking of playing it in the future (queued)?
+                    </FormText>
+                </FormGroup>
+                {
+                    userChoices.current === null ? "" :
+                        userChoices.current === true
+                            ? <FormGroup>
+                                <Label for="exampleSelect">
+                                    Platform
+                                </Label>
+                                <Input
+                                    id="currentSelect"
+                                    type="select"
+                                    invalid={!firstAttempt ? invalid.singlePlatform : false}
+                                    value={userChoices.chosenCurrentPlatform}
+                                    onChange={(event) => {
+                                        const copy = { ...userChoices }
+                                        copy.chosenCurrentPlatform = parseInt(event.target.value)
+                                        setUserChoices(copy)
+                                    }}
+                                >
+                                    <option value="0">
+                                        Choose an option...
+                                    </option>
+                                    {
+                                        platforms.map(platform => {
+                                            return <option value={platform.id} key={platform.id}>
+                                                {platform.name}
+                                            </option>
+                                        })
+
+                                    }
+                                </Input>
+                                <FormText>
+                                    Select the platform you are currently playing the game on.
+                                </FormText>
+                            </FormGroup>
+                            : <FormGroup
+                                
+                                tag="fieldset"
                             >
-                                <option value="0">
-                                    Choose an option...
-                                </option>
+                                <Label>
+                                    Platforms
+                                </Label>
                                 {
                                     platforms.map(platform => {
-                                        return <option value={platform.id} key={platform.id}>
-                                            {platform.name}
-                                        </option>
+                                        return <FormGroup key={`platform--${platform.id}`} check>
+                                            <Input
+                                                className="platformCheckbox"
+                                                type="checkbox"
+                                                invalid={!firstAttempt ? invalid.multiPlatforms : false}
+                                                checked={userChoices.chosenPlatforms.has(platform.id) ? true : false}
+                                                onChange={() => {
+                                                    setPlatform(platform.id)
+                                                }}
+                                            />
+                                            <Label check>
+                                                {platform.name}
+                                            </Label>
+                                        </FormGroup>
                                     })
-
                                 }
-                            </Input>
-                            <FormText>
-                                Select the platform you are currently playing the game on.
-                            </FormText>
-                        </FormGroup>
-                        : <FormGroup
-                            row
-                            tag="fieldset"
-                        >
-                            <Label>
-                                Platforms
-                            </Label>
-                            {
-                                platforms.map(platform => {
-                                    return <FormGroup key={`platform--${platform.id}`} check>
-                                        <Input
-                                            className="platformCheckbox"
-                                            type="checkbox"
-                                            invalid={!firstAttempt ? invalid.multiPlatforms : false}
-                                            checked={userChoices.chosenPlatforms.has(platform.id) ? true : false}
-                                            onChange={() => {
-                                                setPlatform(platform.id)
-                                            }}
-                                        />
-                                        <Label check>
-                                            {platform.name}
-                                        </Label>
-                                    </FormGroup>
-                                })
-                            }
-                            <FormText>
-                                Select each platform the game is available on and you own.
-                            </FormText>
-                        </FormGroup>
-            }
-            {
-                alert && presentGame
-                    ?
-                    <div>
-                        <Alert
-                            color="danger"
-                        >
-                            Please complete all required (!) fields. If you have no edits, click "Cancel".
-                        </Alert>
-                    </div>
-                    : alert && !presentGame
-                        ? <div>
+                                <FormText>
+                                    Select each platform the game is available on and you own.
+                                </FormText>
+                            </FormGroup>
+                }
+                {
+                    alert && presentGame
+                        ?
+                        <div>
                             <Alert
                                 color="danger"
                             >
-                                Please complete all required (!) fields before submitting.
+                                Please complete all required (!) fields. If you have no edits, click "Cancel".
                             </Alert>
                         </div>
-                        : ""
-            }
-            <FormGroup>
-                <Button onClick={(evt) => {
-                    evt.preventDefault()
-
-                    setFirstAttempt(false)
-
-                    //check if every key on the "invalid" object is false
-                    if (Object.keys(invalid).every(key => invalid[key] === false)) {
-                        presentGame
-                            ? editGame(evt)
-                            : constructGame(evt)
-                    } else {
-                        setAlert(true)
-                    }
-                }}>
-                    Submit
-                </Button>
-                {presentGame
-                    //if there is a presentGame object (user was pushed to form from edit button), allow them to go back to the previous page they were on (the appropriate list)
-                    ? <Button onClick={() => { history.goBack() }}>
-                        Cancel
-                    </Button>
-                    : ""
+                        : alert && !presentGame
+                            ? <div>
+                                <Alert
+                                    color="danger"
+                                >
+                                    Please complete all required (!) fields before submitting.
+                                </Alert>
+                            </div>
+                            : ""
                 }
+                <FormGroup>
+                    <Button onClick={(evt) => {
+                        evt.preventDefault()
 
+                        setFirstAttempt(false)
 
-            </FormGroup>
-        </Form >
+                        //check if every key on the "invalid" object is false
+                        if (Object.keys(invalid).every(key => invalid[key] === false)) {
+                            presentGame
+                                ? editGame(evt)
+                                : constructGame(evt)
+                        } else {
+                            setAlert(true)
+                        }
+                    }}>
+                        Submit
+                    </Button>
+                    {presentGame
+                        //if there is a presentGame object (user was pushed to form from edit button), allow them to go back to the previous page they were on (the appropriate list)
+                        ? <Button onClick={() => { history.goBack() }} className="ms-3">
+                            Cancel
+                        </Button>
+                        : ""
+                    }
+                </FormGroup>
+            </Form >
+        </div>
     )
 }

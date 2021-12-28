@@ -80,7 +80,7 @@ export const Book = ({ book, setBooks }) => {
                     </CardTitle>
                     <CardSubtitle className="my-3">
                         {/* display platforms (if current, display as "playing", else display as "available") */}
-                        Written by: {
+                        Written by {
                             presentBook.author?.name
                         }
                     </CardSubtitle>
