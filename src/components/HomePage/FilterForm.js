@@ -87,13 +87,13 @@ export const FilterForm = ({ userEntries, setUserEntries }) => {
                         onClick={() => {
                             let userEntriesCopy = { ...userEntries }
                             userEntriesCopy = {
-                                name: "",
+                                title: "",
                                 tags: new Set()
                             }
                             setUserEntries(userEntriesCopy)
                         }
                         }
-                        className="col-4 mt-2"
+                        className="col-sm-6 col-lg-4 mt-2"
                     >
                         Clear
                     </Button>

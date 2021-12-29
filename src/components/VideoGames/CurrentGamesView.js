@@ -103,7 +103,7 @@ export const CurrentGamesView = () => {
         })
         const gamesByMultiplayerOnly = midFilterGames.filter(game => game.multiplayerCapable === multiplayerBoolean)
         const gamesByMultiplayerAndPlatform = gamesByMultiplayerOnly.filter(game => gamesByPlatformOnly.includes(game))
-        const gamesByMultiplayerAndTag = gamesByMultiplayerOnly.filter(game => gamesByTagOnly.includes(game))
+        const gamesByMultiplayerAndTag = gamesByMultiplayerOnly.filter(game => gamesByTagOnly().includes(game))
         const gamesByTagAndPlatform = gamesByTagOnly().filter(game => gamesByPlatformOnly.includes(game))
         const gamesByAllThree = gamesByTagAndPlatform.filter(game => gamesByMultiplayerOnly.includes(game))
 
