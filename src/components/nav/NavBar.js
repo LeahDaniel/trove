@@ -8,7 +8,7 @@ export const NavBar = () => {
     return (
             <Navbar
                 color="light"
-                expand="sm"
+                expand="md"
                 light
             >
                 <NavbarBrand className="p-3" href="/">

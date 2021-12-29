@@ -22,7 +22,8 @@ export const RecommendationList = () => {
     )
 
     return (
-        <>
+        <div className="row justify-content-center mt-5">
+        <div className="col-9">
 
             {/* Full list of recommendation cards. Pass state of recommendation and the setter function to the individual recommendation card component */}
             {
@@ -59,13 +60,14 @@ export const RecommendationList = () => {
                         }
                     </>
                     : <div
-                        className="mt-4 border-0 d-flex align-items-center justify-content-center"
+                        className="mt-5 pt-5 border-0 d-flex align-items-center justify-content-center"
                     >
                         <h5 className="text-center text-muted">
                             No Recommendations
                         </h5>
                     </div>
             }
-        </>
+        </div>
+        </div>
     )
 }
