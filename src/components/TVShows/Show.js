@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react"
-import { Badge, Button, Card, CardBody, CardText, CardTitle } from "reactstrap"
+import { Badge, Card, CardBody, CardText, CardTitle, UncontrolledAlert } from "reactstrap"
 import { ShowRepo } from "../../repositories/ShowRepo"
 import deleteIcon from '../../images/DeleteIcon.png';
 import editIcon from '../../images/EditIcon.png';
 import moveIcon from '../../images/MoveFolder3.png';
+import sendIcon from '../../images/SendIcon.png';
 import { useHistory } from "react-router";
+import { RecommendationModal } from "../Social/RecommendationModal";
 
 
 export const Show = ({ show, setShows }) => {
     const [presentShow, setShow] = useState([])
     const [successOpenBoolean, setSuccessOpenBoolean] = useState(false)
+    const [recommendationOpenBoolean, setRecommendationOpenBoolean] = useState(false)
     const history = useHistory()
 
     //any time the show prop's id state changes (on page load) get individual show with expanded user, embedded taggedShows (with embedded tags), and embedded showPlatforms (with embedded platforms)
@@ -50,7 +53,7 @@ export const Show = ({ show, setShows }) => {
                 Modal that pops up on send button click
             */}
             <RecommendationModal openBoolean={recommendationOpenBoolean} setOpenBoolean={setRecommendationOpenBoolean}
-                presentShow={presentShow} setSuccessOpenBoolean={setSuccessOpenBoolean} />
+                presentShow={presentShow} setShowRecoSuccess={setSuccessOpenBoolean} />
 
 
             <Card

@@ -1,10 +1,9 @@
 import { useEffect } from "react"
 import { useState } from "react/cjs/react.development"
 import { Modal, ModalBody, ModalFooter, Button, FormGroup, Input, Label, Alert } from "reactstrap"
-import { GameRepo } from "../../repositories/GameRepo"
 import { SocialRepo } from "../../repositories/SocialRepo"
 
-export const RecommendationModal = ({ openBoolean, setOpenBoolean, presentGame, presentShow, presentGame, setSuccessOpenBoolean }) => {
+export const RecommendationModal = ({ openBoolean, setOpenBoolean, presentGame, presentShow, presentBook, setBookRecoSuccess, setGameRecoSuccess, setShowRecoSuccess }) => {
     const userId = parseInt(localStorage.getItem("trove_user"))
     const [emailEntry, setEmailEntry] = useState("")
     const [messageEntry, setMessageEntry] = useState("")
@@ -77,7 +76,7 @@ export const RecommendationModal = ({ openBoolean, setOpenBoolean, presentGame, 
                                 message: messageEntry
                             })
                                 .then(() => {
-                                    setSuccessOpenBoolean(true)
+                                    setGameRecoSuccess(true)
                                 })
                                 .then(() => {
                                     setOpenBoolean(false)
@@ -90,7 +89,7 @@ export const RecommendationModal = ({ openBoolean, setOpenBoolean, presentGame, 
                                 message: messageEntry
                             })
                                 .then(() => {
-                                    setSuccessOpenBoolean(true)
+                                    setShowRecoSuccess(true)
                                 })
                                 .then(() => {
                                     setOpenBoolean(false)
@@ -103,7 +102,7 @@ export const RecommendationModal = ({ openBoolean, setOpenBoolean, presentGame, 
                                 message: messageEntry
                             })
                                 .then(() => {
-                                    setSuccessOpenBoolean(true)
+                                    setBookRecoSuccess(true)
                                 })
                                 .then(() => {
                                     setOpenBoolean(false)

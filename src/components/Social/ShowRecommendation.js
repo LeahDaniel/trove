@@ -1,13 +1,22 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { Button, Card, CardBody, CardSubtitle, CardText, CardTitle } from "reactstrap"
-import { ShowRepo } from "../../repositories/ShowRepo"
 import deleteIcon from '../../images/DeleteIcon.png';
 import { useHistory } from "react-router";
 import { SocialRepo } from "../../repositories/SocialRepo";
+import { ShowRepo } from "../../repositories/ShowRepo";
+import { useEffect, useState } from "react/cjs/react.development";
 
 
 export const ShowRecommendation = ({ showRecommendation, setShowRecommendations }) => {
     const history = useHistory()
+    const [show, setShow] = useState([])
+
+    useEffect(
+        () => {
+            ShowRepo.get(showRecommendation.id)
+            .then(setShow)
+        }, []
+    )
 
     //delete recommendationby id. If a current show, set shows with current shows, else set shows with queued shows (to update state appropriately based on current user view)
     const deleteRecommendation = (id) => {
@@ -35,7 +44,7 @@ export const ShowRecommendation = ({ showRecommendation, setShowRecommendations 
                 <CardBody className="mt-0 pt-0">
                     <CardTitle tag="h4" className="mb-3 mt-0">
                         {/* display recommendationnames */}
-                        {showRecommendation.show.name}
+                        {show.name}
                     </CardTitle>
                     <CardSubtitle className="mb-3 mt-0">
                         {/* display sender name */}
@@ -49,7 +58,12 @@ export const ShowRecommendation = ({ showRecommendation, setShowRecommendations 
                     <Button onClick={() => {
                         history.push({
                             pathname: "/shows/create",
-                            state: showRecommendation
+                            state: {
+                                name: show.name,
+                                current: false,
+                                streamingServiceId: show.streamingServiceId,
+                                tagArray: show.taggedShows.map(taggedShow => taggedShow.tag.tag)
+                            }
                         })
                     }}> Add to Queue </Button>
 

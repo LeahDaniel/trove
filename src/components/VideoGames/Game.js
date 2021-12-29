@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Alert, Badge, Button, Card, CardBody, CardSubtitle, CardText, CardTitle, UncontrolledAlert } from "reactstrap"
+import { Badge, Card, CardBody, CardSubtitle, CardText, CardTitle, UncontrolledAlert } from "reactstrap"
 import { GameRepo } from "../../repositories/GameRepo"
 import deleteIcon from '../../images/DeleteIcon.png';
 import editIcon from '../../images/EditIcon.png';
@@ -60,7 +60,7 @@ export const Game = ({ game, setGames }) => {
                 Modal that pops up on send button click
             */}
             <RecommendationModal openBoolean={recommendationOpenBoolean} setOpenBoolean={setRecommendationOpenBoolean}
-                presentGame={presentGame} setSuccessOpenBoolean={setSuccessOpenBoolean} />
+                presentGame={presentGame} setGameRecoSuccess={setSuccessOpenBoolean} />
 
             <Card
                 body

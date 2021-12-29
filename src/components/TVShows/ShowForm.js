@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useHistory, useLocation } from "react-router"
-import { Alert, Button, Form, FormGroup, FormText, Input, Label } from "reactstrap"
+import { Alert, Button, Form, FormGroup, FormText, Input, Label, UncontrolledAlert } from "reactstrap"
 import { ShowRepo } from "../../repositories/ShowRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 import CreatableSelect from 'react-select/creatable'
@@ -80,11 +80,13 @@ export const ShowForm = () => {
         copy.streamingService = presentShow.streamingServiceId
 
         //create a tag array from the presentShow's associated taggedShows, and set as userChoices.tagArray value
-        let tagArray = []
-        for (const taggedShow of presentShow.taggedShows) {
-            tagArray.push({ label: taggedShow.tag.tag, value: taggedShow.tag.id })
+        if (presentShow.taggedShows) {
+            let tagArray = []
+            for (const taggedShow of presentShow.taggedShows) {
+                tagArray.push({ label: taggedShow.tag.tag, value: taggedShow.tag.id })
+            }
+            copy.tagArray = tagArray
         }
-        copy.tagArray = tagArray
 
         //set user choices using the copy constructed above
         setUserChoices(copy)
@@ -248,6 +250,11 @@ export const ShowForm = () => {
                         placeholder="Select or create tags..."
                     />
                 </FormGroup>
+                {
+                    presentShow?.tagArray?.length > 0
+                    ? <UncontrolledAlert fade color="info">The user who recommended this used the tags: {presentShow.tagArray.join(", ")}</UncontrolledAlert>
+                    : ""
+                }
                 <FormGroup>
                     <Label for="exampleSelect">
                         Streaming Service
@@ -349,9 +356,11 @@ export const ShowForm = () => {
 
                         //check if every key on the "invalid" object is false
                         if (Object.keys(invalid).every(key => invalid[key] === false)) {
-                            presentShow
-                                ? editShow(evt)
-                                : constructShow(evt)
+                            if(presentShow?.userId){
+                                editShow(evt)
+                            } else {
+                                constructShow(evt)
+                            }
                         } else {
                             setAlert(true)
                         }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useHistory, useLocation } from "react-router"
-import { Alert, Button, Form, FormGroup, FormText, Input, Label } from "reactstrap"
+import { Alert, Button, Form, FormGroup, FormText, Input, Label, UncontrolledAlert } from "reactstrap"
 import { GameRepo } from "../../repositories/GameRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 import CreatableSelect from 'react-select/creatable'
@@ -100,9 +100,9 @@ export const GameForm = () => {
             copy.tagArray = tagArray
         }
         //if a current game (only one platform possible), change chosenCurrentPlatform value based on platformId of first (and only) gamePlatform
-        if (presentGame.current === true && presentGame.gamePlatforms) {
+        if (presentGame.current === true) {
             copy.chosenCurrentPlatform = presentGame.gamePlatforms[0].platformId
-        } else if(presentGame.current === false && presentGame.gamePlatforms) {
+        } else {
             //if a queued game (more than one platform possible), create a Set of platformIds from the presentGame's associated gamePlatforms, and set as chosenPlatforms value
             let platformSet = new Set()
             for (const gamePlatform of presentGame.gamePlatforms) {
@@ -303,6 +303,11 @@ export const GameForm = () => {
                         placeholder="Select or create tags..."
                     />
                 </FormGroup>
+                {
+                    presentGame?.tagArray?.length > 0
+                    ? <UncontrolledAlert fade color="info">The user who recommended this used the tag(s): {presentGame.tagArray.join(", ")}</UncontrolledAlert>
+                    : ""
+                }
                 <FormGroup>
                     <Label for="multiplayerSelect">
                         Multiplayer Capable?
@@ -483,7 +488,7 @@ export const GameForm = () => {
 
                         //check if every key on the "invalid" object is false
                         if (Object.keys(invalid).every(key => invalid[key] === false)) {
-                            if( presentGame && presentGame.gamePlatforms){
+                            if(presentGame?.userId){
                                 editGame(evt)
                             } else {
                                 constructGame(evt)

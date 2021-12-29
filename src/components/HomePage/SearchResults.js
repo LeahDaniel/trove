@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react"
 import { Game } from "../VideoGames/Game"
 import { Show } from "../TVShows/Show"
 import { Book } from "../Books/Book"
-import { Card, CardBody, CardTitle } from "reactstrap"
 
 export const SearchResults = ({ games, shows, books, userAttemptedSearch }) => {
     const [currentGames, setCurrentGames] = useState([])

@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react"
-import { Badge, Card, CardBody, CardSubtitle, CardText, CardTitle } from "reactstrap"
+import { Badge, Card, CardBody, CardSubtitle, CardText, CardTitle, UncontrolledAlert } from "reactstrap"
 import { BookRepo } from "../../repositories/BookRepo"
 import deleteIcon from '../../images/DeleteIcon.png';
 import editIcon from '../../images/EditIcon.png';
 import moveIcon from '../../images/MoveFolder3.png';
+import sendIcon from '../../images/SendIcon.png';
 import { useHistory } from "react-router";
+import { RecommendationModal } from "../Social/RecommendationModal";
 
 
 export const Book = ({ book, setBooks }) => {
     const [presentBook, setBook] = useState([])
+    const [recommendationOpenBoolean, setRecommendationOpenBoolean] = useState(false)
+    const [successOpenBoolean, setSuccessOpenBoolean] = useState(false)
     const history = useHistory()
 
     //any time the book prop's id state changes (on page load) get individual book with expanded user, embedded taggedBooks (with embedded tags), and embedded bookPlatforms (with embedded platforms)
@@ -49,7 +53,7 @@ export const Book = ({ book, setBooks }) => {
                 Modal that pops up on send button click
             */}
             <RecommendationModal openBoolean={recommendationOpenBoolean} setOpenBoolean={setRecommendationOpenBoolean}
-                presentGame={presentGame} setSuccessOpenBoolean={setSuccessOpenBoolean} />
+                presentBook={presentBook} setBookRecoSuccess={setSuccessOpenBoolean} />
 
             <Card
                 body
@@ -122,6 +126,14 @@ export const Book = ({ book, setBooks }) => {
 
                 </CardBody>
             </Card>
+            {
+                successOpenBoolean
+                    ? <UncontrolledAlert
+                        color="success">
+                        Recommendation sent!
+                    </UncontrolledAlert>
+                    : ""
+            }
         </div>
 
     )

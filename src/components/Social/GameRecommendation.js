@@ -1,13 +1,21 @@
-import React, { useEffect, useState } from "react"
+import React, {useState, useEffect}from "react"
 import { Button, Card, CardBody, CardSubtitle, CardText, CardTitle } from "reactstrap"
-import { GameRepo } from "../../repositories/GameRepo"
 import deleteIcon from '../../images/DeleteIcon.png';
 import { useHistory } from "react-router";
 import { SocialRepo } from "../../repositories/SocialRepo";
+import { GameRepo } from "../../repositories/GameRepo";
 
 
 export const GameRecommendation = ({ gameRecommendation, setGameRecommendations }) => {
     const history = useHistory()
+    const [game, setGame] = useState([])
+
+    useEffect(
+        () => {
+            GameRepo.get(gameRecommendation.id)
+            .then(setGame)
+        }, []
+    )
 
     //delete recommendationby id. If a current game, set games with current games, else set games with queued games (to update state appropriately based on current user view)
     const deleteRecommendation = (id) => {
@@ -35,7 +43,7 @@ export const GameRecommendation = ({ gameRecommendation, setGameRecommendations 
                 <CardBody className="mt-0 pt-0">
                     <CardTitle tag="h4" className="mb-3 mt-0" >
                         {/* display recommendationnames */}
-                        {gameRecommendation.game.name}
+                        {game.name}
                     </CardTitle>
                     <CardSubtitle className="mb-3 mt-0" >
                         {/* display sender name */}
@@ -50,10 +58,11 @@ export const GameRecommendation = ({ gameRecommendation, setGameRecommendations 
                         history.push({
                             pathname: "/games/create",
                             state: {
-                                name: gameRecommendation.game.name,
-                                userId: gameRecommendation.recipientId,
+                                name: game.name,
                                 current: false,
-                                multiplayerCapable: gameRecommendation.game.multiplayerCapable,
+                                multiplayerCapable: game.multiplayerCapable,
+                                tagArray: game.taggedGames.map(taggedGame => taggedGame.tag.tag),
+                                gamePlatforms: game.gamePlatforms
                             }
                         })
                     }}> Add to Queue </Button>

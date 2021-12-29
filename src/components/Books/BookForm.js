@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useHistory, useLocation } from "react-router"
-import { Alert, Button, Form, FormGroup, FormText, Input, Label } from "reactstrap"
+import { Alert, Button, Form, FormGroup, FormText, Input, Label, UncontrolledAlert } from "reactstrap"
 import { BookRepo } from "../../repositories/BookRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 import CreatableSelect from 'react-select/creatable'
@@ -89,11 +89,13 @@ export const BookForm = () => {
         copy.author = presentBook.author.name
 
         //create a tag array from the presentBook's associated taggedBooks, and set as userChoices.tagArray value
-        let tagArray = []
-        for (const taggedBook of presentBook.taggedBooks) {
-            tagArray.push({ label: taggedBook.tag.tag, value: taggedBook.tag.id })
+        if (presentBook.taggedBooks) {
+            let tagArray = []
+            for (const taggedBook of presentBook.taggedBooks) {
+                tagArray.push({ label: taggedBook.tag.tag, value: taggedBook.tag.id })
+            }
+            copy.tagArray = tagArray
         }
-        copy.tagArray = tagArray
 
         //set user choices using the copy constructed above
         setUserChoices(copy)
@@ -107,7 +109,7 @@ export const BookForm = () => {
     const editBook = (newAuthorId) => {
         const bookFromUserChoices = {
             name: userChoices.name,
-            userId: parseInt(localStorage.getItem("trove_user")),
+            userId: userId,
             current: userChoices.current,
             authorId: newAuthorId
         }
@@ -133,7 +135,7 @@ export const BookForm = () => {
     const constructBook = (newAuthorId) => {
         const bookFromUserChoices = {
             name: userChoices.name,
-            userId: parseInt(localStorage.getItem("trove_user")),
+            userId: userId,
             current: userChoices.current,
             authorId: newAuthorId
         }
@@ -196,17 +198,21 @@ export const BookForm = () => {
 
         if (foundAuthor) {
             //set the state of the authorId using the id of the existing author object
-            presentBook
-                ? editBook(foundAuthor.id)
-                : constructBook(foundAuthor.id)
+            if (presentBook?.userId) {
+                editBook(foundAuthor.id)
+            } else {
+                constructBook(foundAuthor.id)
+            }
 
         } else {
             //post a new author object with the entered author name
             BookRepo.addAuthor({ name: userChoices.author, userId: userId })
                 .then((newAuthor) => {
-                    presentBook
-                        ? editBook(newAuthor.id)
-                        : constructBook(newAuthor.id)
+                    if (presentBook?.userId) {
+                        editBook(newAuthor.id)
+                    } else {
+                        constructBook(newAuthor.id)
+                    }
                 })
 
         }
@@ -286,6 +292,11 @@ export const BookForm = () => {
                         placeholder="Select or create tags..."
                     />
                 </FormGroup>
+                {
+                    presentBook?.tagArray?.length > 0
+                    ? <UncontrolledAlert fade color="info">The user who recommended this used the tag(s): {presentBook.tagArray.join(", ")}</UncontrolledAlert>
+                    : ""
+                }
                 <FormGroup>
                     <Label for="exampleSelect">
                         Author
