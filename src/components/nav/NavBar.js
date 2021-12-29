@@ -87,6 +87,9 @@ export const NavBar = () => {
                             <NavLink href="/tags">Tags</NavLink>
                         </NavItem>
                         <NavItem >
+                            <NavLink href="/recommendations">Recommendations</NavLink>
+                        </NavItem>
+                        <NavItem >
                             <NavLink href="/login" onClick={
                                 () => {
                                     localStorage.removeItem("trove_user")

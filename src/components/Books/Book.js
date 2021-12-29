@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Badge, Button, Card, CardBody, CardSubtitle, CardText, CardTitle } from "reactstrap"
+import { Badge, Card, CardBody, CardSubtitle, CardText, CardTitle } from "reactstrap"
 import { BookRepo } from "../../repositories/BookRepo"
 import deleteIcon from '../../images/DeleteIcon.png';
 import editIcon from '../../images/EditIcon.png';
@@ -44,6 +44,13 @@ export const Book = ({ book, setBooks }) => {
 
     return (
         <div className="mt-4">
+
+            {/*
+                Modal that pops up on send button click
+            */}
+            <RecommendationModal openBoolean={recommendationOpenBoolean} setOpenBoolean={setRecommendationOpenBoolean}
+                presentGame={presentGame} setSuccessOpenBoolean={setSuccessOpenBoolean} />
+
             <Card
                 body
                 color="light"
@@ -70,6 +77,13 @@ export const Book = ({ book, setBooks }) => {
                                             pathname: "/books/create",
                                             state: presentBook
                                         })
+                                    }
+                                } />
+                            </button>
+                            <button className="imgButton">
+                                <img src={sendIcon} alt="Send" style={{ maxWidth: 35, maxHeight: 35 }} onClick={
+                                    () => {
+                                        setRecommendationOpenBoolean(true)
                                     }
                                 } />
                             </button>

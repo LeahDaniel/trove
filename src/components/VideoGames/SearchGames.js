@@ -5,10 +5,10 @@ import { GameRepo } from "../../repositories/GameRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 
 export const SearchGames = ({ userEntries, setUserEntries, taggedGames }) => {
+    const userId = parseInt(localStorage.getItem("trove_user"))
     const [platforms, setPlatforms] = useState([])
     const [tags, setTags] = useState([])
     const [tagsForGames, setTagsForGames] = useState([])
-    const userId = parseInt(localStorage.getItem("trove_user"))
 
 
     useEffect(

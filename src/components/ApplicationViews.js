@@ -4,6 +4,7 @@ import { BookForm } from "./Books/BookForm"
 import { BookQueueView } from "./Books/BookQueueView"
 import { CurrentBooksView } from "./Books/CurrentBooksView"
 import { HomePage } from "./HomePage/HomePage"
+import { RecommendationList } from "./Social/RecommendationList"
 import { TagView } from "./Tags/TagView"
 import { CurrentShowsView } from "./TVShows/CurrentShowsView"
 import { ShowForm } from "./TVShows/ShowForm"
@@ -48,6 +49,9 @@ export const ApplicationViews = () => {
             </Route>
             <Route exact path="/tags">
                 <TagView/>
+            </Route>
+            <Route exact path="/recommendations">
+                <RecommendationList/>
             </Route>
         </>
     )

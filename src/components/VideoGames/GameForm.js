@@ -92,15 +92,17 @@ export const GameForm = () => {
         copy.multiplayerCapable = presentGame.multiplayerCapable
 
         //create a tag array from the presentGame's associated taggedGames, and set as userChoices.tagArray value
-        let tagArray = []
-        for (const taggedGame of presentGame.taggedGames) {
-            tagArray.push({ label: taggedGame.tag.tag, value: taggedGame.tag.id })
+        if (presentGame.taggedGames) {
+            let tagArray = []
+            for (const taggedGame of presentGame.taggedGames) {
+                tagArray.push({ label: taggedGame.tag.tag, value: taggedGame.tag.id })
+            }
+            copy.tagArray = tagArray
         }
-        copy.tagArray = tagArray
         //if a current game (only one platform possible), change chosenCurrentPlatform value based on platformId of first (and only) gamePlatform
-        if (presentGame.current === true) {
+        if (presentGame.current === true && presentGame.gamePlatforms) {
             copy.chosenCurrentPlatform = presentGame.gamePlatforms[0].platformId
-        } else {
+        } else if(presentGame.current === false && presentGame.gamePlatforms) {
             //if a queued game (more than one platform possible), create a Set of platformIds from the presentGame's associated gamePlatforms, and set as chosenPlatforms value
             let platformSet = new Set()
             for (const gamePlatform of presentGame.gamePlatforms) {
@@ -424,7 +426,7 @@ export const GameForm = () => {
                                 </FormText>
                             </FormGroup>
                             : <FormGroup
-                                
+
                                 tag="fieldset"
                             >
                                 <Label>
@@ -481,9 +483,11 @@ export const GameForm = () => {
 
                         //check if every key on the "invalid" object is false
                         if (Object.keys(invalid).every(key => invalid[key] === false)) {
-                            presentGame
-                                ? editGame(evt)
-                                : constructGame(evt)
+                            if( presentGame && presentGame.gamePlatforms){
+                                editGame(evt)
+                            } else {
+                                constructGame(evt)
+                            }
                         } else {
                             setAlert(true)
                         }
