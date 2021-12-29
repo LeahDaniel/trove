@@ -8,7 +8,7 @@ export const NavBar = () => {
     return (
             <Navbar
                 color="light"
-                expand="sm"
+                expand="md"
                 light
             >
                 <NavbarBrand className="p-3" href="/">
@@ -85,6 +85,9 @@ export const NavBar = () => {
                         </UncontrolledDropdown>
                         <NavItem >
                             <NavLink href="/tags">Tags</NavLink>
+                        </NavItem>
+                        <NavItem >
+                            <NavLink href="/recommendations">Recommendations</NavLink>
                         </NavItem>
                         <NavItem >
                             <NavLink href="/login" onClick={

@@ -4,14 +4,14 @@ import { SearchShows } from "./SearchShows"
 import addIcon from '../../images/AddIcon.png';
 import { useHistory } from "react-router";
 import { ShowRepo } from "../../repositories/ShowRepo";
-import { Card} from "reactstrap";
+import { Button, Card } from "reactstrap";
 import { TagRepo } from "../../repositories/TagRepo";
 
 export const CurrentShowsView = () => {
     const [userEntries, setUserEntries] = useState({
         name: "",
         service: "0",
-        tag: "0"
+        tags: new Set()
     })
     const history = useHistory()
     const [shows, setShows] = useState([])
@@ -66,57 +66,69 @@ export const CurrentShowsView = () => {
     const determineFilters = () => {
         const serviceExist = userEntries.service !== "0"
         const noService = userEntries.service === "0"
-        const tagExist = userEntries.tag !== "0"
-        const noTag = userEntries.tag === "0"
+        const tagsExist = userEntries.tags.size > 0
+        const noTags = userEntries.tags.size === 0
 
         const serviceId = parseInt(userEntries.service)
-        const tagId = parseInt(userEntries.tag)
 
-        const showsByTagOnly = midFilterShows.filter(show => {
-            const foundTaggedShow = show.taggedShows?.find(taggedShow => taggedShow.tagId === tagId)
-            if (foundTaggedShow) {
-                return true
-            } else {
-                return false
+        const showsByTagOnly = () => {
+            let newShowArray = []
+
+            for (const show of midFilterShows) {
+                let booleanArray = []
+                userEntries.tags.forEach(tagId => {
+                    const foundShow = show.taggedShows?.find(taggedShow => taggedShow.tagId === tagId)
+                    if (foundShow) {
+                        booleanArray.push(true)
+                    } else {
+                        booleanArray.push(false)
+                    }
+                })
+                if (booleanArray.every(boolean => boolean === true)) {
+                    newShowArray.push(show)
+                }
             }
-        })
-        const showsByServiceOnly = midFilterShows.filter(show => show.streamingServiceId === serviceId)
-        const showsByTagAndService = showsByTagOnly.filter(show => showsByServiceOnly.includes(show))
+            return newShowArray
+        }
 
-        if (noService && noTag) {
+        const showsByServiceOnly = midFilterShows.filter(show => show.streamingServiceId === serviceId)
+        const showsByTagAndService = showsByTagOnly().filter(show => showsByServiceOnly.includes(show))
+
+        if (noService && noTags) {
             return midFilterShows
-        } else if (serviceExist && noTag) {
+        } else if (serviceExist && noTags) {
             return showsByServiceOnly
             //if a user has not been chosen and the favorites box is checked
-        } else if (noService && tagExist) {
-            return showsByTagOnly
+        } else if (noService && tagsExist) {
+            return showsByTagOnly()
             //if a user has been chosen AND the favorites box is checked.
-        } else if (serviceExist && tagExist) {
+        } else if (serviceExist && tagsExist) {
             return showsByTagAndService
         }
     }
 
     return (
-        <div className="row">
+        <div className="row justify-content-evenly">
+            <div className="col-3">
+                {/* clickable "add" image to bring user to form */}
+                <div className="row justify-content-center mt-5">
+                    <Button className="col-6" onClick={
+                        () => history.push("/shows/create")
+                    }>
+                        <img src={addIcon} alt="Add" style={{ maxWidth: 25 }} className="me-2"
+                        />
+                        Add Show
+                    </Button>
+                </div>
+
+                <SearchShows setUserEntries={setUserEntries} userEntries={userEntries} taggedShows={taggedShows} />
+            </div>
             {
                 isLoading
-                    ? < Card className="col-7 d-flex align-items-center justify-content-center border-0"/>
+                    ? < Card className="col-7 d-flex align-items-center justify-content-center border-0" />
                     : <ShowList shows={shows} setShows={setShows} userAttemptedSearch={userAttemptedSearch} />
             }
-            <div className="col-5 px-3 pe-5">
-                {/* clickable "add" image to bring user to form */}
-                <div className="row">
-                    <div className="col-8"></div>
-                    <div className="col-4 pt-5">
-                        <img src={addIcon} alt="Add" style={{ maxWidth: 40, alignSelf: "flex-end" }}
-                            onClick={
-                                () => history.push("/shows/create")
-                            } />
-                    </div>
 
-                </div>
-                <SearchShows setUserEntries={setUserEntries} userEntries={userEntries} taggedShows={taggedShows}/>
-            </div>
         </div>
     )
 }

@@ -36,7 +36,7 @@ export const HomePage = () => {
             setGames(gamesArray)
             setShows(showsArray)
             setBooks(booksArray)
-            
+
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [midFilterGames, midFilterBooks, midFilterShows]
     )
@@ -59,7 +59,7 @@ export const HomePage = () => {
                     .then(setFilteredBooks)
             }
 
-            if(userEntries.title!== "" || userEntries.tags.size > 0){
+            if (userEntries.title !== "" || userEntries.tags.size > 0) {
                 setAttemptBoolean(true)
             } else {
                 setAttemptBoolean(false)
@@ -76,29 +76,29 @@ export const HomePage = () => {
             let newGameArray = []
             let newShowArray = []
             let newBookArray = []
-            
-            for (const game of midFilterGames){
+
+            for (const game of midFilterGames) {
                 let booleanArray = []
                 userEntries.tags.forEach(tagId => {
                     const foundGame = game.taggedGames?.find(taggedGame => taggedGame.tagId === tagId)
-                    if(foundGame){
+                    if (foundGame) {
                         booleanArray.push(true)
-                    } else{
+                    } else {
                         booleanArray.push(false)
                     }
                 })
-                
+
                 if (booleanArray.every(boolean => boolean === true)) {
                     newGameArray.push(game)
                 }
             }
-            for (const show of midFilterShows){
+            for (const show of midFilterShows) {
                 let booleanArray = []
                 userEntries.tags.forEach(tagId => {
                     const foundShow = show.taggedShows?.find(taggedShow => taggedShow.tagId === tagId)
-                    if(foundShow){
+                    if (foundShow) {
                         booleanArray.push(true)
-                    } else{
+                    } else {
                         booleanArray.push(false)
                     }
                 })
@@ -106,13 +106,13 @@ export const HomePage = () => {
                     newShowArray.push(show)
                 }
             }
-            for (const book of midFilterBooks){
+            for (const book of midFilterBooks) {
                 let booleanArray = []
                 userEntries.tags.forEach(tagId => {
                     const foundBook = book.taggedBooks?.find(taggedBook => taggedBook.tagId === tagId)
-                    if(foundBook){
+                    if (foundBook) {
                         booleanArray.push(true)
-                    } else{
+                    } else {
                         booleanArray.push(false)
                     }
                 })
@@ -120,11 +120,11 @@ export const HomePage = () => {
                     newBookArray.push(book)
                 }
             }
-            
+
             return [newGameArray, newShowArray, newBookArray]
 
         } else if (noTags) {
-            
+
             return [midFilterGames, midFilterShows, midFilterBooks]
 
         }
@@ -132,8 +132,8 @@ export const HomePage = () => {
 
     return (
         <>
-            <div className="pt-5 mx-4">
-                <p>Please use the navigation bar above to find the list of media you'd like to look through.</p>
+            <div className="p-5 m-5 bg-light border border-secondary">
+                <p>Welcome! Please use the navigation bar above to find the list of media you'd like to look through, or use the filter feature below to search through all of your media at once.</p>
                 <p className="pt-3">Each media type has a:</p>
                 <ul>
                     <li>Current List (for media you are currently watching/playing/etc)</li>
@@ -141,10 +141,14 @@ export const HomePage = () => {
                     <li>Option to add a new entry</li>
                 </ul>
             </div>
-            <div className="p-5 m-5 bg-light border">
-                <FilterForm userEntries={userEntries} setUserEntries={setUserEntries} />
-                <SearchResults games={games} shows={shows} books={books} userAttemptedSearch={userAttemptedSearch}/>
+            <div>
+                {/* <div className="row justify-content-center mt-4"><h2 className='col-6 text-center'>Your Media</h2></div> */}
+                <div className="row justify-content-evenly">
+                    <FilterForm userEntries={userEntries} setUserEntries={setUserEntries} />
+                    <SearchResults games={games} shows={shows} books={books} userAttemptedSearch={userAttemptedSearch} />
+                </div>
             </div>
         </>
     )
+
 }

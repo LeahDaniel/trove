@@ -1,22 +1,26 @@
 import React, { useEffect, useState } from "react"
-import { Badge, Button, Card, CardBody, CardSubtitle, CardText, CardTitle } from "reactstrap"
+import { Badge, Card, CardBody, CardSubtitle, CardText, CardTitle, UncontrolledAlert } from "reactstrap"
 import { GameRepo } from "../../repositories/GameRepo"
 import deleteIcon from '../../images/DeleteIcon.png';
 import editIcon from '../../images/EditIcon.png';
+import moveIcon from '../../images/MoveFolder3.png';
+import sendIcon from '../../images/SendIcon.png';
 import { useHistory } from "react-router";
 import { PlatformModal } from "./PlatformModal";
+import { RecommendationModal } from "../Social/RecommendationModal";
 
 
-export const Game = ({ game, setGames}) => {
+export const Game = ({ game, setGames }) => {
     const [presentGame, setGame] = useState([])
-    const [openBoolean, setOpenBoolean] = useState(false)
+    const [platformOpenBoolean, setPlatformOpenBoolean] = useState(false)
+    const [recommendationOpenBoolean, setRecommendationOpenBoolean] = useState(false)
+    const [successOpenBoolean, setSuccessOpenBoolean] = useState(false)
     const history = useHistory()
 
     //any time the game prop's id state changes (on page load) get individual game with expanded user, embedded taggedGames (with embedded tags), and embedded gamePlatforms (with embedded platforms)
     useEffect(() => {
         GameRepo.get(game.id)
             .then(setGame)
-            
     }, [game.id])
 
     //delete game by id. If a current game, set games with current games, else set games with queued games (to update state appropriately based on current user view)
@@ -50,8 +54,13 @@ export const Game = ({ game, setGames}) => {
                 Modal that pops up if the game has multiple platforms on it when user clicks "add to current".
                 Pass state of presentGame, addToCurrent function, and both the state and setter for the openBoolean
             */}
-            <PlatformModal openBoolean={openBoolean} setOpenBoolean={setOpenBoolean}
+            <PlatformModal openBoolean={platformOpenBoolean} setOpenBoolean={setPlatformOpenBoolean}
                 presentGame={presentGame} addToCurrent={addToCurrent} />
+            {/*
+                Modal that pops up on send button click
+            */}
+            <RecommendationModal openBoolean={recommendationOpenBoolean} setOpenBoolean={setRecommendationOpenBoolean}
+                presentGame={presentGame} setGameRecoSuccess={setSuccessOpenBoolean} />
 
             <Card
                 body
@@ -59,27 +68,54 @@ export const Game = ({ game, setGames}) => {
             >
                 {
                     setGames
-                        ? <div style={{ alignSelf: "flex-end" }} className="mt-2 mb-0">
-                            {/* onClick of delete button (trash icon) call deleteGame function with argument of the id of the present game. */}
-                            <img className="me-3" src={deleteIcon} alt="Delete" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
-                                () => { return deleteGame(presentGame.id) }
-                            } />
+                        ?
+                        <div style={{ alignSelf: "flex-end" }} className="mt-2 mb-0">
+                            {/* 
+                                If the present game is in the queue, display a "Add to Current" button.
+                            */}
+                            {
+                                presentGame.current === false && setGames
+                                    ? <button className="imgButton">
+                                        <img src={moveIcon} alt="Move to Current" style={{ maxWidth: 40, maxHeight: 40 }} onClick={() => {
+                                            presentGame.gamePlatforms?.length > 1
+                                                ? setPlatformOpenBoolean(true)
+                                                : addToCurrent()
+                                        }} />
+                                    </button>
+                                    : ""
+                            }
                             {/* onClick of the edit button, push user to form route, and send along state of the presentGame to the location */}
-                            <img className="me-1" src={editIcon} alt="Edit" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
-                                () => {
-                                    history.push({
-                                        pathname: "/games/create",
-                                        state: presentGame
-                                    })
-                                }
-                            } />
+                            <button className="imgButton">
+                                <img src={editIcon} alt="Edit" style={{ maxWidth: 35, maxHeight: 35 }} onClick={
+                                    () => {
+                                        history.push({
+                                            pathname: "/games/create",
+                                            state: presentGame
+                                        })
+                                    }
+                                } />
+                            </button>
+                            <button className="imgButton">
+                                <img src={sendIcon} alt="Send" style={{ maxWidth: 35, maxHeight: 35 }} onClick={
+                                    () => {
+                                        setRecommendationOpenBoolean(true)
+                                    }
+                                } />
+                            </button>
+                            {/* onClick of delete button (trash icon) call deleteGame function with argument of the id of the present game. */}
+                            <button className="imgButton">
+                                <img src={deleteIcon} alt="Delete" style={{ maxWidth: 35, maxHeight: 35 }} onClick={
+                                    () => { return deleteGame(presentGame.id) }
+                                } />
+                            </button>
+
                         </div>
                         : ""
                 }
 
 
                 <CardBody className="mt-0 pt-0">
-                    <CardTitle tag="h4" className={setGames? "mb-3 mt-0" :  "my-3 pt-3"}>
+                    <CardTitle tag="h4" className={setGames ? "mb-3 mt-0" : "my-3 pt-3"}>
                         {/* display game names */}
                         {presentGame.name}
                     </CardTitle>
@@ -114,18 +150,17 @@ export const Game = ({ game, setGames}) => {
                         to select one platform, then call the addToCurrent function on the modal. 
                         If the present game has only one platform, call the addToCurrent function on this button.
                     */}
-                    {
-                        presentGame.current === false && setGames
-                            ? <Button onClick={() => {
-                                presentGame.gamePlatforms?.length > 1
-                                    ? setOpenBoolean(true)
-                                    : addToCurrent()
-                            }
-                            }> Add to Current </Button>
-                            : ""
-                    }
                 </CardBody>
             </Card>
+            {
+                successOpenBoolean
+                    ? <UncontrolledAlert
+                        color="success">
+                        Recommendation sent!
+                    </UncontrolledAlert>
+                    : ""
+            }
+
         </div>
 
     )

@@ -49,7 +49,6 @@ export const PlatformModal = ({ openBoolean, setOpenBoolean, presentGame, addToC
                 >
                     Submit
                 </Button>
-                {' '}
                 {/* set boolean state to false when cancel button is clicked to hide modal */}
                 <Button onClick={() => { setOpenBoolean(false) }}>
                     Cancel

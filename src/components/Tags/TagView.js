@@ -49,45 +49,66 @@ export const TagView = () => {
         }, [userEntry, userId]
     )
 
-    return (
-        <>
-            <div className="p-5 m-5 bg-light">
-                <TagSearch setUserEntry={setUserEntry} userEntry={userEntry} />
-                {
-                    isLoading
-                        ? < Card className="col-7 d-flex align-items-center justify-content-center border-0" />
-                        : <TagList tags={tags} setTags={setTags} userAttemptedSearch={userAttemptedSearch} setUserEntry={setUserEntry} />
-                }
-                <div className='row justify-content-center'>
-                    {
-                        openBoolean
-                            ? <FormGroup className="col-10 mt-4">
-                                <Label>New Tag Name</Label>
-                                <Input
-                                    id="tagEdit"
-                                    type="text"
-                                    placeholder="Press Enter to submit..."
-                                    onKeyUp={(event) => {
-                                        if (event.key === "Enter") {
-                                            TagRepo.addTag({
-                                                tag: newTagString,
-                                                userId: userId,
-                                            })
-                                                //after doing PUT operation, update state
-                                                .then(() => TagRepo.getTagsForUser(userId))
-                                                .then(setTags)
-                                                .then(() => setOpenBoolean(!openBoolean))
-                                        } else {
-                                            setNewTagString(event.target.value)
-                                        }
-                                    }}
-                                />
-                            </FormGroup>
-                            : <Button className="col-4 mt-4" onClick={() => setOpenBoolean(!openBoolean)}>Add A New Tag</Button>
-                    }
+    const constructTag = (enteredTag) => {
+        const neutralizedTagsCopy = tags.map(tag => {
+            const upperCased = tag.tag.toUpperCase()
+            const noSpaces = upperCased.split(" ").join("")
+            return {
+                id: tag.id,
+                tag: noSpaces
+            }
+        })
 
-                </div>
+        const neutralizedEnteredTag = enteredTag.toUpperCase().split(" ").join("")
+        let foundTag = neutralizedTagsCopy.find(tag => tag.tag === neutralizedEnteredTag)
+        if (foundTag) {
+            window.alert("Your list already contains this tag.")
+        } else {
+            //post a new tag object with that enteredTag
+            TagRepo.addTag({
+                tag: enteredTag,
+                userId: userId,
+            })
+                //after doing PUT operation, update state
+                .then(() => TagRepo.getTagsForUser(userId))
+                .then(setTags)
+                .then(() => setOpenBoolean(!openBoolean))
+        }
+
+    }
+
+    return (
+
+        <div className="p-5 m-5 bg-light">
+            <TagSearch setUserEntry={setUserEntry} userEntry={userEntry} />
+            {
+                isLoading
+                    ? < Card className="col-7 d-flex align-items-center justify-content-center border-0" />
+                    : <TagList tags={tags} setTags={setTags} userAttemptedSearch={userAttemptedSearch} setUserEntry={setUserEntry} />
+            }
+            <div className='row justify-content-center'>
+                {
+                    openBoolean
+                        ? <FormGroup className="col-10 mt-4">
+                            <Label>New Tag Name</Label>
+                            <Input
+                                id="tagEdit"
+                                type="text"
+                                placeholder="Press Enter to submit..."
+                                onKeyUp={(event) => {
+                                    if (event.key === "Enter") {
+                                        constructTag(newTagString)
+                                    } else {
+                                        setNewTagString(event.target.value)
+                                    }
+                                }}
+                            />
+                        </FormGroup>
+                        : <Button className="col-4 mt-4" onClick={() => setOpenBoolean(!openBoolean)}>Add A New Tag</Button>
+                }
+
             </div>
-        </>
+        </div>
+
     )
 }

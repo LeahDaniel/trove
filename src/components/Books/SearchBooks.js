@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useEffect } from "react/cjs/react.development"
-import { Form, FormGroup, Input, Label } from "reactstrap"
+import { Button, Form, FormGroup, Input, Label } from "reactstrap"
 import { BookRepo } from "../../repositories/BookRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 
@@ -33,7 +33,7 @@ export const SearchBooks = ({ userEntries, setUserEntries, taggedBooks }) => {
                         return 0 //default return value (no sorting)
                     })
                     setAuthors(sorted)
-                })   
+                })
         }, [userId]
     )
 
@@ -41,7 +41,7 @@ export const SearchBooks = ({ userEntries, setUserEntries, taggedBooks }) => {
         () => {
             const newArray = tags.filter(tag => {
                 const foundTag = taggedBooks.find(taggedBook => taggedBook.tagId === tag.id)
-                if(foundTag){
+                if (foundTag) {
                     return true
                 } else {
                     return false
@@ -51,9 +51,17 @@ export const SearchBooks = ({ userEntries, setUserEntries, taggedBooks }) => {
         }, [taggedBooks, tags]
     )
 
+    //check for parameter's value in chosenPlatforms. Delete if it exists (representing unchecking a box), add it if it doesn't (checking a box)
+    const setTag = (id) => {
+        const copy = { ...userEntries }
+        copy.tags.has(id)
+            ? copy.tags.delete(id)
+            : copy.tags.add(id)
+        setUserEntries(copy)
+    }
 
     return (
-        <Form className="pb-5 mt-5 px-2 bg-light border" inline>
+        <Form className="pb-2 mt-5 px-3 bg-light border" inline>
 
             <h5 className="text-center py-3">Filters</h5>
 
@@ -65,6 +73,7 @@ export const SearchBooks = ({ userEntries, setUserEntries, taggedBooks }) => {
                     id="nameSearch"
                     type="search"
                     placeholder="Title contains..."
+                    value={userEntries.name}
                     onChange={(event) => {
                         const userEntriesCopy = { ...userEntries }
                         userEntriesCopy.name = event.target.value
@@ -72,7 +81,6 @@ export const SearchBooks = ({ userEntries, setUserEntries, taggedBooks }) => {
                     }}
                 />
             </FormGroup>
-            {' '}
             <FormGroup>
                 <Label for="authorSelect">
                     Author
@@ -81,6 +89,7 @@ export const SearchBooks = ({ userEntries, setUserEntries, taggedBooks }) => {
                     id="authorSelect"
                     name="select"
                     type="select"
+                    value={userEntries.author}
                     onChange={(event) => {
                         const userEntriesCopy = { ...userEntries }
                         userEntriesCopy.author = event.target.value
@@ -97,26 +106,49 @@ export const SearchBooks = ({ userEntries, setUserEntries, taggedBooks }) => {
                 </Input>
             </FormGroup>
             <FormGroup>
-                <Label for="tagSelect">
-                    Tag
+                <Label>
+                    Tags
                 </Label>
-                <Input
-                    id="tagSelect"
-                    name="select"
-                    type="select"
-                    onChange={(event) => {
-                        const userEntriesCopy = { ...userEntries }
-                        userEntriesCopy.tag = event.target.value
-                        setUserEntries(userEntriesCopy)
-                    }}
-                >
-                    <option value="0"> Select one... </option>
-                    {tagsForBooks.map(tag => {
-                        return <option value={tag.id} key={tag.id}>{tag.tag}</option>
-                    })}
-                </Input>
+                <div>
+                    {
+                        tagsForBooks.length > 0
+                            ? tagsForBooks.map(tag => {
+                                return <Button
+                                    key={`tag--${tag.id}`}
+                                    active={userEntries.tags.has(tag.id) ? true : false}
+                                    color="info"
+                                    style={{ color: "#000000", borderRadius: '20px' }}
+                                    outline
+                                    size="sm"
+                                    className="m-2"
+                                    onClick={() => setTag(tag.id)}
+                                >
+                                    {tag.tag}
+                                </Button>
+
+
+                            })
+                            : ""
+                    }
+                </div>
             </FormGroup>
-            {' '}
+            <FormGroup className='row justify-content-center'>
+                <Button
+                    onClick={() => {
+                        let userEntriesCopy = { ...userEntries }
+                        userEntriesCopy = {
+                            name: "",
+                            author: "0",
+                            tags: new Set()
+                        }
+                        setUserEntries(userEntriesCopy)
+                    }
+                    }
+                    className="col-4 mt-2"
+                >
+                    Clear
+                </Button>
+            </FormGroup>
         </Form>
     )
 }

@@ -8,7 +8,6 @@ export const TagSearch = ({ setUserEntry, userEntry }) => {
                     id="titleSearch"
                     type="search"
                     placeholder="Search..."
-                    bsSize="sm"
                     className="fs-6 "
                     value={userEntry}
                     onChange={(event) => {

@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react"
-import { Badge, Button, Card, CardBody, CardText, CardTitle } from "reactstrap"
+import { Badge, Card, CardBody, CardText, CardTitle, UncontrolledAlert } from "reactstrap"
 import { ShowRepo } from "../../repositories/ShowRepo"
 import deleteIcon from '../../images/DeleteIcon.png';
 import editIcon from '../../images/EditIcon.png';
+import moveIcon from '../../images/MoveFolder3.png';
+import sendIcon from '../../images/SendIcon.png';
 import { useHistory } from "react-router";
+import { RecommendationModal } from "../Social/RecommendationModal";
 
 
 export const Show = ({ show, setShows }) => {
     const [presentShow, setShow] = useState([])
+    const [successOpenBoolean, setSuccessOpenBoolean] = useState(false)
+    const [recommendationOpenBoolean, setRecommendationOpenBoolean] = useState(false)
     const history = useHistory()
 
     //any time the show prop's id state changes (on page load) get individual show with expanded user, embedded taggedShows (with embedded tags), and embedded showPlatforms (with embedded platforms)
@@ -43,6 +48,14 @@ export const Show = ({ show, setShows }) => {
 
     return (
         <div className="mt-4">
+
+            {/*
+                Modal that pops up on send button click
+            */}
+            <RecommendationModal openBoolean={recommendationOpenBoolean} setOpenBoolean={setRecommendationOpenBoolean}
+                presentShow={presentShow} setShowRecoSuccess={setSuccessOpenBoolean} />
+
+
             <Card
                 body
                 color="light"
@@ -51,25 +64,47 @@ export const Show = ({ show, setShows }) => {
                     setShows
                         ?
                         <div style={{ alignSelf: "flex-end" }} className="mt-2 mb-0">
-                            {/* onClick of delete button (trash icon) call deleteShow function with argument of the id of the present show. */}
-                            <img className="me-3" src={deleteIcon} alt="Delete" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
-                                () => { return deleteShow(presentShow.id) }
-                            } />
+                            {/* 
+                                If the present show is in the queue, display a "Add to Current" button.
+                            */}
+                            {
+                                presentShow.current === false && setShows
+                                    ? <button className="imgButton">
+                                        <img src={moveIcon} alt="Move to Current" style={{ maxWidth: 40, maxHeight: 40 }} onClick={addToCurrent} />
+                                    </button>
+                                    : ""
+                            }
                             {/* onClick of the edit button, push user to form route, and send along state of the presentShow to the location */}
-                            <img className="me-1" src={editIcon} alt="Edit" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
-                                () => {
-                                    history.push({
-                                        pathname: "/shows/create",
-                                        state: presentShow
-                                    })
-                                }
-                            } />
+                            <button className="imgButton">
+                                <img src={editIcon} alt="Edit" style={{ maxWidth: 35, maxHeight: 35 }} onClick={
+                                    () => {
+                                        history.push({
+                                            pathname: "/shows/create",
+                                            state: presentShow
+                                        })
+                                    }
+                                } />
+                            </button>
+                            <button className="imgButton">
+                                <img src={sendIcon} alt="Send" style={{ maxWidth: 35, maxHeight: 35 }} onClick={
+                                    () => {
+                                        setRecommendationOpenBoolean(true)
+                                    }
+                                } />
+                            </button>
+                            {/* onClick of delete button (trash icon) call deleteShow function with argument of the id of the present show. */}
+                            <button className="imgButton">
+                                <img src={deleteIcon} alt="Delete" style={{ maxWidth: 35, maxHeight: 35 }} onClick={
+                                    () => { return deleteShow(presentShow.id) }
+                                } />
+                            </button>
+
                         </div>
                         : ""
                 }
 
                 <CardBody className="mt-0 pt-0">
-                    <CardTitle tag="h4" className={setShows? "mb-3 mt-0" :  "my-3 pt-3"}>
+                    <CardTitle tag="h4" className={setShows ? "mb-3 mt-0" : "my-3 pt-3"}>
                         {/* display show names */}
                         {presentShow.name}
                     </CardTitle>
@@ -89,19 +124,16 @@ export const Show = ({ show, setShows }) => {
                             })
                         }
                     </CardText>
-                    {/* 
-                        If the present show is in the queue, display a "Add to Current" button.
-                        If the present show has more than one show platform, display a modal that allows the user
-                        to select one platform, then call the addToCurrent function on the modal. 
-                        If the present show has only one platform, call the addToCurrent function on this button.
-                    */}
-                    {
-                        presentShow.current === false && setShows
-                            ? <Button onClick={addToCurrent}> Add to Current </Button>
-                            : ""
-                    }
                 </CardBody>
             </Card>
+            {
+                successOpenBoolean
+                    ? <UncontrolledAlert
+                        color="success">
+                        Recommendation sent!
+                    </UncontrolledAlert>
+                    : ""
+            }
         </div>
 
     )

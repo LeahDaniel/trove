@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react"
-import { Badge, Button, Card, CardBody, CardSubtitle, CardText, CardTitle } from "reactstrap"
+import { Badge, Card, CardBody, CardSubtitle, CardText, CardTitle, UncontrolledAlert } from "reactstrap"
 import { BookRepo } from "../../repositories/BookRepo"
 import deleteIcon from '../../images/DeleteIcon.png';
 import editIcon from '../../images/EditIcon.png';
+import moveIcon from '../../images/MoveFolder3.png';
+import sendIcon from '../../images/SendIcon.png';
 import { useHistory } from "react-router";
+import { RecommendationModal } from "../Social/RecommendationModal";
 
 
 export const Book = ({ book, setBooks }) => {
     const [presentBook, setBook] = useState([])
+    const [recommendationOpenBoolean, setRecommendationOpenBoolean] = useState(false)
+    const [successOpenBoolean, setSuccessOpenBoolean] = useState(false)
     const history = useHistory()
 
     //any time the book prop's id state changes (on page load) get individual book with expanded user, embedded taggedBooks (with embedded tags), and embedded bookPlatforms (with embedded platforms)
@@ -43,6 +48,13 @@ export const Book = ({ book, setBooks }) => {
 
     return (
         <div className="mt-4">
+
+            {/*
+                Modal that pops up on send button click
+            */}
+            <RecommendationModal openBoolean={recommendationOpenBoolean} setOpenBoolean={setRecommendationOpenBoolean}
+                presentBook={presentBook} setBookRecoSuccess={setSuccessOpenBoolean} />
+
             <Card
                 body
                 color="light"
@@ -51,31 +63,53 @@ export const Book = ({ book, setBooks }) => {
                     setBooks
                         ?
                         <div style={{ alignSelf: "flex-end" }} className="mt-2 mb-0">
-                            {/* onClick of delete button (trash icon) call deleteBook function with argument of the id of the present book. */}
-                            <img className="me-3" src={deleteIcon} alt="Delete" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
-                                () => { return deleteBook(presentBook.id) }
-                            } />
+                            {/* 
+                                If the present book is in the queue, display a "Add to Current" button.
+                            */}
+                            {
+                                presentBook.current === false && setBooks
+                                ? <button className="imgButton">
+                                <img src={moveIcon} alt="Move to Current" style={{ maxWidth: 40, maxHeight: 40 }} onClick={addToCurrent}/>
+                            </button>
+                                : ""
+                            }
                             {/* onClick of the edit button, push user to form route, and send along state of the presentBook to the location */}
-                            <img className="me-1" src={editIcon} alt="Edit" style={{ maxWidth: 30, maxHeight: 30 }} onClick={
-                                () => {
-                                    history.push({
-                                        pathname: "/books/create",
-                                        state: presentBook
-                                    })
-                                }
-                            } />
+                            <button className="imgButton">
+                                <img src={editIcon} alt="Edit" style={{ maxWidth: 35, maxHeight: 35 }} onClick={
+                                    () => {
+                                        history.push({
+                                            pathname: "/books/create",
+                                            state: presentBook
+                                        })
+                                    }
+                                } />
+                            </button>
+                            <button className="imgButton">
+                                <img src={sendIcon} alt="Send" style={{ maxWidth: 35, maxHeight: 35 }} onClick={
+                                    () => {
+                                        setRecommendationOpenBoolean(true)
+                                    }
+                                } />
+                            </button>
+                            {/* onClick of delete button (trash icon) call deleteBook function with argument of the id of the present book. */}
+                            <button className="imgButton">
+                                <img src={deleteIcon} alt="Delete" style={{ maxWidth: 35, maxHeight: 35 }} onClick={
+                                    () => { return deleteBook(presentBook.id) }
+                                } />
+                            </button>
+
                         </div>
                         : ""
                 }
 
                 <CardBody className="mt-0 pt-0">
-                    <CardTitle tag="h4" className={setBooks? "mb-3 mt-0" :  "my-3 pt-3"}>
+                    <CardTitle tag="h4" className={setBooks ? "mb-3 mt-0" : "my-3 pt-3"}>
                         {/* display book names */}
                         {presentBook.name}
                     </CardTitle>
                     <CardSubtitle className="my-3">
                         {/* display platforms (if current, display as "playing", else display as "available") */}
-                        Written by: {
+                        Written by {
                             presentBook.author?.name
                         }
                     </CardSubtitle>
@@ -89,19 +123,17 @@ export const Book = ({ book, setBooks }) => {
                             })
                         }
                     </CardText>
-                    {/* 
-                        If the present book is in the queue, display a "Add to Current" button.
-                        If the present book has more than one book platform, display a modal that allows the user
-                        to select one platform, then call the addToCurrent function on the modal. 
-                        If the present book has only one platform, call the addToCurrent function on this button.
-                    */}
-                    {
-                        presentBook.current === false && setBooks
-                            ? <Button onClick={addToCurrent}> Add to Current </Button>
-                            : ""
-                    }
+
                 </CardBody>
             </Card>
+            {
+                successOpenBoolean
+                    ? <UncontrolledAlert
+                        color="success">
+                        Recommendation sent!
+                    </UncontrolledAlert>
+                    : ""
+            }
         </div>
 
     )

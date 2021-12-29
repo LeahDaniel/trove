@@ -4,14 +4,14 @@ import { SearchBooks } from "./SearchBooks"
 import addIcon from '../../images/AddIcon.png';
 import { useHistory } from "react-router";
 import { BookRepo } from "../../repositories/BookRepo";
-import { Card } from "reactstrap";
+import { Button, Card } from "reactstrap";
 import { TagRepo } from "../../repositories/TagRepo";
 
 export const BookQueueView = () => {
     const [userEntries, setUserEntries] = useState({
         name: "",
         author: "0",
-        tag: "0"
+        tags: new Set()
     })
     const history = useHistory()
     const [books, setBooks] = useState([])
@@ -67,57 +67,68 @@ export const BookQueueView = () => {
     const determineFilters = () => {
         const authorExist = userEntries.author !== "0"
         const noAuthor = userEntries.author === "0"
-        const tagExist = userEntries.tag !== "0"
-        const noTag = userEntries.tag === "0"
+        const tagsExist = userEntries.tags.size > 0
+        const noTags = userEntries.tags.size === 0
 
         const authorId = parseInt(userEntries.author)
-        const tagId = parseInt(userEntries.tag)
 
-        const booksByTagOnly = midFilterBooks.filter(book => {
-            const foundTaggedBook = book.taggedBooks?.find(taggedBook => taggedBook.tagId === tagId)
-            if (foundTaggedBook) {
-                return true
-            } else {
-                return false
+        const booksByTagOnly = () => {
+            let newBookArray = []
+
+            for (const book of midFilterBooks) {
+                let booleanArray = []
+                userEntries.tags.forEach(tagId => {
+                    const foundBook = book.taggedBooks?.find(taggedBook => taggedBook.tagId === tagId)
+                    if (foundBook) {
+                        booleanArray.push(true)
+                    } else {
+                        booleanArray.push(false)
+                    }
+                })
+                if (booleanArray.every(boolean => boolean === true)) {
+                    newBookArray.push(book)
+                }
             }
-        })
+            return newBookArray
+        }
         const booksByAuthorOnly = midFilterBooks.filter(book => book.authorId === authorId)
-        const booksByTagAndAuthor = booksByTagOnly.filter(book => booksByAuthorOnly.includes(book))
+        const booksByTagAndAuthor = booksByTagOnly().filter(book => booksByAuthorOnly.includes(book))
 
-        if (noAuthor && noTag) {
+        if (noAuthor && noTags) {
             return midFilterBooks
-        } else if (authorExist && noTag) {
+        } else if (authorExist && noTags) {
             return booksByAuthorOnly
             //if a user has not been chosen and the favorites box is checked
-        } else if (noAuthor && tagExist) {
-            return booksByTagOnly
+        } else if (noAuthor && tagsExist) {
+            return booksByTagOnly()
             //if a user has been chosen AND the favorites box is checked.
-        } else if (authorExist && tagExist) {
+        } else if (authorExist && tagsExist) {
             return booksByTagAndAuthor
         }
     }
 
     return (
-        <div className="row">
+        <div className="row justify-content-evenly">
+            <div className="col-3">
+                {/* clickable "add" image to bring user to form */}
+                <div className="row justify-content-center mt-5">
+                    <Button className="col-6" onClick={
+                        () => history.push("/books/create")
+                    }>
+                        <img src={addIcon} alt="Add" style={{ maxWidth: 25 }} className="me-2"
+                        />
+                        Add Book
+                    </Button>
+                </div>
+
+                <SearchBooks setUserEntries={setUserEntries} userEntries={userEntries} taggedBooks={taggedBooks} />
+            </div>
             {
                 isLoading
-                    ? < Card className="col-7 d-flex align-items-center justify-content-center border-0"/>
+                    ? < Card className="col-7 d-flex align-items-center justify-content-center border-0" />
                     : <BookList books={books} setBooks={setBooks} userAttemptedSearch={userAttemptedSearch} />
             }
-            <div className="col-5 px-3 pe-5">
-                {/* clickable "add" image to bring user to form */}
-                <div className="row">
-                    <div className="col-8"></div>
-                    <div className="col-4 pt-5">
-                        <img src={addIcon} alt="Add" style={{ maxWidth: 40, alignSelf: "flex-end" }}
-                            onClick={
-                                () => history.push("/books/create")
-                            } />
-                    </div>
 
-                </div>
-                <SearchBooks setUserEntries={setUserEntries} userEntries={userEntries} taggedBooks={taggedBooks}/>
-            </div>
         </div>
     )
 }
