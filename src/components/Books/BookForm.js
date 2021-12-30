@@ -6,7 +6,6 @@ import { TagRepo } from "../../repositories/TagRepo"
 import CreatableSelect from 'react-select/creatable'
 
 export const BookForm = () => {
-
     const history = useHistory()
     const presentBook = useLocation().state
     const userId = parseInt(localStorage.getItem("trove_user"))
@@ -55,7 +54,7 @@ export const BookForm = () => {
                     setAuthors(sorted)
                 })
                 //setInvalid on page load to account for pre-populated fields on edit.
-                .then(checkValidity)
+                
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, []
     )
@@ -294,8 +293,8 @@ export const BookForm = () => {
                 </FormGroup>
                 {
                     presentBook?.tagArray?.length > 0
-                    ? <UncontrolledAlert fade color="info">The user who recommended this used the tag(s): {presentBook.tagArray.join(", ")}</UncontrolledAlert>
-                    : ""
+                        ? <UncontrolledAlert fade color="info">The user who recommended this used the tag(s): {presentBook.tagArray.join(", ")}</UncontrolledAlert>
+                        : ""
                 }
                 <FormGroup>
                     <Label for="exampleSelect">
@@ -378,15 +377,18 @@ export const BookForm = () => {
                 <FormGroup>
                     <Button onClick={(evt) => {
                         evt.preventDefault()
-
+                        // checkValidity()
                         setFirstAttempt(false)
 
-                        //check if every key on the "invalid" object is false
                         if (Object.keys(invalid).every(key => invalid[key] === false)) {
                             constructAuthor(evt)
                         } else {
                             setAlert(true)
                         }
+
+
+                        //check if every key on the "invalid" object is false
+
                     }}>
                         Submit
                     </Button>
