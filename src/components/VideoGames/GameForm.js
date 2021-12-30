@@ -49,44 +49,43 @@ export const GameForm = () => {
                     })
                     setTags(sorted)
                 })
-        }, [userId]
-    )
-    useEffect(
-        () => {
-            //on presentGame state change (when user clicks edit to be brought to form)
-            //setUserChoices from the values of the presentGame object
+                .then(() => {
+                    if (presentGame) {
+                        //on presentGame state change (when user clicks edit to be brought to form)
+                        //setUserChoices from the values of the presentGame object
 
-            //change name, current, and multiplayer values based on presentGame values
-            const obj = {
-                name: presentGame.name,
-                current: presentGame.current,
-                multiplayerCapable: presentGame.multiplayerCapable
-            }
+                        //change name, current, and multiplayer values based on presentGame values
+                        const obj = {
+                            name: presentGame.name,
+                            current: presentGame.current,
+                            multiplayerCapable: presentGame.multiplayerCapable
+                        }
 
-            //create a tag array from the presentGame's associated taggedGames, and set as userChoices.tagArray value
-            if (presentGame.taggedGames) {
-                let tagArray = []
-                for (const taggedGame of presentGame.taggedGames) {
-                    tagArray.push({ label: taggedGame.tag.tag, value: taggedGame.tag.id })
-                }
-                obj.tagArray = tagArray
-            }
-            //if a current game (only one platform possible), change chosenCurrentPlatform value based on platformId of first (and only) gamePlatform
-            if (presentGame.current === true) {
-                obj.chosenCurrentPlatform = presentGame.gamePlatforms[0].platformId
-            } else {
-                //if a queued game (more than one platform possible), create a Set of platformIds from the presentGame's associated gamePlatforms, and set as chosenPlatforms value
-                let platformSet = new Set()
-                for (const gamePlatform of presentGame.gamePlatforms) {
-                    platformSet.add(gamePlatform.platformId)
-                }
-                obj.chosenPlatforms = platformSet
-            }
+                        //create a tag array from the presentGame's associated taggedGames, and set as userChoices.tagArray value
+                        if (presentGame.taggedGames) {
+                            let tagArray = []
+                            for (const taggedGame of presentGame.taggedGames) {
+                                tagArray.push({ label: taggedGame.tag.tag, value: taggedGame.tag.id })
+                            }
+                            obj.tagArray = tagArray
+                        }
+                        //if a current game (only one platform possible), change chosenCurrentPlatform value based on platformId of first (and only) gamePlatform
+                        if (presentGame.current === true) {
+                            obj.chosenCurrentPlatform = presentGame.gamePlatforms[0].platformId
+                        } else {
+                            //if a queued game (more than one platform possible), create a Set of platformIds from the presentGame's associated gamePlatforms, and set as chosenPlatforms value
+                            let platformSet = new Set()
+                            for (const gamePlatform of presentGame.gamePlatforms) {
+                                platformSet.add(gamePlatform.platformId)
+                            }
+                            obj.chosenPlatforms = platformSet
+                        }
 
-            //set user choices using the obj constructed above
-            setUserChoices(obj)
-
-        }, [presentGame]
+                        //set user choices using the obj constructed above
+                        setUserChoices(obj)
+                    }
+                })
+        }, [userId, presentGame]
     )
 
     useEffect(
@@ -119,7 +118,7 @@ export const GameForm = () => {
             }
 
             setInvalid(obj)
-            
+
         }, [userChoices]
     )
 
@@ -179,7 +178,7 @@ export const GameForm = () => {
 
         GameRepo.addGame(gameFromUserChoices)
             .then((addedGame) => {
-                if(userChoices.tagArray){
+                if (userChoices.tagArray) {
                     constructTags(addedGame)
                 }
                 constructGamePlatforms(addedGame)

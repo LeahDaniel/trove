@@ -53,34 +53,34 @@ export const BookForm = () => {
                     })
                     setAuthors(sorted)
                 })
-        }, [userId]
-    )
-    useEffect(
-        () => {
-                //on presentBook state change (when user clicks edit to be brought to form)
-                //setUserChoices from the values of the presentBook object
+                .then(() => {
+                    if (presentBook) {
+                        //on presentBook state change (when user clicks edit to be brought to form)
+                        //setUserChoices from the values of the presentBook object
 
-                //change name, current, and multiplayer values based on presentBook values
-                const obj = {
-                    name: presentBook.name,
-                    current: presentBook.current,
-                    author: presentBook.author.name
-                }
+                        //change name, current, and multiplayer values based on presentBook values
+                        const obj = {
+                            name: presentBook.name,
+                            current: presentBook.current,
+                            author: presentBook.author.name
+                        }
 
-                //create a tag array from the presentBook's associated taggedBooks, and set as userChoices.tagArray value
-                if (presentBook.taggedBooks) {
-                    let tagArray = []
-                    for (const taggedBook of presentBook.taggedBooks) {
-                        tagArray.push({ label: taggedBook.tag.tag, value: taggedBook.tag.id })
+                        //create a tag array from the presentBook's associated taggedBooks, and set as userChoices.tagArray value
+                        if (presentBook.taggedBooks) {
+                            let tagArray = []
+                            for (const taggedBook of presentBook.taggedBooks) {
+                                tagArray.push({ label: taggedBook.tag.tag, value: taggedBook.tag.id })
+                            }
+                            obj.tagArray = tagArray
+                        }
+
+                        //set user choices using the copy constructed above
+                        setUserChoices(obj)
                     }
-                    obj.tagArray = tagArray
-                }
-
-                //set user choices using the copy constructed above
-                setUserChoices(obj)
-                
-        }, [presentBook]
+                })
+        }, [userId, presentBook]
     )
+
     useEffect(
         () => {
             //when userChoices change (as the user interacts with form), setInvalid state so that it is always up-to-date before form submit
@@ -95,11 +95,11 @@ export const BookForm = () => {
             //name
             if (userChoices.name === "") {
                 obj.name = true
-            } 
+            }
             //multiplayer
             if (userChoices.author === "") {
                 obj.author = true
-            } 
+            }
             //current
             if (userChoices.current === null) {
                 obj.current = true
@@ -150,7 +150,7 @@ export const BookForm = () => {
 
         BookRepo.addBook(bookFromUserChoices)
             .then((addedBook) => {
-                if(userChoices.tagArray){
+                if (userChoices.tagArray) {
                     constructTags(addedBook)
                 }
             })
@@ -343,7 +343,7 @@ export const BookForm = () => {
                     </FormText>
                 </FormGroup>
                 {
-                    alert 
+                    alert
                         ?
                         <div>
                             <Alert

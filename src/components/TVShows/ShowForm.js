@@ -45,38 +45,39 @@ export const ShowForm = () => {
                 })
                 .then(ShowRepo.getAllStreamingServices)
                 .then(setStreamingServices)
-        }, [userId]
+                .then(() => {
+                    if (presentShow) {
+                        //on presentShow state change (when user clicks edit to be brought to form)
+                        //setUserChoices from the values of the presentShow object
+
+                        //change name, current, and multiplayer values based on presentShow values
+                        const obj = {
+                            name: presentShow.name,
+                            current: presentShow.current,
+                            streamingService: presentShow.streamingServiceId
+                        }
+
+                        //create a tag array from the presentShow's associated taggedShows, and set as userChoices.tagArray value
+                        if (presentShow.taggedShows) {
+                            let tagArray = []
+                            for (const taggedShow of presentShow.taggedShows) {
+                                tagArray.push({ label: taggedShow.tag.tag, value: taggedShow.tag.id })
+                            }
+                            obj.tagArray = tagArray
+                        }
+
+                        //set user choices using the obj constructed above
+                        setUserChoices(obj)
+
+                    }
+                })
+        }, [userId, presentShow]
     )
-    useEffect(
-        () => {
-            //on presentShow state change (when user clicks edit to be brought to form)
-            //setUserChoices from the values of the presentShow object
 
-            //change name, current, and multiplayer values based on presentShow values
-            const obj = {
-                name: presentShow.name,
-                current: presentShow.current,
-                streamingService: presentShow.streamingServiceId
-            }
-
-            //create a tag array from the presentShow's associated taggedShows, and set as userChoices.tagArray value
-            if (presentShow.taggedShows) {
-                let tagArray = []
-                for (const taggedShow of presentShow.taggedShows) {
-                    tagArray.push({ label: taggedShow.tag.tag, value: taggedShow.tag.id })
-                }
-                obj.tagArray = tagArray
-            }
-
-            //set user choices using the obj constructed above
-            setUserChoices(obj)
-
-        }, [presentShow]
-    )
     useEffect(
         () => {
             //when userChoices change (as the user interacts with form), setInvalid state so that it is always up-to-date before form submit
-            const obj = { 
+            const obj = {
                 name: false,
                 streaming: false,
                 current: false
@@ -88,12 +89,12 @@ export const ShowForm = () => {
             //multiplayer
             if (userChoices.streamingService === 0) {
                 obj.streaming = true
-            } 
+            }
             //current
             if (userChoices.current === null) {
                 obj.current = true
-            } 
-    
+            }
+
             setInvalid(obj)
         }, [userChoices]
     )
@@ -144,7 +145,7 @@ export const ShowForm = () => {
 
         ShowRepo.addShow(showFromUserChoices)
             .then((addedShow) => {
-                if(userChoices.tagArray){
+                if (userChoices.tagArray) {
                     constructTags(addedShow)
                 }
             })
@@ -349,13 +350,12 @@ export const ShowForm = () => {
                     }}>
                         Submit
                     </Button>
-                    {presentShow
-                        //if there is a presentShow object (user was pushed to form from edit button), allow them to go back to the previous page they were on (the appropriate list)
-                        ? <Button onClick={() => { history.goBack() }} className="ms-3">
-                            Cancel
-                        </Button>
-                        : ""
-                    }
+
+                    <Button onClick={() => { history.goBack() }} className="ms-3">
+                        Cancel
+                    </Button>
+
+
                 </FormGroup>
             </Form >
         </div>
