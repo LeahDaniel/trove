@@ -350,12 +350,9 @@ export const ShowForm = () => {
                     }}>
                         Submit
                     </Button>
-
                     <Button onClick={() => { history.goBack() }} className="ms-3">
                         Cancel
                     </Button>
-
-
                 </FormGroup>
             </Form >
         </div>

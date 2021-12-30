@@ -484,13 +484,9 @@ export const GameForm = () => {
                     }}>
                         Submit
                     </Button>
-                    {presentGame
-                        //if there is a presentGame object (user was pushed to form from edit button), allow them to go back to the previous page they were on (the appropriate list)
-                        ? <Button onClick={() => { history.goBack() }} className="ms-3">
-                            Cancel
-                        </Button>
-                        : ""
-                    }
+                    <Button onClick={() => { history.goBack() }} className="ms-3">
+                        Cancel
+                    </Button>
                 </FormGroup>
             </Form >
         </div>
