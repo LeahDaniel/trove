@@ -144,7 +144,9 @@ export const ShowForm = () => {
 
         ShowRepo.addShow(showFromUserChoices)
             .then((addedShow) => {
-                constructTags(addedShow)
+                if(userChoices.tagArray){
+                    constructTags(addedShow)
+                }
             })
             .then(() => {
                 if (userChoices.current === true) {

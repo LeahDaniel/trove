@@ -179,7 +179,9 @@ export const GameForm = () => {
 
         GameRepo.addGame(gameFromUserChoices)
             .then((addedGame) => {
-                constructTags(addedGame)
+                if(userChoices.tagArray){
+                    constructTags(addedGame)
+                }
                 constructGamePlatforms(addedGame)
             })
             .then(() => {
