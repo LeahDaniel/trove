@@ -46,7 +46,7 @@ export const ShowForm = () => {
                 .then(ShowRepo.getAllStreamingServices)
                 .then(setStreamingServices)
                 //setInvalid on page load to account for pre-populated fields on edit.
-                .then(checkValidity)
+                
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, []
     )
