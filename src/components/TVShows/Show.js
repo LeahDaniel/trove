@@ -17,8 +17,18 @@ export const Show = ({ show, setShows }) => {
 
     //any time the show prop's id state changes (on page load) get individual show with expanded user, embedded taggedShows (with embedded tags), and embedded showPlatforms (with embedded platforms)
     useEffect(() => {
+        let mounted = true
+
         ShowRepo.get(show.id)
-            .then(setShow)
+            .then((result) => {
+                if (mounted) {
+                    setShow(result)
+                }
+            })
+
+        return () => {
+            mounted = false
+        }
     }, [show.id])
 
     //delete show by id. If a current show, set shows with current shows, else set shows with queued shows (to update state appropriately based on current user view)

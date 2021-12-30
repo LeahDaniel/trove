@@ -14,11 +14,11 @@ export const BookRecommendation = ({ bookRecommendation, setBookRecommendations 
 
     useEffect(
         () => {
-            BookRepo.get(bookRecommendation.id)
+            BookRepo.get(bookRecommendation.bookId)
             .then(setBook)
             .then(BookRepo.getAllAuthors)
             .then(setAuthors)
-        }, []
+        }, [bookRecommendation]
     )
 
     //delete recommendationby id. If a current book, set books with current books, else set books with queued books (to update state appropriately based on current user view)

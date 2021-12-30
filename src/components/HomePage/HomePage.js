@@ -13,9 +13,6 @@ export const HomePage = () => {
     const [games, setGames] = useState([])
     const [books, setBooks] = useState([])
     const [shows, setShows] = useState([])
-    const [midFilterGames, setFilteredGames] = useState([])
-    const [midFilterShows, setFilteredShows] = useState([])
-    const [midFilterBooks, setFilteredBooks] = useState([])
     const [userAttemptedSearch, setAttemptBoolean] = useState(false)
 
 
@@ -32,31 +29,47 @@ export const HomePage = () => {
 
     useEffect(
         () => {
-            const [gamesArray, showsArray, booksArray] = determineFilters()
-            setGames(gamesArray)
-            setShows(showsArray)
-            setBooks(booksArray)
+            const determineFilters = (midFilterArray) => {
+                const tagsExist = userEntries.tags.size > 0
+                const noTags = userEntries.tags.size === 0
 
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [midFilterGames, midFilterBooks, midFilterShows]
-    )
+                if (tagsExist) {
+                    let newArray = []
 
-    useEffect(
-        () => {
+                    for (const obj of midFilterArray) {
+                        let booleanArray = []
+                        userEntries.tags.forEach(tagId => {
+                            const foundObj = obj.taggedObjs?.find(taggedObj => taggedObj.tagId === tagId)
+                            if (foundObj) {
+                                booleanArray.push(true)
+                            } else {
+                                booleanArray.push(false)
+                            }
+                        })
+                        if (booleanArray.every(boolean => boolean === true)) {
+                            newArray.push(obj)
+                        }
+                    }
+                    return [newArray]
+                } else if (noTags) {
+                    return [midFilterArray]
+                }
+            }
+
             if (userEntries.title === "") {
                 GameRepo.getAll()
-                    .then(setFilteredGames)
+                    .then(result => setGames(determineFilters(result)))
                     .then(ShowRepo.getAll)
-                    .then(setFilteredShows)
+                    .then(result => setShows(determineFilters(result)))
                     .then(BookRepo.getAll)
-                    .then(setFilteredBooks)
+                    .then(result => setBooks(determineFilters(result)))
             } else {
                 GameRepo.getAllBySearchTerm(userEntries.title)
-                    .then(setFilteredGames)
+                    .then(result => setGames(determineFilters(result)))
                 ShowRepo.getAllBySearchTerm(userEntries.title)
-                    .then(setFilteredShows)
+                    .then(result => setShows(determineFilters(result)))
                 BookRepo.getAllBySearchTerm(userEntries.title)
-                    .then(setFilteredBooks)
+                    .then(result => setBooks(determineFilters(result)))
             }
 
             if (userEntries.title !== "" || userEntries.tags.size > 0) {
@@ -64,71 +77,9 @@ export const HomePage = () => {
             } else {
                 setAttemptBoolean(false)
             }
-            // eslint-disable-next-line react-hooks/exhaustive-deps
+
         }, [userEntries]
     )
-
-    const determineFilters = () => {
-        const tagsExist = userEntries.tags.size > 0
-        const noTags = userEntries.tags.size === 0
-
-        if (tagsExist) {
-            let newGameArray = []
-            let newShowArray = []
-            let newBookArray = []
-
-            for (const game of midFilterGames) {
-                let booleanArray = []
-                userEntries.tags.forEach(tagId => {
-                    const foundGame = game.taggedGames?.find(taggedGame => taggedGame.tagId === tagId)
-                    if (foundGame) {
-                        booleanArray.push(true)
-                    } else {
-                        booleanArray.push(false)
-                    }
-                })
-
-                if (booleanArray.every(boolean => boolean === true)) {
-                    newGameArray.push(game)
-                }
-            }
-            for (const show of midFilterShows) {
-                let booleanArray = []
-                userEntries.tags.forEach(tagId => {
-                    const foundShow = show.taggedShows?.find(taggedShow => taggedShow.tagId === tagId)
-                    if (foundShow) {
-                        booleanArray.push(true)
-                    } else {
-                        booleanArray.push(false)
-                    }
-                })
-                if (booleanArray.every(boolean => boolean === true)) {
-                    newShowArray.push(show)
-                }
-            }
-            for (const book of midFilterBooks) {
-                let booleanArray = []
-                userEntries.tags.forEach(tagId => {
-                    const foundBook = book.taggedBooks?.find(taggedBook => taggedBook.tagId === tagId)
-                    if (foundBook) {
-                        booleanArray.push(true)
-                    } else {
-                        booleanArray.push(false)
-                    }
-                })
-                if (booleanArray.every(boolean => boolean === true)) {
-                    newBookArray.push(book)
-                }
-            }
-
-            return [newGameArray, newShowArray, newBookArray]
-
-        } else if (noTags) {
-
-            return [midFilterGames, midFilterShows, midFilterBooks]
-
-        }
-    }
 
     return (
         <>

@@ -4,7 +4,7 @@ import { SearchBooks } from "./SearchBooks"
 import addIcon from '../../images/AddIcon.png';
 import { useHistory } from "react-router";
 import { BookRepo } from "../../repositories/BookRepo";
-import { Button, Card} from "reactstrap";
+import { Button, Card } from "reactstrap";
 import { TagRepo } from "../../repositories/TagRepo";
 
 export const CurrentBooksView = () => {
@@ -16,7 +16,6 @@ export const CurrentBooksView = () => {
     const history = useHistory()
     const [books, setBooks] = useState([])
     const [taggedBooks, setTaggedBooks] = useState([])
-    const [midFilterBooks, setFilteredBooks] = useState([])
     const [userAttemptedSearch, setAttemptBoolean] = useState(false)
     const [isLoading, setLoading] = useState(true)
 
@@ -38,19 +37,55 @@ export const CurrentBooksView = () => {
 
     useEffect(
         () => {
-            setBooks(determineFilters())
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [midFilterBooks]
-    )
+            const determineFilters = (midFilterBooks) => {
+                const authorExist = userEntries.author !== "0"
+                const noAuthor = userEntries.author === "0"
+                const tagsExist = userEntries.tags.size > 0
+                const noTags = userEntries.tags.size === 0
 
-    useEffect(
-        () => {
+                const authorId = parseInt(userEntries.author)
+
+                const booksByTagOnly = () => {
+                    let newBookArray = []
+
+                    for (const book of midFilterBooks) {
+                        let booleanArray = []
+                        userEntries.tags.forEach(tagId => {
+                            const foundBook = book.taggedBooks?.find(taggedBook => taggedBook.tagId === tagId)
+                            if (foundBook) {
+                                booleanArray.push(true)
+                            } else {
+                                booleanArray.push(false)
+                            }
+                        })
+                        if (booleanArray.every(boolean => boolean === true)) {
+                            newBookArray.push(book)
+                        }
+                    }
+                    return newBookArray
+                }
+                const booksByAuthorOnly = midFilterBooks.filter(book => book.authorId === authorId)
+                const booksByTagAndAuthor = booksByTagOnly().filter(book => booksByAuthorOnly.includes(book))
+
+                if (noAuthor && noTags) {
+                    return midFilterBooks
+                } else if (authorExist && noTags) {
+                    return booksByAuthorOnly
+                    //if a user has not been chosen and the favorites box is checked
+                } else if (noAuthor && tagsExist) {
+                    return booksByTagOnly()
+                    //if a user has been chosen AND the favorites box is checked.
+                } else if (authorExist && tagsExist) {
+                    return booksByTagAndAuthor
+                }
+            }
+
             if (userEntries.name === "") {
                 BookRepo.getAllCurrent()
-                    .then(setFilteredBooks)
+                    .then((result) => setBooks(determineFilters(result)))
             } else {
                 BookRepo.getAllCurrentBySearchTerm(userEntries.name)
-                    .then(setFilteredBooks)
+                    .then((result) => setBooks(determineFilters(result)))
             }
 
             if (userEntries.name !== "" || userEntries.author !== "0" || userEntries.tag !== "0") {
@@ -58,53 +93,9 @@ export const CurrentBooksView = () => {
             } else {
                 setAttemptBoolean(false)
             }
-            // eslint-disable-next-line react-hooks/exhaustive-deps
+            
         }, [userEntries]
     )
-
-
-    const determineFilters = () => {
-        const authorExist = userEntries.author !== "0"
-        const noAuthor = userEntries.author === "0"
-        const tagsExist = userEntries.tags.size > 0
-        const noTags = userEntries.tags.size === 0
-
-        const authorId = parseInt(userEntries.author)
-
-        const booksByTagOnly = () => {
-            let newBookArray = []
-
-            for (const book of midFilterBooks) {
-                let booleanArray = []
-                userEntries.tags.forEach(tagId => {
-                    const foundBook = book.taggedBooks?.find(taggedBook => taggedBook.tagId === tagId)
-                    if (foundBook) {
-                        booleanArray.push(true)
-                    } else {
-                        booleanArray.push(false)
-                    }
-                })
-                if (booleanArray.every(boolean => boolean === true)) {
-                    newBookArray.push(book)
-                }
-            }
-            return newBookArray
-        }
-        const booksByAuthorOnly = midFilterBooks.filter(book => book.authorId === authorId)
-        const booksByTagAndAuthor = booksByTagOnly().filter(book => booksByAuthorOnly.includes(book))
-
-        if (noAuthor && noTags) {
-            return midFilterBooks
-        } else if (authorExist && noTags) {
-            return booksByAuthorOnly
-            //if a user has not been chosen and the favorites box is checked
-        } else if (noAuthor && tagsExist) {
-            return booksByTagOnly()
-            //if a user has been chosen AND the favorites box is checked.
-        } else if (authorExist && tagsExist) {
-            return booksByTagAndAuthor
-        }
-    }
 
     return (
         <div className="row justify-content-evenly">

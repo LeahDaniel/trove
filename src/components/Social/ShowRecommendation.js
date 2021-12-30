@@ -13,9 +13,9 @@ export const ShowRecommendation = ({ showRecommendation, setShowRecommendations 
 
     useEffect(
         () => {
-            ShowRepo.get(showRecommendation.id)
+            ShowRepo.get(showRecommendation.showId)
             .then(setShow)
-        }, []
+        }, [showRecommendation]
     )
 
     //delete recommendationby id. If a current show, set shows with current shows, else set shows with queued shows (to update state appropriately based on current user view)

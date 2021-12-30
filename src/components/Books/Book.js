@@ -17,8 +17,18 @@ export const Book = ({ book, setBooks }) => {
 
     //any time the book prop's id state changes (on page load) get individual book with expanded user, embedded taggedBooks (with embedded tags), and embedded bookPlatforms (with embedded platforms)
     useEffect(() => {
+        let mounted = true
+
         BookRepo.get(book.id)
-            .then(setBook)
+            .then((result) => {
+                if (mounted) {
+                    setBook(result)
+                }
+            })
+
+        return () => {
+            mounted = false
+        }
     }, [book.id])
 
     //delete book by id. If a current book, set books with current books, else set books with queued books (to update state appropriately based on current user view)
