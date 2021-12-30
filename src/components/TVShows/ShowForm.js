@@ -45,52 +45,58 @@ export const ShowForm = () => {
                 })
                 .then(ShowRepo.getAllStreamingServices)
                 .then(setStreamingServices)
-                //setInvalid on page load to account for pre-populated fields on edit.
-                
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, []
+        }, [userId]
     )
     useEffect(
         () => {
-            if (presentShow) {
-                //on presentShow state change (when user clicks edit to be brought to form)
-                //setUserChoices from the values of the presentShow object
-                userChoicesForPresentShow()
+            //on presentShow state change (when user clicks edit to be brought to form)
+            //setUserChoices from the values of the presentShow object
+
+            //change name, current, and multiplayer values based on presentShow values
+            const obj = {
+                name: presentShow.name,
+                current: presentShow.current,
+                streamingService: presentShow.streamingServiceId
             }
-            // eslint-disable-next-line react-hooks/exhaustive-deps
+
+            //create a tag array from the presentShow's associated taggedShows, and set as userChoices.tagArray value
+            if (presentShow.taggedShows) {
+                let tagArray = []
+                for (const taggedShow of presentShow.taggedShows) {
+                    tagArray.push({ label: taggedShow.tag.tag, value: taggedShow.tag.id })
+                }
+                obj.tagArray = tagArray
+            }
+
+            //set user choices using the obj constructed above
+            setUserChoices(obj)
+
         }, [presentShow]
     )
     useEffect(
         () => {
             //when userChoices change (as the user interacts with form), setInvalid state so that it is always up-to-date before form submit
-            checkValidity()
-            // eslint-disable-next-line react-hooks/exhaustive-deps
+            const obj = { 
+                name: false,
+                streaming: false,
+                current: false
+            }
+            //name
+            if (userChoices.name === "") {
+                obj.name = true
+            }
+            //multiplayer
+            if (userChoices.streamingService === 0) {
+                obj.streaming = true
+            } 
+            //current
+            if (userChoices.current === null) {
+                obj.current = true
+            } 
+    
+            setInvalid(obj)
         }, [userChoices]
     )
-
-
-    //setUserChoices from the values of the presentShow object
-    const userChoicesForPresentShow = () => {
-        //make copy of userChoices
-        const copy = { ...userChoices }
-
-        //change name, current, and multiplayer values based on presentShow values
-        copy.name = presentShow.name
-        copy.current = presentShow.current
-        copy.streamingService = presentShow.streamingServiceId
-
-        //create a tag array from the presentShow's associated taggedShows, and set as userChoices.tagArray value
-        if (presentShow.taggedShows) {
-            let tagArray = []
-            for (const taggedShow of presentShow.taggedShows) {
-                tagArray.push({ label: taggedShow.tag.tag, value: taggedShow.tag.id })
-            }
-            copy.tagArray = tagArray
-        }
-
-        //set user choices using the copy constructed above
-        setUserChoices(copy)
-    }
 
     //Deletes present taggedShows and showPlatforms for presentShow being edited. 
     // Then, PUT operation to shows based on userChoices.
@@ -175,32 +181,6 @@ export const ShowForm = () => {
         }
     }
 
-    //use the userChoices values to set the invalid booleans (was the user entry a valid entry or not)
-    const checkValidity = () => {
-        const invalidCopy = { ...invalid }
-        //name
-        if (userChoices.name === "") {
-            invalidCopy.name = true
-        } else {
-            invalidCopy.name = false
-        }
-
-        //multiplayer
-        if (userChoices.streamingService === 0) {
-            invalidCopy.streaming = true
-        } else {
-            invalidCopy.streaming = false
-        }
-        //current
-        if (userChoices.current === null) {
-            invalidCopy.current = true
-        } else {
-            invalidCopy.current = false
-        }
-
-        setInvalid(invalidCopy)
-    }
-
     return (
         <div className="row justify-content-center">
             <Form className="m-4 p-2 col-9">
@@ -252,8 +232,8 @@ export const ShowForm = () => {
                 </FormGroup>
                 {
                     presentShow?.tagArray?.length > 0
-                    ? <UncontrolledAlert fade color="info">The user who recommended this used the tags: {presentShow.tagArray.join(", ")}</UncontrolledAlert>
-                    : ""
+                        ? <UncontrolledAlert fade color="info">The user who recommended this used the tags: {presentShow.tagArray.join(", ")}</UncontrolledAlert>
+                        : ""
                 }
                 <FormGroup>
                     <Label for="exampleSelect">
@@ -356,7 +336,7 @@ export const ShowForm = () => {
 
                         //check if every key on the "invalid" object is false
                         if (Object.keys(invalid).every(key => invalid[key] === false)) {
-                            if(presentShow?.userId){
+                            if (presentShow?.userId) {
                                 editShow(evt)
                             } else {
                                 constructShow(evt)

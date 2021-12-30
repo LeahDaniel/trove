@@ -14,7 +14,7 @@ export const GameRecommendation = ({ gameRecommendation, setGameRecommendations 
         () => {
             GameRepo.get(gameRecommendation.gameId)
             .then(setGame)
-        }, []
+        }, [gameRecommendation]
     )
 
     //delete recommendationby id. If a current game, set games with current games, else set games with queued games (to update state appropriately based on current user view)

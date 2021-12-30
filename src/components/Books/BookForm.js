@@ -53,52 +53,61 @@ export const BookForm = () => {
                     })
                     setAuthors(sorted)
                 })
-                //setInvalid on page load to account for pre-populated fields on edit.
-                
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, []
+        }, [userId]
     )
     useEffect(
         () => {
-            if (presentBook) {
                 //on presentBook state change (when user clicks edit to be brought to form)
                 //setUserChoices from the values of the presentBook object
-                userChoicesForPresentBook()
-            }
-            // eslint-disable-next-line react-hooks/exhaustive-deps
+
+                //change name, current, and multiplayer values based on presentBook values
+                const obj = {
+                    name: presentBook.name,
+                    current: presentBook.current,
+                    author: presentBook.author.name
+                }
+
+                //create a tag array from the presentBook's associated taggedBooks, and set as userChoices.tagArray value
+                if (presentBook.taggedBooks) {
+                    let tagArray = []
+                    for (const taggedBook of presentBook.taggedBooks) {
+                        tagArray.push({ label: taggedBook.tag.tag, value: taggedBook.tag.id })
+                    }
+                    obj.tagArray = tagArray
+                }
+
+                //set user choices using the copy constructed above
+                setUserChoices(obj)
+                
         }, [presentBook]
     )
     useEffect(
         () => {
             //when userChoices change (as the user interacts with form), setInvalid state so that it is always up-to-date before form submit
-            checkValidity()
-            // eslint-disable-next-line react-hooks/exhaustive-deps
+            //use the userChoices values to set the invalid booleans (was the user entry a valid entry or not)
+
+            const obj = {
+                name: false,
+                author: false,
+                current: false
+            }
+
+            //name
+            if (userChoices.name === "") {
+                obj.name = true
+            } 
+            //multiplayer
+            if (userChoices.author === "") {
+                obj.author = true
+            } 
+            //current
+            if (userChoices.current === null) {
+                obj.current = true
+            }
+
+            setInvalid(obj)
         }, [userChoices]
     )
-
-
-    //setUserChoices from the values of the presentBook object
-    const userChoicesForPresentBook = () => {
-        //make copy of userChoices
-        const copy = { ...userChoices }
-
-        //change name, current, and multiplayer values based on presentBook values
-        copy.name = presentBook.name
-        copy.current = presentBook.current
-        copy.author = presentBook.author.name
-
-        //create a tag array from the presentBook's associated taggedBooks, and set as userChoices.tagArray value
-        if (presentBook.taggedBooks) {
-            let tagArray = []
-            for (const taggedBook of presentBook.taggedBooks) {
-                tagArray.push({ label: taggedBook.tag.tag, value: taggedBook.tag.id })
-            }
-            copy.tagArray = tagArray
-        }
-
-        //set user choices using the copy constructed above
-        setUserChoices(copy)
-    }
 
     //Deletes present taggedBooks and bookPlatforms for presentBook being edited. 
     // Then, PUT operation to books based on userChoices.
@@ -217,30 +226,7 @@ export const BookForm = () => {
         }
     }
 
-    //use the userChoices values to set the invalid booleans (was the user entry a valid entry or not)
-    const checkValidity = () => {
-        const invalidCopy = { ...invalid }
-        //name
-        if (userChoices.name === "") {
-            invalidCopy.name = true
-        } else {
-            invalidCopy.name = false
-        }
-        //multiplayer
-        if (userChoices.author === "") {
-            invalidCopy.author = true
-        } else {
-            invalidCopy.author = false
-        }
-        //current
-        if (userChoices.current === null) {
-            invalidCopy.current = true
-        } else {
-            invalidCopy.current = false
-        }
 
-        setInvalid(invalidCopy)
-    }
 
     return (
         <div className="row justify-content-center">
@@ -355,24 +341,16 @@ export const BookForm = () => {
                     </FormText>
                 </FormGroup>
                 {
-                    alert && presentBook
+                    alert 
                         ?
                         <div>
                             <Alert
                                 color="danger"
                             >
-                                Please complete all required (!) fields. If you have no edits, click "Cancel".
+                                Please complete all required (!) fields.
                             </Alert>
                         </div>
-                        : alert && !presentBook
-                            ? <div>
-                                <Alert
-                                    color="danger"
-                                >
-                                    Please complete all required (!) fields before submitting.
-                                </Alert>
-                            </div>
-                            : ""
+                        : ""
                 }
                 <FormGroup>
                     <Button onClick={(evt) => {

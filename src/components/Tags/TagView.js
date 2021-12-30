@@ -45,7 +45,6 @@ export const TagView = () => {
             } else {
                 setAttemptBoolean(false)
             }
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [userEntry, userId]
     )
 

@@ -32,13 +32,74 @@ export const HomePage = () => {
 
     useEffect(
         () => {
+            const determineFilters = () => {
+                const tagsExist = userEntries.tags.size > 0
+                const noTags = userEntries.tags.size === 0
+
+                if (tagsExist) {
+                    let newGameArray = []
+                    let newShowArray = []
+                    let newBookArray = []
+
+                    for (const game of midFilterGames) {
+                        let booleanArray = []
+                        userEntries.tags.forEach(tagId => {
+                            const foundGame = game.taggedGames?.find(taggedGame => taggedGame.tagId === tagId)
+                            if (foundGame) {
+                                booleanArray.push(true)
+                            } else {
+                                booleanArray.push(false)
+                            }
+                        })
+
+                        if (booleanArray.every(boolean => boolean === true)) {
+                            newGameArray.push(game)
+                        }
+                    }
+                    for (const show of midFilterShows) {
+                        let booleanArray = []
+                        userEntries.tags.forEach(tagId => {
+                            const foundShow = show.taggedShows?.find(taggedShow => taggedShow.tagId === tagId)
+                            if (foundShow) {
+                                booleanArray.push(true)
+                            } else {
+                                booleanArray.push(false)
+                            }
+                        })
+                        if (booleanArray.every(boolean => boolean === true)) {
+                            newShowArray.push(show)
+                        }
+                    }
+                    for (const book of midFilterBooks) {
+                        let booleanArray = []
+                        userEntries.tags.forEach(tagId => {
+                            const foundBook = book.taggedBooks?.find(taggedBook => taggedBook.tagId === tagId)
+                            if (foundBook) {
+                                booleanArray.push(true)
+                            } else {
+                                booleanArray.push(false)
+                            }
+                        })
+                        if (booleanArray.every(boolean => boolean === true)) {
+                            newBookArray.push(book)
+                        }
+                    }
+
+                    return [newGameArray, newShowArray, newBookArray]
+
+                } else if (noTags) {
+
+                    return [midFilterGames, midFilterShows, midFilterBooks]
+
+                }
+            }
+
             const [gamesArray, showsArray, booksArray] = determineFilters()
             setGames(gamesArray)
             setShows(showsArray)
             setBooks(booksArray)
 
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [midFilterGames, midFilterBooks, midFilterShows]
+        }, [midFilterGames, midFilterBooks, midFilterShows, userEntries]
     )
 
     useEffect(
@@ -64,71 +125,8 @@ export const HomePage = () => {
             } else {
                 setAttemptBoolean(false)
             }
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [userEntries]
     )
-
-    const determineFilters = () => {
-        const tagsExist = userEntries.tags.size > 0
-        const noTags = userEntries.tags.size === 0
-
-        if (tagsExist) {
-            let newGameArray = []
-            let newShowArray = []
-            let newBookArray = []
-
-            for (const game of midFilterGames) {
-                let booleanArray = []
-                userEntries.tags.forEach(tagId => {
-                    const foundGame = game.taggedGames?.find(taggedGame => taggedGame.tagId === tagId)
-                    if (foundGame) {
-                        booleanArray.push(true)
-                    } else {
-                        booleanArray.push(false)
-                    }
-                })
-
-                if (booleanArray.every(boolean => boolean === true)) {
-                    newGameArray.push(game)
-                }
-            }
-            for (const show of midFilterShows) {
-                let booleanArray = []
-                userEntries.tags.forEach(tagId => {
-                    const foundShow = show.taggedShows?.find(taggedShow => taggedShow.tagId === tagId)
-                    if (foundShow) {
-                        booleanArray.push(true)
-                    } else {
-                        booleanArray.push(false)
-                    }
-                })
-                if (booleanArray.every(boolean => boolean === true)) {
-                    newShowArray.push(show)
-                }
-            }
-            for (const book of midFilterBooks) {
-                let booleanArray = []
-                userEntries.tags.forEach(tagId => {
-                    const foundBook = book.taggedBooks?.find(taggedBook => taggedBook.tagId === tagId)
-                    if (foundBook) {
-                        booleanArray.push(true)
-                    } else {
-                        booleanArray.push(false)
-                    }
-                })
-                if (booleanArray.every(boolean => boolean === true)) {
-                    newBookArray.push(book)
-                }
-            }
-
-            return [newGameArray, newShowArray, newBookArray]
-
-        } else if (noTags) {
-
-            return [midFilterGames, midFilterShows, midFilterBooks]
-
-        }
-    }
 
     return (
         <>

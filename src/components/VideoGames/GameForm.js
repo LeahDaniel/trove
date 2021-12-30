@@ -49,26 +49,77 @@ export const GameForm = () => {
                     })
                     setTags(sorted)
                 })
-                //setInvalid on page load to account for pre-populated fields on edit.
-          
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, []
+        }, [userId]
     )
     useEffect(
         () => {
-            if (presentGame) {
-                //on presentGame state change (when user clicks edit to be brought to form)
-                //setUserChoices from the values of the presentGame object
-                userChoicesForPresentGame()
+            //on presentGame state change (when user clicks edit to be brought to form)
+            //setUserChoices from the values of the presentGame object
+
+            //change name, current, and multiplayer values based on presentGame values
+            const obj = {
+                name: presentGame.name,
+                current: presentGame.current,
+                multiplayerCapable: presentGame.multiplayerCapable
             }
-            // eslint-disable-next-line react-hooks/exhaustive-deps
+
+            //create a tag array from the presentGame's associated taggedGames, and set as userChoices.tagArray value
+            if (presentGame.taggedGames) {
+                let tagArray = []
+                for (const taggedGame of presentGame.taggedGames) {
+                    tagArray.push({ label: taggedGame.tag.tag, value: taggedGame.tag.id })
+                }
+                obj.tagArray = tagArray
+            }
+            //if a current game (only one platform possible), change chosenCurrentPlatform value based on platformId of first (and only) gamePlatform
+            if (presentGame.current === true) {
+                obj.chosenCurrentPlatform = presentGame.gamePlatforms[0].platformId
+            } else {
+                //if a queued game (more than one platform possible), create a Set of platformIds from the presentGame's associated gamePlatforms, and set as chosenPlatforms value
+                let platformSet = new Set()
+                for (const gamePlatform of presentGame.gamePlatforms) {
+                    platformSet.add(gamePlatform.platformId)
+                }
+                obj.chosenPlatforms = platformSet
+            }
+
+            //set user choices using the obj constructed above
+            setUserChoices(obj)
+
         }, [presentGame]
     )
+
     useEffect(
         () => {
             //when userChoices change (as the user interacts with form), setInvalid state so that it is always up-to-date before form submit
-            checkValidity()
-            // eslint-disable-next-line react-hooks/exhaustive-deps
+            const obj = {
+                name: false,
+                multiplayer: false,
+                current: false,
+                singlePlatform: false,
+                multiPlatforms: false
+            }
+
+            //name
+            if (userChoices.name === "") {
+                obj.name = true
+            }
+            //multiplayer
+            if (userChoices.multiplayerCapable === null) {
+                obj.multiplayer = true
+            }
+            //current
+            if (userChoices.current === null) {
+                obj.current = true
+            }
+            //single and multi platform
+            if (userChoices.chosenCurrentPlatform === 0 && userChoices.chosenPlatforms.size === 0) {
+                obj.singlePlatform = true
+                obj.multiPlatforms = true
+            }
+
+            setInvalid(obj)
+            
         }, [userChoices]
     )
 
@@ -78,40 +129,6 @@ export const GameForm = () => {
         copy.chosenPlatforms.has(id)
             ? copy.chosenPlatforms.delete(id)
             : copy.chosenPlatforms.add(id)
-        setUserChoices(copy)
-    }
-
-    //setUserChoices from the values of the presentGame object
-    const userChoicesForPresentGame = () => {
-        //make copy of userChoices
-        const copy = { ...userChoices }
-
-        //change name, current, and multiplayer values based on presentGame values
-        copy.name = presentGame.name
-        copy.current = presentGame.current
-        copy.multiplayerCapable = presentGame.multiplayerCapable
-
-        //create a tag array from the presentGame's associated taggedGames, and set as userChoices.tagArray value
-        if (presentGame.taggedGames) {
-            let tagArray = []
-            for (const taggedGame of presentGame.taggedGames) {
-                tagArray.push({ label: taggedGame.tag.tag, value: taggedGame.tag.id })
-            }
-            copy.tagArray = tagArray
-        }
-        //if a current game (only one platform possible), change chosenCurrentPlatform value based on platformId of first (and only) gamePlatform
-        if (presentGame.current === true) {
-            copy.chosenCurrentPlatform = presentGame.gamePlatforms[0].platformId
-        } else {
-            //if a queued game (more than one platform possible), create a Set of platformIds from the presentGame's associated gamePlatforms, and set as chosenPlatforms value
-            let platformSet = new Set()
-            for (const gamePlatform of presentGame.gamePlatforms) {
-                platformSet.add(gamePlatform.platformId)
-            }
-            copy.chosenPlatforms = platformSet
-        }
-
-        //set user choices using the copy constructed above
         setUserChoices(copy)
     }
 
@@ -221,39 +238,6 @@ export const GameForm = () => {
         }
     }
 
-    //use the userChoices values to set the invalid booleans (was the user entry a valid entry or not)
-    const checkValidity = () => {
-        const invalidCopy = { ...invalid }
-        //name
-        if (userChoices.name === "") {
-            invalidCopy.name = true
-        } else {
-            invalidCopy.name = false
-        }
-        //multiplayer
-        if (userChoices.multiplayerCapable === null) {
-            invalidCopy.multiplayer = true
-        } else {
-            invalidCopy.multiplayer = false
-        }
-        //current
-        if (userChoices.current === null) {
-            invalidCopy.current = true
-        } else {
-            invalidCopy.current = false
-        }
-        //single and multi platform
-        if (userChoices.chosenCurrentPlatform === 0 && userChoices.chosenPlatforms.size === 0) {
-            invalidCopy.singlePlatform = true
-            invalidCopy.multiPlatforms = true
-        } else if (userChoices.chosenCurrentPlatform > 0 || userChoices.chosenPlatforms.size > 0) {
-            invalidCopy.singlePlatform = false
-            invalidCopy.multiPlatforms = false
-        }
-
-        setInvalid(invalidCopy)
-    }
-
     return (
         <div className="row justify-content-center">
             <Form className="m-4 p-2 col-9">
@@ -305,8 +289,8 @@ export const GameForm = () => {
                 </FormGroup>
                 {
                     presentGame?.tagArray?.length > 0
-                    ? <UncontrolledAlert fade color="info">The user who recommended this used the tag(s): {presentGame.tagArray.join(", ")}</UncontrolledAlert>
-                    : ""
+                        ? <UncontrolledAlert fade color="info">The user who recommended this used the tag(s): {presentGame.tagArray.join(", ")}</UncontrolledAlert>
+                        : ""
                 }
                 <FormGroup>
                     <Label for="multiplayerSelect">
@@ -488,7 +472,7 @@ export const GameForm = () => {
 
                         //check if every key on the "invalid" object is false
                         if (Object.keys(invalid).every(key => invalid[key] === false)) {
-                            if(presentGame?.userId){
+                            if (presentGame?.userId) {
                                 editGame(evt)
                             } else {
                                 constructGame(evt)
