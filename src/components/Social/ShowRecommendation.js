@@ -13,7 +13,7 @@ export const ShowRecommendation = ({ showRecommendation, setShowRecommendations 
 
     useEffect(
         () => {
-            ShowRepo.get(showRecommendation.id)
+            ShowRepo.get(showRecommendation.showId)
             .then(setShow)
         }, []
     )

@@ -12,7 +12,7 @@ export const GameRecommendation = ({ gameRecommendation, setGameRecommendations 
 
     useEffect(
         () => {
-            GameRepo.get(gameRecommendation.id)
+            GameRepo.get(gameRecommendation.gameId)
             .then(setGame)
         }, []
     )

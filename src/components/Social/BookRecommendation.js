@@ -14,7 +14,7 @@ export const BookRecommendation = ({ bookRecommendation, setBookRecommendations 
 
     useEffect(
         () => {
-            BookRepo.get(bookRecommendation.id)
+            BookRepo.get(bookRecommendation.bookId)
             .then(setBook)
             .then(BookRepo.getAllAuthors)
             .then(setAuthors)
