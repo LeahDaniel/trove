@@ -28,7 +28,6 @@ export const Show = ({ show, setShows }) => {
 
         return () => {
             mounted = false
-            console.log("unmounted")
         }
     }, [show.id])
 

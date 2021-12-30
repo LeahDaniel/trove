@@ -150,7 +150,9 @@ export const BookForm = () => {
 
         BookRepo.addBook(bookFromUserChoices)
             .then((addedBook) => {
-                constructTags(addedBook)
+                if(userChoices.tagArray){
+                    constructTags(addedBook)
+                }
             })
             .then(() => {
                 if (userChoices.current === true) {
