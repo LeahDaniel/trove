@@ -96,6 +96,7 @@ export const ShowForm = () => {
             }
 
             setInvalid(obj)
+            window.history.replaceState(null, '')
         }, [userChoices]
     )
 

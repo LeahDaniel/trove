@@ -106,6 +106,7 @@ export const BookForm = () => {
             }
 
             setInvalid(obj)
+            window.history.replaceState(null, '')
         }, [userChoices]
     )
 

@@ -118,6 +118,7 @@ export const GameForm = () => {
             }
 
             setInvalid(obj)
+            window.history.replaceState(null, '')
 
         }, [userChoices]
     )
