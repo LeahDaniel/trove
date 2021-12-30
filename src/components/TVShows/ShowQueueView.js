@@ -4,7 +4,7 @@ import { SearchShows } from "./SearchShows"
 import addIcon from '../../images/AddIcon.png';
 import { useHistory } from "react-router";
 import { ShowRepo } from "../../repositories/ShowRepo";
-import { Button, Card} from "reactstrap";
+import { Button, Card } from "reactstrap";
 import { TagRepo } from "../../repositories/TagRepo";
 
 export const ShowQueueView = () => {
@@ -57,6 +57,7 @@ export const ShowQueueView = () => {
             } else {
                 setAttemptBoolean(false)
             }
+
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [userEntries]
     )

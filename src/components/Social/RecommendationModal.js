@@ -12,8 +12,20 @@ export const RecommendationModal = ({ openBoolean, setOpenBoolean, presentGame, 
 
     useEffect(
         () => {
+            let mounted = true
+
             SocialRepo.getAllUsers()
-                .then(setUsers)
+                .then((result) => {
+                    if (mounted) {
+                        setUsers(result)
+                    }
+                })
+
+            return () => {
+                mounted = false
+                console.log("unmountedModal")
+            }
+
         }, []
     )
 
@@ -81,7 +93,7 @@ export const RecommendationModal = ({ openBoolean, setOpenBoolean, presentGame, 
                                 .then(() => {
                                     setOpenBoolean(false)
                                 })
-                        } else if (foundUser && presentShow){
+                        } else if (foundUser && presentShow) {
                             SocialRepo.addShowRecommendation({
                                 senderId: userId,
                                 recipientId: foundUser.id,
@@ -94,7 +106,7 @@ export const RecommendationModal = ({ openBoolean, setOpenBoolean, presentGame, 
                                 .then(() => {
                                     setOpenBoolean(false)
                                 })
-                        } else if (foundUser && presentBook){
+                        } else if (foundUser && presentBook) {
                             SocialRepo.addBookRecommendation({
                                 senderId: userId,
                                 recipientId: foundUser.id,

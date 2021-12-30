@@ -19,8 +19,19 @@ export const Game = ({ game, setGames }) => {
 
     //any time the game prop's id state changes (on page load) get individual game with expanded user, embedded taggedGames (with embedded tags), and embedded gamePlatforms (with embedded platforms)
     useEffect(() => {
+        let mounted = true
+
         GameRepo.get(game.id)
-            .then(setGame)
+            .then((result) => {
+                if (mounted) {
+                    setGame(result)
+                }
+            })
+
+        return () => {
+            mounted = false
+            console.log("unmounted")
+        }
     }, [game.id])
 
     //delete game by id. If a current game, set games with current games, else set games with queued games (to update state appropriately based on current user view)
