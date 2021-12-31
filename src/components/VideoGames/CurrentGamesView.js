@@ -120,7 +120,7 @@ export const CurrentGamesView = () => {
                     .then((result) => setGames(determineFilters(result)))
             }
 
-            if (userEntries.name !== "" || userEntries.multiplayer !== null || userEntries.platform !== "0" || userEntries.tag !== "0") {
+            if (userEntries.name !== "" || userEntries.multiplayer !== null || userEntries.platform !== "0" || userEntries.tags.size > 0) {
                 setAttemptBoolean(true)
             } else {
                 setAttemptBoolean(false)

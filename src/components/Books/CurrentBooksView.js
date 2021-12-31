@@ -88,7 +88,7 @@ export const CurrentBooksView = () => {
                     .then((result) => setBooks(determineFilters(result)))
             }
 
-            if (userEntries.name !== "" || userEntries.author !== "0" || userEntries.tag !== "0") {
+            if (userEntries.name !== "" || userEntries.author !== "0" || userEntries.tags.size > 0) {
                 setAttemptBoolean(true)
             } else {
                 setAttemptBoolean(false)
