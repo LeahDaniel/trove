@@ -33,3 +33,23 @@ export const fetchIt = (url, method = "GET", body = null) => {
     //Parses a fetch (with the url and options arguments as parameters) as javascript.
     return fetch(url, options).then(r => r.json())
 }
+
+export const sortByName = (array) => {
+    return array.sort((a, b) => {
+        const nameA = a.name.toLowerCase()
+        const nameB = b.name.toLowerCase()
+        if (nameA < nameB) { return -1 }
+        if (nameA > nameB) { return 1 }
+        return 0 //default return value (no sorting)
+    })
+}
+
+export const sortByTag = (array) => {
+    return array.sort((a, b) => {
+        const tagA = a.tag.toLowerCase()
+        const tagB = b.tag.toLowerCase()
+        if (tagA < tagB) { return -1 }
+        if (tagA > tagB) { return 1 }
+        return 0 //default return value (no sorting)
+    })
+}

@@ -4,6 +4,7 @@ import { Alert, Button, Form, FormGroup, FormText, Input, Label, UncontrolledAle
 import { BookRepo } from "../../repositories/BookRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 import CreatableSelect from 'react-select/creatable'
+import { sortByName, sortByTag } from "../../repositories/FetchAndSort"
 
 export const BookForm = () => {
     const history = useHistory()
@@ -33,25 +34,11 @@ export const BookForm = () => {
             //on page load, GET streaming services and tags
             TagRepo.getTagsForUser(userId)
                 .then(result => {
-                    const sorted = result.sort((a, b) => {
-                        const tagA = a.tag.toLowerCase()
-                        const tagB = b.tag.toLowerCase()
-                        if (tagA < tagB) { return -1 }
-                        if (tagA > tagB) { return 1 }
-                        return 0 //default return value (no sorting)
-                    })
-                    setTags(sorted)
+                    setTags(sortByTag(result))
                 })
                 .then(() => BookRepo.getAuthorsForUser(userId))
                 .then(result => {
-                    const sorted = result.sort((a, b) => {
-                        const nameA = a.name.toLowerCase()
-                        const nameB = b.name.toLowerCase()
-                        if (nameA < nameB) { return -1 }
-                        if (nameA > nameB) { return 1 }
-                        return 0 //default return value (no sorting)
-                    })
-                    setAuthors(sorted)
+                    setAuthors(sortByName(result))
                 })
                 .then(() => {
                     if (presentBook) {

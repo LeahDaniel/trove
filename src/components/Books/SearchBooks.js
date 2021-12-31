@@ -14,25 +14,11 @@ export const SearchBooks = ({ userEntries, setUserEntries, taggedBooks }) => {
         () => {
             TagRepo.getTagsForUser(userId)
                 .then(result => {
-                    const sorted = result.sort((a, b) => {
-                        const tagA = a.tag.toLowerCase()
-                        const tagB = b.tag.toLowerCase()
-                        if (tagA < tagB) { return -1 }
-                        if (tagA > tagB) { return 1 }
-                        return 0 //default return value (no sorting)
-                    })
-                    setTags(sorted)
+                    setTags(sortByTag(result))
                 })
                 .then(() => BookRepo.getAuthorsForUser(userId))
                 .then(result => {
-                    const sorted = result.sort((a, b) => {
-                        const nameA = a.name.toLowerCase()
-                        const nameB = b.name.toLowerCase()
-                        if (nameA < nameB) { return -1 }
-                        if (nameA > nameB) { return 1 }
-                        return 0 //default return value (no sorting)
-                    })
-                    setAuthors(sorted)
+                    setAuthors(sortByName(result))
                 })
         }, [userId]
     )

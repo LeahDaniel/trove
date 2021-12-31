@@ -40,14 +40,7 @@ export const GameForm = () => {
                 .then(setPlatforms)
                 .then(() => TagRepo.getTagsForUser(userId))
                 .then(result => {
-                    const sorted = result.sort((a, b) => {
-                        const tagA = a.tag.toLowerCase()
-                        const tagB = b.tag.toLowerCase()
-                        if (tagA < tagB) { return -1 }
-                        if (tagA > tagB) { return 1 }
-                        return 0 //default return value (no sorting)
-                    })
-                    setTags(sorted)
+                    setTags(sortByTag(result))
                 })
                 .then(() => {
                     if (presentGame) {
