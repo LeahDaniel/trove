@@ -23,6 +23,7 @@ export const HomePage = () => {
             const titleExists = userEntries.title !== ""
             const noTitle = userEntries.title === ""
 
+            //filter games, shows, and books array based on tags they're associate with
             const determineGameFilters = (array) => {
                 if (tagsExist) {
                     let newGameArray = []
@@ -99,6 +100,7 @@ export const HomePage = () => {
                 }
             }
 
+            //determine whether to search JSON by name (whether user has entered search term), then determine tag filters with functions above
             if (noTitle) {
                 GameRepo.getAll()
                     .then((result) => setGames(determineGameFilters(result)))
@@ -115,6 +117,7 @@ export const HomePage = () => {
                     .then((result) => setBooks(determineBookFilters(result)))
             }
 
+            //mark whether a user has used the filters in order to determine the message they get for a blank list
             if (titleExists || tagsExist) {
                 setAttemptBoolean(true)
             } else {

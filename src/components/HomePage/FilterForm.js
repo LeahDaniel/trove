@@ -15,7 +15,7 @@ export const FilterForm = ({ userEntries, setUserEntries }) => {
         }, [userId]
     )
 
-    //check for parameter's value in chosenPlatforms. Delete if it exists (representing unchecking a box), add it if it doesn't (checking a box)
+    //check for parameter's value in userEntries.tags Delete if it exists (representing unchecking a box), add it if it doesn't (checking a box)
     const setTag = (id) => {
         const copy = { ...userEntries }
         copy.tags.has(id)
@@ -66,8 +66,6 @@ export const FilterForm = ({ userEntries, setUserEntries }) => {
                                     >
                                         {tag.tag}
                                     </Button>
-
-
                                 })
                                 : ""
                         }
@@ -76,12 +74,11 @@ export const FilterForm = ({ userEntries, setUserEntries }) => {
                 <FormGroup className='row justify-content-center'>
                     <Button
                         onClick={() => {
-                            let userEntriesCopy = { ...userEntries }
-                            userEntriesCopy = {
+                            const reset = {
                                 title: "",
                                 tags: new Set()
                             }
-                            setUserEntries(userEntriesCopy)
+                            setUserEntries(reset)
                         }
                         }
                         className="col-sm-6 col-lg-4 mt-2"
