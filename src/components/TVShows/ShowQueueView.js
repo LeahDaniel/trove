@@ -21,12 +21,7 @@ export const ShowQueueView = () => {
 
     useEffect(
         () => {
-            ShowRepo.getAll(false)
-                .then(setShows)
-                .then(() => {
-                    setLoading(false);
-                })
-                .then(() => TagRepo.getTaggedShows())
+            TagRepo.getTaggedShows()
                 .then(result => {
                     const onlyQueued = result.filter(taggedShow => taggedShow.show?.queue === false)
                     setTaggedShows(onlyQueued)
@@ -83,11 +78,13 @@ export const ShowQueueView = () => {
             if (userEntries.name === "") {
                 ShowRepo.getAll(false)
                     .then((result) => setShows(determineFilters(result)))
+                    .then(() => setLoading(false))
             } else {
                 ShowRepo.getBySearchTerm(userEntries.name, false)
-                .then((result) => setShows(determineFilters(result)))
+                    .then((result) => setShows(determineFilters(result)))
+                    .then(() => setLoading(false))
             }
-            
+
 
             if (userEntries.name !== "" || userEntries.service !== "0" || userEntries.tags.size > 0) {
                 setAttemptBoolean(true)

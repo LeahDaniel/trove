@@ -22,10 +22,7 @@ export const GameQueueView = () => {
 
     useEffect(
         () => {
-            GameRepo.getAll(false)
-                .then(setGames)
-                .then(() => setLoading(false))
-                .then(() => TagRepo.getTaggedGames())
+            TagRepo.getTaggedGames()
                 .then(result => {
                     const onlyQueued = result.filter(taggedGame => taggedGame.game?.current === false)
                     setTaggedGames(onlyQueued)
@@ -114,9 +111,11 @@ export const GameQueueView = () => {
             if (userEntries.name === "") {
                 GameRepo.getAll(false)
                     .then((result) => setGames(determineFilters(result)))
+                    .then(() => setLoading(false))
             } else {
                 GameRepo.getBySearchTerm(userEntries.name, false)
                     .then((result) => setGames(determineFilters(result)))
+                    .then(() => setLoading(false))
             }
 
             if (userEntries.name !== "" || userEntries.multiplayer !== null || userEntries.platform !== "0" || userEntries.tags.size > 0) {

@@ -10,11 +10,13 @@ import { useEffect, useState } from "react/cjs/react.development";
 export const ShowRecommendation = ({ showRecommendation, setShowRecommendations }) => {
     const history = useHistory()
     const [show, setShow] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(
         () => {
             ShowRepo.get(showRecommendation.showId)
-            .then(setShow)
+                .then(setShow)
+                .then(() => setIsLoading(false))
         }, [showRecommendation]
     )
 
@@ -27,47 +29,51 @@ export const ShowRecommendation = ({ showRecommendation, setShowRecommendations 
 
     return (
         <div className="mt-4">
-            <Card
-                body
-                color="light"
-            >
-                <div style={{ alignSelf: "flex-end" }} className="mt-2 mb-0">
-                    {/* onClick of delete button (trash icon) call deleteRecommendationfunction with argument of the id of the present show. */}
-                    <button className="imgButton">
-                        <img src={deleteIcon} alt="Delete" style={{ maxWidth: 35, maxHeight: 35 }} onClick={
-                            () => { return deleteRecommendation(showRecommendation.id) }
-                        } />
-                    </button>
-                </div>
+            {
+                isLoading
+                    ? ""
+                    : <Card
+                        body
+                        color="light"
+                    >
+                        <div style={{ alignSelf: "flex-end" }} className="mt-2 mb-0">
+                            {/* onClick of delete button (trash icon) call deleteRecommendationfunction with argument of the id of the present show. */}
+                            <button className="imgButton">
+                                <img src={deleteIcon} alt="Delete" style={{ maxWidth: 35, maxHeight: 35 }} onClick={
+                                    () => { return deleteRecommendation(showRecommendation.id) }
+                                } />
+                            </button>
+                        </div>
 
-                <CardBody className="mt-0 pt-0">
-                    <CardTitle tag="h4" className="mb-3 mt-0">
-                        {/* display recommendationnames */}
-                        {show.name}
-                    </CardTitle>
-                    <CardSubtitle className="mb-3 mt-0">
-                        {/* display sender name */}
-                        Recommended by {showRecommendation.sender.name}
-                    </CardSubtitle>
-                    <CardText className="my-3">
-                        {/* display message (shows as empty string if not entered on modal) */}
-                        {showRecommendation.message}
-                    </CardText>
+                        <CardBody className="mt-0 pt-0">
+                            <CardTitle tag="h4" className="mb-3 mt-0">
+                                {/* display recommendationnames */}
+                                {show.name}
+                            </CardTitle>
+                            <CardSubtitle className="mb-3 mt-0">
+                                {/* display sender name */}
+                                Recommended by {showRecommendation.sender.name}
+                            </CardSubtitle>
+                            <CardText className="my-3">
+                                {/* display message (shows as empty string if not entered on modal) */}
+                                {showRecommendation.message}
+                            </CardText>
 
-                    <Button onClick={() => {
-                        history.push({
-                            pathname: "/shows/create",
-                            state: {
-                                name: show.name,
-                                current: false,
-                                streamingServiceId: show.streamingServiceId,
-                                tagArray: show.taggedShows.map(taggedShow => taggedShow.tag.tag)
-                            }
-                        })
-                    }}> Add to Queue </Button>
+                            <Button onClick={() => {
+                                history.push({
+                                    pathname: "/shows/create",
+                                    state: {
+                                        name: show.name,
+                                        current: false,
+                                        streamingServiceId: show.streamingServiceId,
+                                        tagArray: show.taggedShows.map(taggedShow => taggedShow.tag.tag)
+                                    }
+                                })
+                            }}> Add to Queue </Button>
 
-                </CardBody>
-            </Card>
+                        </CardBody>
+                    </Card>
+            }
         </div>
 
     )

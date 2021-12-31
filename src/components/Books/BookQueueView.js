@@ -21,12 +21,7 @@ export const BookQueueView = () => {
 
     useEffect(
         () => {
-            BookRepo.getAll(false)
-                .then(setBooks)
-                .then(() => {
-                    setLoading(false);
-                })
-                .then(() => TagRepo.getTaggedBooks())
+            TagRepo.getTaggedBooks()
                 .then(result => {
                     const onlyQueued = result.filter(taggedBook => taggedBook.book?.current === false)
                     setTaggedBooks(onlyQueued)
@@ -82,9 +77,11 @@ export const BookQueueView = () => {
             if (userEntries.name === "") {
                 BookRepo.getAll(false)
                     .then((result) => setBooks(determineFilters(result)))
+                    .then(() => setLoading(false))
             } else {
                 BookRepo.getBySearchTerm(userEntries.name, false)
                     .then((result) => setBooks(determineFilters(result)))
+                    .then(() => setLoading(false))
             }
 
             if (userEntries.name !== "" || userEntries.author !== "0" || userEntries.tags.size > 0) {

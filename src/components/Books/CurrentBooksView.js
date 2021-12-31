@@ -22,12 +22,7 @@ export const CurrentBooksView = () => {
 
     useEffect(
         () => {
-            BookRepo.getAll(true)
-                .then(setBooks)
-                .then(() => {
-                    setLoading(false);
-                })
-                .then(() => TagRepo.getTaggedBooks())
+            TagRepo.getTaggedBooks()
                 .then(result => {
                     const onlyCurrent = result.filter(taggedBook => taggedBook.book?.current === true)
                     setTaggedBooks(onlyCurrent)
@@ -83,9 +78,11 @@ export const CurrentBooksView = () => {
             if (userEntries.name === "") {
                 BookRepo.getAll(true)
                     .then((result) => setBooks(determineFilters(result)))
+                    .then(() => setLoading(false))
             } else {
                 BookRepo.getBySearchTerm(userEntries.name, true)
                     .then((result) => setBooks(determineFilters(result)))
+                    .then(() => setLoading(false))
             }
 
             if (userEntries.name !== "" || userEntries.author !== "0" || userEntries.tags.size > 0) {

@@ -16,22 +16,18 @@ export const TagView = () => {
 
     useEffect(
         () => {
-            TagRepo.getTagsForUser(userId)
-                .then(result => {
-                    setTags(sortByTag(result))
-                })
-                .then(() => setIsLoading(false))
-        }, [userId]
-    )
-
-    useEffect(
-        () => {
             if (userEntry === "") {
                 TagRepo.getTagsForUser(userId)
-                    .then(setTags)
+                    .then(result => {
+                        setTags(sortByTag(result))
+                    })
+                    .then(() => setIsLoading(false))
             } else {
                 TagRepo.getTagsForUserBySearchTerm(userId, userEntry)
-                    .then(setTags)
+                    .then(result => {
+                        setTags(sortByTag(result))
+                    })
+                    .then(() => setIsLoading(false))
             }
 
             if (userEntry !== "") {

@@ -4,12 +4,14 @@ import { ShowRepo } from "../../repositories/ShowRepo"
 import { BookRepo } from "../../repositories/BookRepo"
 import { FilterForm } from './FilterForm';
 import { SearchResults } from './SearchResults';
+import { Card } from 'reactstrap';
 
 export const HomePage = () => {
     const [games, setGames] = useState([])
     const [books, setBooks] = useState([])
     const [shows, setShows] = useState([])
     const [userAttemptedSearch, setAttemptBoolean] = useState(false)
+    const [isLoading, setLoading] = useState(true)
     const [userEntries, setUserEntries] = useState({
         title: "",
         tags: new Set()
@@ -108,6 +110,7 @@ export const HomePage = () => {
                     .then((result) => setShows(determineShowFilters(result)))
                     .then(BookRepo.getAll)
                     .then((result) => setBooks(determineBookFilters(result)))
+                    .then(() => setLoading(false))
             } else {
                 GameRepo.getBySearchTerm(userEntries.title)
                     .then((result) => setGames(determineGameFilters(result)))
@@ -115,6 +118,7 @@ export const HomePage = () => {
                     .then((result) => setShows(determineShowFilters(result)))
                 BookRepo.getBySearchTerm(userEntries.title)
                     .then((result) => setBooks(determineBookFilters(result)))
+                    .then(() => setLoading(false))
             }
 
             //mark whether a user has used the filters in order to determine the message they get for a blank list
@@ -142,7 +146,11 @@ export const HomePage = () => {
                 {/* <div className="row justify-content-center mt-4"><h2 className='col-6 text-center'>Your Media</h2></div> */}
                 <div className="row justify-content-evenly">
                     <FilterForm userEntries={userEntries} setUserEntries={setUserEntries} />
-                    <SearchResults games={games} shows={shows} books={books} userAttemptedSearch={userAttemptedSearch} />
+                    {
+                        isLoading
+                        ? <Card className="col-7 d-flex align-items-center justify-content-center border-0" />
+                        : <SearchResults games={games} shows={shows} books={books} userAttemptedSearch={userAttemptedSearch} />
+                    }
                 </div>
             </div>
         </>

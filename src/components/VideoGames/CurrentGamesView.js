@@ -22,12 +22,7 @@ export const CurrentGamesView = () => {
 
     useEffect(
         () => {
-            GameRepo.getAll(true)
-                .then(setGames)
-                .then(() => {
-                    setLoading(false);
-                })
-                .then(() => TagRepo.getTaggedGames())
+            TagRepo.getTaggedGames()
                 .then(result => {
                     const onlyCurrent = result.filter(taggedGame => taggedGame.game?.current === true)
                     setTaggedGames(onlyCurrent)
@@ -115,9 +110,11 @@ export const CurrentGamesView = () => {
             if (userEntries.name === "") {
                 GameRepo.getAll(true)
                     .then((result) => setGames(determineFilters(result)))
+                    .then(() => setLoading(false))
             } else {
                 GameRepo.getBySearchTerm(userEntries.name, true)
                     .then((result) => setGames(determineFilters(result)))
+                    .then(() => setLoading(false))
             }
 
             if (userEntries.name !== "" || userEntries.multiplayer !== null || userEntries.platform !== "0" || userEntries.tags.size > 0) {

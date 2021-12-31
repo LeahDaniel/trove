@@ -22,12 +22,7 @@ export const CurrentShowsView = () => {
 
     useEffect(
         () => {
-            ShowRepo.getAll(true)
-                .then(setShows)
-                .then(() => {
-                    setLoading(false);
-                })
-                .then(() => TagRepo.getTaggedShows())
+            TagRepo.getTaggedShows()
                 .then(result => {
                     const onlyCurrent = result.filter(taggedShow => taggedShow.show?.current === true)
                     setTaggedShows(onlyCurrent)
@@ -84,9 +79,11 @@ export const CurrentShowsView = () => {
             if (userEntries.name === "") {
                 ShowRepo.getAll(true)
                     .then((result) => setShows(determineFilters(result)))
+                    .then(() => setLoading(false))
             } else {
                 ShowRepo.getBySearchTerm(userEntries.name, true)
                 .then((result) => setShows(determineFilters(result)))
+                .then(() => setLoading(false))
             }
             
 
