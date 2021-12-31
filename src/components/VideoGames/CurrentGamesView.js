@@ -32,14 +32,17 @@ export const CurrentGamesView = () => {
 
     useEffect(
         () => {
-            const determineFilters = (midFilterGames) => {
-                const multiplayerExist = userEntries.multiplayer !== null
-                const noMultiplayer = userEntries.multiplayer === null
-                const platformExist = userEntries.platform !== "0"
-                const noPlatform = userEntries.platform === "0"
-                const tagsExist = userEntries.tags.size > 0
-                const noTags = userEntries.tags.size === 0
+            //variables for whether or not the user has filled in each filter
+            const multiplayerExist = userEntries.multiplayer !== null
+            const noMultiplayer = userEntries.multiplayer === null
+            const platformExist = userEntries.platform !== "0"
+            const noPlatform = userEntries.platform === "0"
+            const tagsExist = userEntries.tags.size > 0
+            const noTags = userEntries.tags.size === 0
+            const nameExist = userEntries.name !== ""
+            const noName = userEntries.name === ""
 
+            const determineFilters = (midFilterGames) => {
                 const multiplayerBoolean = userEntries.multiplayer
                 const platformId = parseInt(userEntries.platform)
 
@@ -107,7 +110,7 @@ export const CurrentGamesView = () => {
 
             }
 
-            if (userEntries.name === "") {
+            if (noName) {
                 GameRepo.getAll(true)
                     .then((result) => setGames(determineFilters(result)))
                     .then(() => setLoading(false))
@@ -117,7 +120,7 @@ export const CurrentGamesView = () => {
                     .then(() => setLoading(false))
             }
 
-            if (userEntries.name !== "" || userEntries.multiplayer !== null || userEntries.platform !== "0" || userEntries.tags.size > 0) {
+            if (nameExist || multiplayerExist || platformExist || tagsExist) {
                 setAttemptBoolean(true)
             } else {
                 setAttemptBoolean(false)

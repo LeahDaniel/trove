@@ -32,12 +32,15 @@ export const CurrentBooksView = () => {
 
     useEffect(
         () => {
-            const determineFilters = (midFilterBooks) => {
-                const authorExist = userEntries.author !== "0"
-                const noAuthor = userEntries.author === "0"
-                const tagsExist = userEntries.tags.size > 0
-                const noTags = userEntries.tags.size === 0
+            //variables for whether or not the user has filled in each filter
+            const authorExist = userEntries.author !== "0"
+            const noAuthor = userEntries.author === "0"
+            const nameExist = userEntries.name !== ""
+            const noName = userEntries.name === ""
+            const tagsExist = userEntries.tags.size > 0
+            const noTags = userEntries.tags.size === 0
 
+            const determineFilters = (midFilterBooks) => {
                 const authorId = parseInt(userEntries.author)
 
                 const booksByTagOnly = () => {
@@ -75,7 +78,7 @@ export const CurrentBooksView = () => {
                 }
             }
 
-            if (userEntries.name === "") {
+            if (noName) {
                 BookRepo.getAll(true)
                     .then((result) => setBooks(determineFilters(result)))
                     .then(() => setLoading(false))
@@ -85,12 +88,12 @@ export const CurrentBooksView = () => {
                     .then(() => setLoading(false))
             }
 
-            if (userEntries.name !== "" || userEntries.author !== "0" || userEntries.tags.size > 0) {
+            if (nameExist || authorExist || tagsExist) {
                 setAttemptBoolean(true)
             } else {
                 setAttemptBoolean(false)
             }
-            
+
         }, [userEntries]
     )
 

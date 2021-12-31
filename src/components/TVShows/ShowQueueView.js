@@ -31,12 +31,15 @@ export const ShowQueueView = () => {
 
     useEffect(
         () => {
-            const determineFilters = (midFilterShows) => {
-                const serviceExist = userEntries.service !== "0"
-                const noService = userEntries.service === "0"
-                const tagsExist = userEntries.tags.size > 0
-                const noTags = userEntries.tags.size === 0
+            //variables for whether or not the user has filled in each filter
+            const serviceExist = userEntries.service !== "0"
+            const noService = userEntries.service === "0"
+            const tagsExist = userEntries.tags.size > 0
+            const noTags = userEntries.tags.size === 0
+            const nameExist = userEntries.name !== ""
+            const noName = userEntries.name === ""
 
+            const determineFilters = (midFilterShows) => {
                 const serviceId = parseInt(userEntries.service)
 
                 const showsByTagOnly = () => {
@@ -75,7 +78,7 @@ export const ShowQueueView = () => {
                 }
             }
 
-            if (userEntries.name === "") {
+            if (noName) {
                 ShowRepo.getAll(false)
                     .then((result) => setShows(determineFilters(result)))
                     .then(() => setLoading(false))
@@ -86,7 +89,7 @@ export const ShowQueueView = () => {
             }
 
 
-            if (userEntries.name !== "" || userEntries.service !== "0" || userEntries.tags.size > 0) {
+            if (nameExist || serviceExist || tagsExist) {
                 setAttemptBoolean(true)
             } else {
                 setAttemptBoolean(false)
