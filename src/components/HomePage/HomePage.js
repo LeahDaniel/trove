@@ -13,6 +13,9 @@ export const HomePage = () => {
     const [games, setGames] = useState([])
     const [books, setBooks] = useState([])
     const [shows, setShows] = useState([])
+    const [midFilterGames, setFilteredGames] = useState([])
+    const [midFilterShows, setFilteredShows] = useState([])
+    const [midFilterBooks, setFilteredBooks] = useState([])
     const [userAttemptedSearch, setAttemptBoolean] = useState(false)
 
 
@@ -29,47 +32,92 @@ export const HomePage = () => {
 
     useEffect(
         () => {
-            const determineFilters = (midFilterArray) => {
+            const determineFilters = () => {
                 const tagsExist = userEntries.tags.size > 0
                 const noTags = userEntries.tags.size === 0
 
                 if (tagsExist) {
-                    let newArray = []
+                    let newGameArray = []
+                    let newShowArray = []
+                    let newBookArray = []
 
-                    for (const obj of midFilterArray) {
+                    for (const game of midFilterGames) {
                         let booleanArray = []
                         userEntries.tags.forEach(tagId => {
-                            const foundObj = obj.taggedObjs?.find(taggedObj => taggedObj.tagId === tagId)
-                            if (foundObj) {
+                            const foundGame = game.taggedGames?.find(taggedGame => taggedGame.tagId === tagId)
+                            if (foundGame) {
+                                booleanArray.push(true)
+                            } else {
+                                booleanArray.push(false)
+                            }
+                        })
+
+                        if (booleanArray.every(boolean => boolean === true)) {
+                            newGameArray.push(game)
+                        }
+                    }
+                    for (const show of midFilterShows) {
+                        let booleanArray = []
+                        userEntries.tags.forEach(tagId => {
+                            const foundShow = show.taggedShows?.find(taggedShow => taggedShow.tagId === tagId)
+                            if (foundShow) {
                                 booleanArray.push(true)
                             } else {
                                 booleanArray.push(false)
                             }
                         })
                         if (booleanArray.every(boolean => boolean === true)) {
-                            newArray.push(obj)
+                            newShowArray.push(show)
                         }
                     }
-                    return [newArray]
+                    for (const book of midFilterBooks) {
+                        let booleanArray = []
+                        userEntries.tags.forEach(tagId => {
+                            const foundBook = book.taggedBooks?.find(taggedBook => taggedBook.tagId === tagId)
+                            if (foundBook) {
+                                booleanArray.push(true)
+                            } else {
+                                booleanArray.push(false)
+                            }
+                        })
+                        if (booleanArray.every(boolean => boolean === true)) {
+                            newBookArray.push(book)
+                        }
+                    }
+
+                    return [newGameArray, newShowArray, newBookArray]
+
                 } else if (noTags) {
-                    return [midFilterArray]
+
+                    return [midFilterGames, midFilterShows, midFilterBooks]
+
                 }
             }
 
+            const [gamesArray, showsArray, booksArray] = determineFilters()
+            setGames(gamesArray)
+            setShows(showsArray)
+            setBooks(booksArray)
+
+        }, [midFilterGames, midFilterBooks, midFilterShows, userEntries]
+    )
+
+    useEffect(
+        () => {
             if (userEntries.title === "") {
                 GameRepo.getAll()
-                    .then(result => setGames(determineFilters(result)))
+                    .then(setFilteredGames)
                     .then(ShowRepo.getAll)
-                    .then(result => setShows(determineFilters(result)))
+                    .then(setFilteredShows)
                     .then(BookRepo.getAll)
-                    .then(result => setBooks(determineFilters(result)))
+                    .then(setFilteredBooks)
             } else {
                 GameRepo.getAllBySearchTerm(userEntries.title)
-                    .then(result => setGames(determineFilters(result)))
+                    .then(setFilteredGames)
                 ShowRepo.getAllBySearchTerm(userEntries.title)
-                    .then(result => setShows(determineFilters(result)))
+                    .then(setFilteredShows)
                 BookRepo.getAllBySearchTerm(userEntries.title)
-                    .then(result => setBooks(determineFilters(result)))
+                    .then(setFilteredBooks)
             }
 
             if (userEntries.title !== "" || userEntries.tags.size > 0) {
@@ -77,7 +125,6 @@ export const HomePage = () => {
             } else {
                 setAttemptBoolean(false)
             }
-
         }, [userEntries]
     )
 

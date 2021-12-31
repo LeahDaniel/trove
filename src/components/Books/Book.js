@@ -28,6 +28,7 @@ export const Book = ({ book, setBooks }) => {
 
         return () => {
             mounted = false
+            console.log("unmounted")
         }
     }, [book.id])
 

@@ -30,6 +30,7 @@ export const Game = ({ game, setGames }) => {
 
         return () => {
             mounted = false
+            console.log("unmounted")
         }
     }, [game.id])
 
