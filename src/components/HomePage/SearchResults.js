@@ -92,13 +92,13 @@ export const SearchResults = ({ games, shows, books, userAttemptedSearch }) => {
                         </div>
                     </>
                     : <div
-                    className="mt-4 border-0 d-flex align-items-center justify-content-center"
+                    className="mt-5 pt-5 border-0 d-flex align-items-center justify-content-center"
                 >
-                        <h5 className="text-center text-muted">
+                        <h5 className=" pt-5 mt-5 text-center text-muted">
                             {
                                 userAttemptedSearch
                                     ? "No Results Found"
-                                    : "Your list is empty. Add an item with the plus (+) button."
+                                    : "Your list is empty. Select 'Create New' under a media type in the navbar to add items."
                             }
                         </h5>
                 </div>
