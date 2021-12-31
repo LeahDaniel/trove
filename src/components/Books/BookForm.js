@@ -12,22 +12,19 @@ export const BookForm = () => {
     const userId = parseInt(localStorage.getItem("trove_user"))
     const [authors, setAuthors] = useState([])
     const [tags, setTags] = useState([])
-    //initialize object to hold user choices from form, and/or location.state (on edit of book)
+    const [firstAttempt, setFirstAttempt] = useState(true)
+    const [alert, setAlert] = useState(false)
     const [userChoices, setUserChoices] = useState({
         name: "",
         current: null,
         author: "",
         tagArray: []
     })
-    //initialize object to control "invalid" prop on inputs
     const [invalid, setInvalid] = useState({
         name: true,
         current: true,
         author: true,
     })
-    //initialize boolean to indicate whether the user is on their first form attempt (prevent form warnings on first attempt)
-    const [firstAttempt, setFirstAttempt] = useState(true)
-    const [alert, setAlert] = useState(false)
 
     useEffect(
         () => {
@@ -49,7 +46,8 @@ export const BookForm = () => {
                         const obj = {
                             name: presentBook.name,
                             current: presentBook.current,
-                            author: presentBook.author.name
+                            author: presentBook.author.name,
+                            tagArray: []
                         }
 
                         //create a tag array from the presentBook's associated taggedBooks, and set as userChoices.tagArray value

@@ -8,16 +8,16 @@ import { Button, Card } from "reactstrap";
 import { TagRepo } from "../../repositories/TagRepo";
 
 export const ShowQueueView = () => {
+    const history = useHistory()
+    const [shows, setShows] = useState([])
+    const [taggedShows, setTaggedShows] = useState([])
+    const [isLoading, setLoading] = useState(true)
+    const [userAttemptedSearch, setAttemptBoolean] = useState(false)
     const [userEntries, setUserEntries] = useState({
         name: "",
         service: "0",
         tags: new Set()
     })
-    const history = useHistory()
-    const [shows, setShows] = useState([])
-    const [userAttemptedSearch, setAttemptBoolean] = useState(false)
-    const [isLoading, setLoading] = useState(true)
-    const [taggedShows, setTaggedShows] = useState([])
 
     useEffect(
         () => {

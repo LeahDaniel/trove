@@ -11,11 +11,11 @@ import { RecommendationModal } from "../Social/RecommendationModal";
 
 
 export const Game = ({ game, setGames }) => {
+    const history = useHistory()
     const [presentGame, setGame] = useState([])
     const [platformOpenBoolean, setPlatformOpenBoolean] = useState(false)
     const [recommendationOpenBoolean, setRecommendationOpenBoolean] = useState(false)
     const [successOpenBoolean, setSuccessOpenBoolean] = useState(false)
-    const history = useHistory()
 
     //any time the game prop's id state changes (on page load) get individual game with expanded user, embedded taggedGames (with embedded tags), and embedded gamePlatforms (with embedded platforms)
     useEffect(() => {

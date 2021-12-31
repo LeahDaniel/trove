@@ -5,7 +5,6 @@ import { Tag } from "./Tag"
 export const TagList = ({tags, setTags, userAttemptedSearch, setUserEntry }) => {
     return (
         <Container>
-            
             {
                 tags?.length > 0
                     ? <Row>
@@ -26,10 +25,8 @@ export const TagList = ({tags, setTags, userAttemptedSearch, setUserEntry }) => 
                             </CardTitle>
                         </CardBody>
                     </Card>
-
             }
             {/* Full list of tag cards. Pass state of tag and the setter function to the individual tag card component */}
-            
         </Container>
     )
 }

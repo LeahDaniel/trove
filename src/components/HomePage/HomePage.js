@@ -6,14 +6,14 @@ import { FilterForm } from './FilterForm';
 import { SearchResults } from './SearchResults';
 
 export const HomePage = () => {
-    const [userEntries, setUserEntries] = useState({
-        title: "",
-        tags: new Set()
-    })
     const [games, setGames] = useState([])
     const [books, setBooks] = useState([])
     const [shows, setShows] = useState([])
     const [userAttemptedSearch, setAttemptBoolean] = useState(false)
+    const [userEntries, setUserEntries] = useState({
+        title: "",
+        tags: new Set()
+    })
 
 
     useEffect(

@@ -5,10 +5,10 @@ import { TagRepo } from "../../repositories/TagRepo"
 
 
 export const Tag = ({ tag, setTags, setUserEntry }) => {
+    const userId = parseInt(localStorage.getItem("trove_user"))
     const [presentTag, setTag] = useState([])
     const [userEdit, setUserEdit] = useState("")
     const [openEditBox, setOpenEditBoolean] = useState(false)
-    const userId = parseInt(localStorage.getItem("trove_user"))
     const [tooltipOpen, setTooltipOpen] = useState(false)
 
     //any time the tag prop's id state changes (on page load) get individual tag with expanded user, embedded taggedTags (with embedded tags), and embedded tagPlatforms (with embedded platforms)

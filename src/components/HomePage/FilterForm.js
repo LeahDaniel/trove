@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react"
 import { Button, Form, FormGroup, Input, Label } from "reactstrap"
+import { sortByTag } from "../../repositories/FetchAndSort"
 import { TagRepo } from "../../repositories/TagRepo"
 
 export const FilterForm = ({ userEntries, setUserEntries }) => {
-    const [tags, setTags] = useState([])
     const userId = parseInt(localStorage.getItem("trove_user"))
+    const [tags, setTags] = useState([])
 
     useEffect(
         () => {

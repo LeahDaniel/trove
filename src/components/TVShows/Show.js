@@ -10,10 +10,10 @@ import { RecommendationModal } from "../Social/RecommendationModal";
 
 
 export const Show = ({ show, setShows }) => {
+    const history = useHistory()
     const [presentShow, setShow] = useState([])
     const [successOpenBoolean, setSuccessOpenBoolean] = useState(false)
     const [recommendationOpenBoolean, setRecommendationOpenBoolean] = useState(false)
-    const history = useHistory()
 
     //any time the show prop's id state changes (on page load) get individual show with expanded user, embedded taggedShows (with embedded tags), and embedded showPlatforms (with embedded platforms)
     useEffect(() => {

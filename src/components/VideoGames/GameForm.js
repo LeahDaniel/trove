@@ -4,14 +4,16 @@ import { Alert, Button, Form, FormGroup, FormText, Input, Label, UncontrolledAle
 import { GameRepo } from "../../repositories/GameRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 import CreatableSelect from 'react-select/creatable'
+import { sortByTag } from "../../repositories/FetchAndSort"
 
 export const GameForm = () => {
+    const userId = parseInt(localStorage.getItem("trove_user"))
     const history = useHistory()
     const presentGame = useLocation().state
     const [platforms, setPlatforms] = useState([])
-    const userId = parseInt(localStorage.getItem("trove_user"))
     const [tags, setTags] = useState([])
-    //initialize object to hold user choices from form, and/or location.state (on edit of game)
+    const [firstAttempt, setFirstAttempt] = useState(true)
+    const [alert, setAlert] = useState(false)
     const [userChoices, setUserChoices] = useState({
         name: "",
         current: null,
@@ -20,7 +22,6 @@ export const GameForm = () => {
         chosenCurrentPlatform: 0,
         tagArray: []
     })
-    //initialize object to control "invalid" prop on inputs
     const [invalid, setInvalid] = useState({
         name: true,
         current: true,
@@ -28,9 +29,6 @@ export const GameForm = () => {
         multiPlatforms: true,
         singlePlatform: true,
     })
-    //initialize boolean to indicate whether the user is on their first form attempt (prevent form warnings on first attempt)
-    const [firstAttempt, setFirstAttempt] = useState(true)
-    const [alert, setAlert] = useState(false)
 
 
     useEffect(
@@ -51,7 +49,10 @@ export const GameForm = () => {
                         const obj = {
                             name: presentGame.name,
                             current: presentGame.current,
-                            multiplayerCapable: presentGame.multiplayerCapable
+                            multiplayerCapable: presentGame.multiplayerCapable,
+                            chosenPlatforms: new Set(),
+                            chosenCurrentPlatform: 0,
+                            tagArray: []
                         }
 
                         //create a tag array from the presentGame's associated taggedGames, and set as userChoices.tagArray value
@@ -105,7 +106,7 @@ export const GameForm = () => {
                 obj.current = true
             }
             //single and multi platform
-            if (userChoices.chosenCurrentPlatform === 0 && userChoices.chosenPlatforms.size === 0) {
+            if (userChoices.chosenCurrentPlatform === 0 && userChoices.chosenPlatforms?.size === 0) {
                 obj.singlePlatform = true
                 obj.multiPlatforms = true
             }

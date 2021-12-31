@@ -10,10 +10,10 @@ import { RecommendationModal } from "../Social/RecommendationModal";
 
 
 export const Book = ({ book, setBooks }) => {
+    const history = useHistory()
     const [presentBook, setBook] = useState([])
     const [recommendationOpenBoolean, setRecommendationOpenBoolean] = useState(false)
     const [successOpenBoolean, setSuccessOpenBoolean] = useState(false)
-    const history = useHistory()
 
     //any time the book prop's id state changes (on page load) get individual book with expanded user, embedded taggedBooks (with embedded tags), and embedded bookPlatforms (with embedded platforms)
     useEffect(() => {
@@ -77,11 +77,11 @@ export const Book = ({ book, setBooks }) => {
                                 If the present book is in the queue, display a "Add to Current" button.
                             */}
                             {
-                                presentBook.current === false && setBooks
-                                ? <button className="imgButton">
-                                <img src={moveIcon} alt="Move to Current" style={{ maxWidth: 40, maxHeight: 40 }} onClick={addToCurrent}/>
-                            </button>
-                                : ""
+                                presentBook.current === false
+                                    ? <button className="imgButton">
+                                        <img src={moveIcon} alt="Move to Current" style={{ maxWidth: 40, maxHeight: 40 }} onClick={addToCurrent} />
+                                    </button>
+                                    : ""
                             }
                             {/* onClick of the edit button, push user to form route, and send along state of the presentBook to the location */}
                             <button className="imgButton">
@@ -103,9 +103,7 @@ export const Book = ({ book, setBooks }) => {
                             </button>
                             {/* onClick of delete button (trash icon) call deleteBook function with argument of the id of the present book. */}
                             <button className="imgButton">
-                                <img src={deleteIcon} alt="Delete" style={{ maxWidth: 35, maxHeight: 35 }} onClick={
-                                    () => { return deleteBook(presentBook.id) }
-                                } />
+                                <img src={deleteIcon} alt="Delete" style={{ maxWidth: 35, maxHeight: 35 }} onClick={() => deleteBook(presentBook.id)} />
                             </button>
 
                         </div>

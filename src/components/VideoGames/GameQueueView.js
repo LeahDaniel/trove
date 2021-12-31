@@ -8,17 +8,17 @@ import { Button, Card } from "reactstrap";
 import { TagRepo } from "../../repositories/TagRepo";
 
 export const GameQueueView = () => {
+    const history = useHistory()
+    const [games, setGames] = useState([])
+    const [taggedGames, setTaggedGames] = useState([])
+    const [userAttemptedSearch, setAttemptBoolean] = useState(false)
+    const [isLoading, setLoading] = useState(true)
     const [userEntries, setUserEntries] = useState({
         name: "",
         multiplayer: null,
         platform: "0",
         tags: new Set()
     })
-    const history = useHistory()
-    const [games, setGames] = useState([])
-    const [userAttemptedSearch, setAttemptBoolean] = useState(false)
-    const [isLoading, setLoading] = useState(true)
-    const [taggedGames, setTaggedGames] = useState([])
 
     useEffect(
         () => {

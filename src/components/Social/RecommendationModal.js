@@ -7,8 +7,8 @@ export const RecommendationModal = ({ openBoolean, setOpenBoolean, presentGame, 
     const userId = parseInt(localStorage.getItem("trove_user"))
     const [emailEntry, setEmailEntry] = useState("")
     const [messageEntry, setMessageEntry] = useState("")
-    const [warningBoolean, setWarningBoolean] = useState(false)
     const [users, setUsers] = useState([])
+    const [warningBoolean, setWarningBoolean] = useState(false)
 
     useEffect(
         () => {

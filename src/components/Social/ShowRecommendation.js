@@ -25,7 +25,6 @@ export const ShowRecommendation = ({ showRecommendation, setShowRecommendations 
             .then(setShowRecommendations)
     }
 
-
     return (
         <div className="mt-4">
             <Card

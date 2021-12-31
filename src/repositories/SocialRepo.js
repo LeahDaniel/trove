@@ -1,4 +1,4 @@
-import { fetchIt } from "./Fetch"
+import { fetchIt } from "./FetchAndSort"
 
 const embedSenderAndRecipient = (recommendation, users) => {
     /* 

@@ -8,16 +8,16 @@ import { Button, Card } from "reactstrap";
 import { TagRepo } from "../../repositories/TagRepo";
 
 export const CurrentBooksView = () => {
-    const [userEntries, setUserEntries] = useState({
-        name: "",
-        author: "0",
-        tags: new Set()
-    })
     const history = useHistory()
     const [books, setBooks] = useState([])
     const [taggedBooks, setTaggedBooks] = useState([])
     const [userAttemptedSearch, setAttemptBoolean] = useState(false)
     const [isLoading, setLoading] = useState(true)
+    const [userEntries, setUserEntries] = useState({
+        name: "",
+        author: "0",
+        tags: new Set()
+    })
 
 
     useEffect(

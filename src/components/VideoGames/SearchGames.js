@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useEffect } from "react/cjs/react.development"
 import { Button, Form, FormGroup, Input, Label } from "reactstrap"
+import { sortByTag } from "../../repositories/FetchAndSort"
 import { GameRepo } from "../../repositories/GameRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 

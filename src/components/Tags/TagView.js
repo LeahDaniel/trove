@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, FormGroup, Input, Label } from 'reactstrap';
+import { sortByTag } from '../../repositories/FetchAndSort';
 import { TagRepo } from '../../repositories/TagRepo';
 import { TagList } from './TagList';
 import { TagSearch } from './TagSearch';
 
 export const TagView = () => {
+    const userId = parseInt(localStorage.getItem("trove_user"))
     const [userEntry, setUserEntry] = useState("")
     const [newTagString, setNewTagString] = useState("")
-    const [openBoolean, setOpenBoolean] = useState(false)
     const [tags, setTags] = useState([])
-    const [userAttemptedSearch, setAttemptBoolean] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
-    const userId = parseInt(localStorage.getItem("trove_user"))
+    const [userAttemptedSearch, setAttemptBoolean] = useState(false)
+    const [openBoolean, setOpenBoolean] = useState(false)
 
     useEffect(
         () => {

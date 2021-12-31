@@ -2,13 +2,14 @@ import { useState } from "react"
 import { useEffect } from "react/cjs/react.development"
 import { Button, Form, FormGroup, Input, Label } from "reactstrap"
 import { BookRepo } from "../../repositories/BookRepo"
+import { sortByName, sortByTag } from "../../repositories/FetchAndSort"
 import { TagRepo } from "../../repositories/TagRepo"
 
 export const SearchBooks = ({ userEntries, setUserEntries, taggedBooks }) => {
+    const userId = parseInt(localStorage.getItem("trove_user"))
     const [tags, setTags] = useState([])
     const [tagsForBooks, setTagsForBooks] = useState([])
     const [authors, setAuthors] = useState([])
-    const userId = parseInt(localStorage.getItem("trove_user"))
 
     useEffect(
         () => {

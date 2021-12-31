@@ -1,14 +1,15 @@
 import { useState } from "react"
 import { useEffect } from "react/cjs/react.development"
 import { Button, Form, FormGroup, Input, Label } from "reactstrap"
+import { sortByTag } from "../../repositories/FetchAndSort"
 import { ShowRepo } from "../../repositories/ShowRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 
 export const SearchShows = ({ userEntries, setUserEntries, taggedShows }) => {
+    const userId = parseInt(localStorage.getItem("trove_user"))
     const [tags, setTags] = useState([])
     const [streamingServices, setStreamingServices] = useState([])
     const [tagsForShows, setTagsForShows] = useState([])
-    const userId = parseInt(localStorage.getItem("trove_user"))
 
     useEffect(
         () => {
