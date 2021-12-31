@@ -5,7 +5,7 @@ const embedSenderAndRecipient = (recommendation, users) => {
         map through each taggedGame object (within the game object parameter), add a key named "tag" that has the value of a found tag object
         (should match the tagId on the current taggedGame object)
     */
-    recommendation.sender = users.find(user =>  user.id === recommendation.senderId)
+    recommendation.sender = users.find(user => user.id === recommendation.senderId)
     /* 
         map through each gamePlatform on the game object, add a key named "platform" that has the value of a found platform object
         (should match the platformId on the current gamePlatform object)
@@ -28,15 +28,14 @@ export const SocialRepo = {
             .then(recommendations => {
                 //map through the returned array of recommendations
                 const embedded = recommendations.map(recommendation => {
-                    //for current recommendation object, embed tag objects onto the embedded taggedRecommendations array
+                    //for current recommendation object, expand the user on both the recipient and the sender
                     recommendation = embedSenderAndRecipient(recommendation, users)
-                    // only return recommendation once 1st promise (tags) and 2nd promise (platforms) are resolved
+                    // only return once promises are resolved
                     return recommendation
                 })
                 return embedded
             })
-        //returns recommendations array once the full promise of fetchIt line 30 is resolved, user is expanded,
-        //taggedRecommendations and recommendationPlatforms embedded on first level, and tags and platforms embedded on second level
+        //returns a recommendations array associated with the current user (if the recipient) with game and user expanded
         return recommendations
     },
     async getAllShowRecommendations() {
@@ -46,15 +45,14 @@ export const SocialRepo = {
             .then(recommendations => {
                 //map through the returned array of recommendations
                 const embedded = recommendations.map(recommendation => {
-                    //for current recommendation object, embed tag objects onto the embedded taggedRecommendations array
+                    //for current recommendation object, expand the user on both the recipient and the sender
                     recommendation = embedSenderAndRecipient(recommendation, users)
-                    // only return recommendation once 1st promise (tags) and 2nd promise (platforms) are resolved
+                    // only return once promises are resolved
                     return recommendation
                 })
                 return embedded
             })
-        //returns recommendations array once the full promise of fetchIt line 30 is resolved, user is expanded,
-        //taggedRecommendations and recommendationPlatforms embedded on first level, and tags and platforms embedded on second level
+        //returns a recommendations array associated with the current user (if the recipient) with show and user expanded
         return recommendations
     },
     async getAllBookRecommendations() {
@@ -64,27 +62,16 @@ export const SocialRepo = {
             .then(recommendations => {
                 //map through the returned array of recommendations
                 const embedded = recommendations.map(recommendation => {
-                    //for current recommendation object, embed tag objects onto the embedded taggedRecommendations array
+                    //for current recommendation object, expand the user on both the recipient and the sender
                     recommendation = embedSenderAndRecipient(recommendation, users)
-                    // only return recommendation once 1st promise (tags) and 2nd promise (platforms) are resolved
+                    // only return once promises are resolved
                     return recommendation
                 })
                 return embedded
             })
-        //returns recommendations array once the full promise of fetchIt line 30 is resolved, user is expanded,
-        //taggedRecommendations and recommendationPlatforms embedded on first level, and tags and platforms embedded on second level
+        //returns a recommendations array associated with the current user (if the recipient) with book and user expanded
         return recommendations
     },
-    
-    // async getGameRecommendation(id) {
-    //     return await fetchIt(`http://localhost:8088/gameRecommendations/${id}?_expand=game`)
-    // },
-    // async getShowRecommendation(id) {
-    //     return await fetchIt(`http://localhost:8088/showRecommendations/${id}?_expand=show`)
-    // },
-    // async getBookRecommendation(id) {
-    //     return await fetchIt(`http://localhost:8088/bookRecommendations/${id}?_expand=book`)
-    // },
 
     //DELETEs
     async deleteGameRecommendation(id) {

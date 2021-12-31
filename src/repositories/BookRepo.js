@@ -2,7 +2,7 @@ import { fetchIt } from "./Fetch"
 
 const embedTags = (book, tags) => {
     /* 
-        map through each taggedBook object (within the book object parameter), add a key named "tag" that has the value of a found tag object
+        map through each taggedBook object (within the book object parameter), add a key named "tag" to each that has the value of a found tag object
         (should match the tagId on the current taggedBook object)
     */
     book.taggedBooks = book.taggedBooks.map(taggedBook => {
@@ -17,8 +17,8 @@ const embedTags = (book, tags) => {
 //Object (BookRepo) with methods (functions) added onto it, making each function accessible via dot notation.
 export const BookRepo = {
     //GETs
-    //async functions
     async getAll(current = null) {
+        //determine portion of query string parameter that sorts by current by argument of true/false/null (null is initialized)
         if(current === true){
             current = "&current=true"
         } else if (current === false){
@@ -34,16 +34,16 @@ export const BookRepo = {
                 const embedded = books.map(book => {
                     //for current book object, embed tag objects onto the embedded taggedBooks array
                     book = embedTags(book, tags)
-                    // only return book once 1st promise (tags) and 2nd promise (platforms) are resolved
+                    // only return once promises are resolved
                     return book
                 })
                 return embedded
             })
-        //returns books array once the full promise of fetchIt line 30 is resolved, user is expanded,
-        //taggedBooks and bookPlatforms embedded on first level, and tags and platforms embedded on second level
+        //returns a books array of objects associated with the current user where each object has the user and author expanded and the taggedBooks array embedded (which has the tag expanded)
         return books
     },
-
+    
+    //identical to the getAll function, but also adds a query string parameter to match a string with the name property
     async getBySearchTerm(searchTerm, current = null) {
         if(current === true){
             current = "&current=true"
@@ -56,17 +56,12 @@ export const BookRepo = {
         const tags = await fetchIt(`http://localhost:8088/tags`)
         const books = await fetchIt(`http://localhost:8088/books/?_expand=user&_expand=author&_embed=taggedBooks&userId=${userId}&name_like=${searchTerm}${current}`)
             .then(books => {
-                //map through the returned array of books
                 const embedded = books.map(book => {
-                    //for current book object, embed tag objects onto the embedded taggedBooks array
                     book = embedTags(book, tags)
-                    // only return book once 1st promise (tags) and 2nd promise (platforms) are resolved
                     return book
                 })
                 return embedded
             })
-        //returns books array once the full promise of fetchIt line 30 is resolved, user is expanded,
-        //taggedBooks and bookPlatforms embedded on first level, and tags and platforms embedded on second level
         return books
     }, 
 
@@ -74,10 +69,10 @@ export const BookRepo = {
         const tags = await fetchIt(`http://localhost:8088/tags`)
         return await fetchIt(`http://localhost:8088/books/${id}?_expand=user&_expand=author&_embed=taggedBooks`)
             .then(book => {
-                //for fetched book object, embed tag objects onto the embedded taggedBooks array
+                //for fetched book object, expand tag objects on the embedded taggedBooks array
                 book = embedTags(book, tags)
                 return book
-                //returns one book object with user and platform expanded, 
+                //returns one book object with user and author expanded, 
                 //taggedBooks embedded on first level, and tags embedded on second level
             })
     },
