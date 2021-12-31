@@ -21,7 +21,7 @@ export const ShowQueueView = () => {
 
     useEffect(
         () => {
-            ShowRepo.getAllQueue()
+            ShowRepo.getAll(false)
                 .then(setShows)
                 .then(() => {
                     setLoading(false);
@@ -81,10 +81,10 @@ export const ShowQueueView = () => {
             }
 
             if (userEntries.name === "") {
-                ShowRepo.getAllQueue()
+                ShowRepo.getAll(false)
                     .then((result) => setShows(determineFilters(result)))
             } else {
-                ShowRepo.getAllQueueBySearchTerm(userEntries.name)
+                ShowRepo.getBySearchTerm(userEntries.name, false)
                 .then((result) => setShows(determineFilters(result)))
             }
             

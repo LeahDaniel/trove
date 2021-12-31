@@ -28,7 +28,6 @@ export const Book = ({ book, setBooks }) => {
 
         return () => {
             mounted = false
-            console.log("unmounted")
         }
     }, [book.id])
 
@@ -36,11 +35,11 @@ export const Book = ({ book, setBooks }) => {
     const deleteBook = (bookId) => {
         if (presentBook.current === true) {
             BookRepo.delete(bookId)
-                .then(() => BookRepo.getAllCurrent()
+                .then(() => BookRepo.getAll(true)
                     .then(setBooks))
         } else {
             BookRepo.delete(bookId)
-                .then(() => BookRepo.getAllQueue()
+                .then(() => BookRepo.getAll(false)
                     .then(setBooks))
         }
     }

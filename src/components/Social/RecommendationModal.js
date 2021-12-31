@@ -23,7 +23,6 @@ export const RecommendationModal = ({ openBoolean, setOpenBoolean, presentGame, 
 
             return () => {
                 mounted = false
-                console.log("unmountedModal")
             }
 
         }, []

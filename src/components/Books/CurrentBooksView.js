@@ -22,7 +22,7 @@ export const CurrentBooksView = () => {
 
     useEffect(
         () => {
-            BookRepo.getAllCurrent()
+            BookRepo.getAll(true)
                 .then(setBooks)
                 .then(() => {
                     setLoading(false);
@@ -81,10 +81,10 @@ export const CurrentBooksView = () => {
             }
 
             if (userEntries.name === "") {
-                BookRepo.getAllCurrent()
+                BookRepo.getAll(true)
                     .then((result) => setBooks(determineFilters(result)))
             } else {
-                BookRepo.getAllCurrentBySearchTerm(userEntries.name)
+                BookRepo.getBySearchTerm(userEntries.name, true)
                     .then((result) => setBooks(determineFilters(result)))
             }
 

@@ -18,10 +18,17 @@ const embedTags = (book, tags) => {
 export const BookRepo = {
     //GETs
     //async functions
-    async getAllCurrent() {
+    async getAll(current = null) {
+        if(current === true){
+            current = "&current=true"
+        } else if (current === false){
+            current = "&current=false"
+        } else {
+            current = ""
+        }
         const userId = parseInt(localStorage.getItem("trove_user"))
         const tags = await fetchIt(`http://localhost:8088/tags`)
-        const books = await fetchIt(`http://localhost:8088/books/?_expand=user&_expand=author&_embed=taggedBooks&userId=${userId}&current=true`)
+        const books = await fetchIt(`http://localhost:8088/books/?_expand=user&_expand=author&_embed=taggedBooks&userId=${userId}${current}`)
             .then(books => {
                 //map through the returned array of books
                 const embedded = books.map(book => {
@@ -36,10 +43,18 @@ export const BookRepo = {
         //taggedBooks and bookPlatforms embedded on first level, and tags and platforms embedded on second level
         return books
     },
-    async getAllQueue() {
+
+    async getBySearchTerm(searchTerm, current = null) {
+        if(current === true){
+            current = "&current=true"
+        } else if (current === false){
+            current = "&current=false"
+        } else {
+            current = ""
+        }
         const userId = parseInt(localStorage.getItem("trove_user"))
         const tags = await fetchIt(`http://localhost:8088/tags`)
-        const books = await fetchIt(`http://localhost:8088/books/?_expand=user&_expand=author&_embed=taggedBooks&userId=${userId}&current=false`)
+        const books = await fetchIt(`http://localhost:8088/books/?_expand=user&_expand=author&_embed=taggedBooks&userId=${userId}&name_like=${searchTerm}${current}`)
             .then(books => {
                 //map through the returned array of books
                 const embedded = books.map(book => {
@@ -53,26 +68,8 @@ export const BookRepo = {
         //returns books array once the full promise of fetchIt line 30 is resolved, user is expanded,
         //taggedBooks and bookPlatforms embedded on first level, and tags and platforms embedded on second level
         return books
-    },
-    async getAll() {
-        const userId = parseInt(localStorage.getItem("trove_user"))
-        const tags = await fetchIt(`http://localhost:8088/tags`)
-        const books = await fetchIt(`http://localhost:8088/books/?_expand=user&_expand=author&_embed=taggedBooks&userId=${userId}`)
-            .then(books => {
-                //map through the returned array of books
-                const embedded = books.map(book => {
-                    //for current book object, embed tag objects onto the embedded taggedBooks array
-                    book = embedTags(book, tags)
-                    // only return book once 1st promise (tags) and 2nd promise (platforms) are resolved
-                    return book
-                })
-                return embedded
-            })
-        //returns books array once the full promise of fetchIt line 30 is resolved, user is expanded,
-        //taggedBooks and bookPlatforms embedded on first level, and tags and platforms embedded on second level
-        return books
-    },
-    
+    }, 
+
     async get(id) {
         const tags = await fetchIt(`http://localhost:8088/tags`)
         return await fetchIt(`http://localhost:8088/books/${id}?_expand=user&_expand=author&_embed=taggedBooks`)
@@ -92,62 +89,6 @@ export const BookRepo = {
         return await fetchIt(`http://localhost:8088/authors?userId=${userId}`)
     },
 
-    //GETs for search functionality
-    async getAllCurrentBySearchTerm(searchTerm) {
-        const userId = parseInt(localStorage.getItem("trove_user"))
-        const tags = await fetchIt(`http://localhost:8088/tags`)
-        const books = await fetchIt(`http://localhost:8088/books/?_expand=user&_expand=author&_embed=taggedBooks&userId=${userId}&current=true&name_like=${searchTerm}`)
-            .then(books => {
-                //map through the returned array of books
-                const embedded = books.map(book => {
-                    //for current book object, embed tag objects onto the embedded taggedBooks array
-                    book = embedTags(book, tags)
-                    // only return book once 1st promise (tags) and 2nd promise (platforms) are resolved
-                    return book
-                })
-                return embedded
-            })
-        //returns books array once the full promise of fetchIt line 30 is resolved, user is expanded,
-        //taggedBooks and bookPlatforms embedded on first level, and tags and platforms embedded on second level
-        return books
-    },
-    async getAllQueueBySearchTerm(searchTerm) {
-        const userId = parseInt(localStorage.getItem("trove_user"))
-        const tags = await fetchIt(`http://localhost:8088/tags`)
-        const books = await fetchIt(`http://localhost:8088/books/?_expand=user&_expand=author&_embed=taggedBooks&userId=${userId}&current=false&name_like=${searchTerm}`)
-            .then(books => {
-                //map through the returned array of books
-                const embedded = books.map(book => {
-                    //for current book object, embed tag objects onto the embedded taggedBooks array
-                    book = embedTags(book, tags)
-                    // only return book once 1st promise (tags) and 2nd promise (platforms) are resolved
-                    return book
-                })
-                return embedded
-            })
-        //returns books array once the full promise of fetchIt line 30 is resolved, user is expanded,
-        //taggedBooks and bookPlatforms embedded on first level, and tags and platforms embedded on second level
-        return books
-    },
-    async getAllBySearchTerm(searchTerm) {
-        const userId = parseInt(localStorage.getItem("trove_user"))
-        const tags = await fetchIt(`http://localhost:8088/tags`)
-        const books = await fetchIt(`http://localhost:8088/books/?_expand=user&_expand=author&_embed=taggedBooks&userId=${userId}&name_like=${searchTerm}`)
-            .then(books => {
-                //map through the returned array of books
-                const embedded = books.map(book => {
-                    //for current book object, embed tag objects onto the embedded taggedBooks array
-                    book = embedTags(book, tags)
-                    // only return book once 1st promise (tags) and 2nd promise (platforms) are resolved
-                    return book
-                })
-                return embedded
-            })
-        //returns books array once the full promise of fetchIt line 30 is resolved, user is expanded,
-        //taggedBooks and bookPlatforms embedded on first level, and tags and platforms embedded on second level
-        return books
-    },
-    
 
     //DELETEs
     async delete(id) {
@@ -170,7 +111,6 @@ export const BookRepo = {
         )
     },
     
-
     //PUTs
     async modifyBook(modifiedBook, id) {
         return await fetchIt(

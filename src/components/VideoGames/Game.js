@@ -30,7 +30,6 @@ export const Game = ({ game, setGames }) => {
 
         return () => {
             mounted = false
-            console.log("unmounted")
         }
     }, [game.id])
 
@@ -38,11 +37,11 @@ export const Game = ({ game, setGames }) => {
     const deleteGame = (gameId) => {
         if (presentGame.current === true) {
             GameRepo.delete(gameId)
-                .then(() => GameRepo.getAllCurrent()
+                .then(() => GameRepo.getAll(true)
                     .then(setGames))
         } else {
             GameRepo.delete(gameId)
-                .then(() => GameRepo.getAllQueue()
+                .then(() => GameRepo.getAll(false)
                     .then(setGames))
         }
     }

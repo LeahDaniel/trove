@@ -22,7 +22,7 @@ export const CurrentShowsView = () => {
 
     useEffect(
         () => {
-            ShowRepo.getAllCurrent()
+            ShowRepo.getAll(true)
                 .then(setShows)
                 .then(() => {
                     setLoading(false);
@@ -82,10 +82,10 @@ export const CurrentShowsView = () => {
             }
 
             if (userEntries.name === "") {
-                ShowRepo.getAllCurrent()
+                ShowRepo.getAll(true)
                     .then((result) => setShows(determineFilters(result)))
             } else {
-                ShowRepo.getAllCurrentBySearchTerm(userEntries.name)
+                ShowRepo.getBySearchTerm(userEntries.name, true)
                 .then((result) => setShows(determineFilters(result)))
             }
             

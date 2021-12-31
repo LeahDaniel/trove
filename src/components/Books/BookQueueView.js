@@ -21,7 +21,7 @@ export const BookQueueView = () => {
 
     useEffect(
         () => {
-            BookRepo.getAllQueue()
+            BookRepo.getAll(false)
                 .then(setBooks)
                 .then(() => {
                     setLoading(false);
@@ -80,10 +80,10 @@ export const BookQueueView = () => {
             }
 
             if (userEntries.name === "") {
-                BookRepo.getAllQueue()
+                BookRepo.getAll(false)
                     .then((result) => setBooks(determineFilters(result)))
             } else {
-                BookRepo.getAllQueueBySearchTerm(userEntries.name)
+                BookRepo.getBySearchTerm(userEntries.name, false)
                     .then((result) => setBooks(determineFilters(result)))
             }
 

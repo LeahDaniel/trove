@@ -22,7 +22,7 @@ export const GameQueueView = () => {
 
     useEffect(
         () => {
-            GameRepo.getAllQueue()
+            GameRepo.getAll(false)
                 .then(setGames)
                 .then(() => setLoading(false))
                 .then(() => TagRepo.getTaggedGames())
@@ -112,10 +112,10 @@ export const GameQueueView = () => {
             }
 
             if (userEntries.name === "") {
-                GameRepo.getAllQueue()
+                GameRepo.getAll(false)
                     .then((result) => setGames(determineFilters(result)))
             } else {
-                GameRepo.getAllQueueBySearchTerm(userEntries.name)
+                GameRepo.getBySearchTerm(userEntries.name, false)
                     .then((result) => setGames(determineFilters(result)))
             }
 

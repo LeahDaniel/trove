@@ -18,10 +18,17 @@ const embedTags = (show, tags) => {
 export const ShowRepo = {
     //GETs
     //async functions
-    async getAllCurrent() {
+    async getAll(current = null) {
+        if(current === true){
+            current = "&current=true"
+        } else if (current === false){
+            current = "&current=false"
+        } else {
+            current = ""
+        }
         const userId = parseInt(localStorage.getItem("trove_user"))
         const tags = await fetchIt(`http://localhost:8088/tags`)
-        const shows = await fetchIt(`http://localhost:8088/shows/?_expand=user&_expand=streamingService&_embed=taggedShows&userId=${userId}&current=true`)
+        const shows = await fetchIt(`http://localhost:8088/shows/?_expand=user&_expand=streamingService&_embed=taggedShows&userId=${userId}${current}`)
             .then(shows => {
                 //map through the returned array of shows
                 const embedded = shows.map(show => {
@@ -36,28 +43,18 @@ export const ShowRepo = {
         //taggedShows and showPlatforms embedded on first level, and tags and platforms embedded on second level
         return shows
     },
-    async getAllQueue() {
+
+    async getBySearchTerm(searchTerm, current = null) {
+        if(current === true){
+            current = "&current=true"
+        } else if (current === false){
+            current = "&current=false"
+        } else {
+            current = ""
+        }
         const userId = parseInt(localStorage.getItem("trove_user"))
         const tags = await fetchIt(`http://localhost:8088/tags`)
-        const shows = await fetchIt(`http://localhost:8088/shows/?_expand=user&_expand=streamingService&_embed=taggedShows&userId=${userId}&current=false`)
-            .then(shows => {
-                //map through the returned array of shows
-                const embedded = shows.map(show => {
-                    //for current show object, embed tag objects onto the embedded taggedShows array
-                    show = embedTags(show, tags)
-                    // only return show once 1st promise (tags) and 2nd promise (platforms) are resolved
-                    return show
-                })
-                return embedded
-            })
-        //returns shows array once the full promise of fetchIt line 30 is resolved, user is expanded,
-        //taggedShows and showPlatforms embedded on first level, and tags and platforms embedded on second level
-        return shows
-    },
-    async getAll() {
-        const userId = parseInt(localStorage.getItem("trove_user"))
-        const tags = await fetchIt(`http://localhost:8088/tags`)
-        const shows = await fetchIt(`http://localhost:8088/shows/?_expand=user&_expand=streamingService&_embed=taggedShows&userId=${userId}`)
+        const shows = await fetchIt(`http://localhost:8088/shows/?_expand=user&_expand=streamingService&_embed=taggedShows&userId=${userId}&name_like=${searchTerm}${current}`)
             .then(shows => {
                 //map through the returned array of shows
                 const embedded = shows.map(show => {
@@ -89,62 +86,6 @@ export const ShowRepo = {
         return await fetchIt(`http://localhost:8088/streamingServices`)
     },
 
-    //GETs for search functionality
-    async getAllCurrentBySearchTerm(searchTerm) {
-        const userId = parseInt(localStorage.getItem("trove_user"))
-        const tags = await fetchIt(`http://localhost:8088/tags`)
-        const shows = await fetchIt(`http://localhost:8088/shows/?_expand=user&_expand=streamingService&_embed=taggedShows&userId=${userId}&current=true&name_like=${searchTerm}`)
-            .then(shows => {
-                //map through the returned array of shows
-                const embedded = shows.map(show => {
-                    //for current show object, embed tag objects onto the embedded taggedShows array
-                    show = embedTags(show, tags)
-                    // only return show once 1st promise (tags) and 2nd promise (platforms) are resolved
-                    return show
-                })
-                return embedded
-            })
-        //returns shows array once the full promise of fetchIt line 30 is resolved, user is expanded,
-        //taggedShows and showPlatforms embedded on first level, and tags and platforms embedded on second level
-        return shows
-    },
-    async getAllQueueBySearchTerm(searchTerm) {
-        const userId = parseInt(localStorage.getItem("trove_user"))
-        const tags = await fetchIt(`http://localhost:8088/tags`)
-        const shows = await fetchIt(`http://localhost:8088/shows/?_expand=user&_expand=streamingService&_embed=taggedShows&userId=${userId}&current=false&name_like=${searchTerm}`)
-            .then(shows => {
-                //map through the returned array of shows
-                const embedded = shows.map(show => {
-                    //for current show object, embed tag objects onto the embedded taggedShows array
-                    show = embedTags(show, tags)
-                    // only return show once 1st promise (tags) and 2nd promise (platforms) are resolved
-                    return show
-                })
-                return embedded
-            })
-        //returns shows array once the full promise of fetchIt line 30 is resolved, user is expanded,
-        //taggedShows and showPlatforms embedded on first level, and tags and platforms embedded on second level
-        return shows
-    },
-    async getAllBySearchTerm(searchTerm) {
-        const userId = parseInt(localStorage.getItem("trove_user"))
-        const tags = await fetchIt(`http://localhost:8088/tags`)
-        const shows = await fetchIt(`http://localhost:8088/shows/?_expand=user&_expand=streamingService&_embed=taggedShows&userId=${userId}&name_like=${searchTerm}`)
-            .then(shows => {
-                //map through the returned array of shows
-                const embedded = shows.map(show => {
-                    //for current show object, embed tag objects onto the embedded taggedShows array
-                    show = embedTags(show, tags)
-                    // only return show once 1st promise (tags) and 2nd promise (platforms) are resolved
-                    return show
-                })
-                return embedded
-            })
-        //returns shows array once the full promise of fetchIt line 30 is resolved, user is expanded,
-        //taggedShows and showPlatforms embedded on first level, and tags and platforms embedded on second level
-        return shows
-    },
-    
 
     //DELETEs
     async delete(id) {
@@ -160,7 +101,6 @@ export const ShowRepo = {
         )
     },
     
-
     //PUTs
     async modifyShow(modifiedShow, id) {
         return await fetchIt(

@@ -22,7 +22,7 @@ export const CurrentGamesView = () => {
 
     useEffect(
         () => {
-            GameRepo.getAllCurrent()
+            GameRepo.getAll(true)
                 .then(setGames)
                 .then(() => {
                     setLoading(false);
@@ -113,10 +113,10 @@ export const CurrentGamesView = () => {
             }
 
             if (userEntries.name === "") {
-                GameRepo.getAllCurrent()
+                GameRepo.getAll(true)
                     .then((result) => setGames(determineFilters(result)))
             } else {
-                GameRepo.getAllCurrentBySearchTerm(userEntries.name)
+                GameRepo.getBySearchTerm(userEntries.name, true)
                     .then((result) => setGames(determineFilters(result)))
             }
 

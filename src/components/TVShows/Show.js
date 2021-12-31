@@ -28,7 +28,6 @@ export const Show = ({ show, setShows }) => {
 
         return () => {
             mounted = false
-            console.log("unmounted")
         }
     }, [show.id])
 
@@ -36,11 +35,11 @@ export const Show = ({ show, setShows }) => {
     const deleteShow = (showId) => {
         if (presentShow.current === true) {
             ShowRepo.delete(showId)
-                .then(() => ShowRepo.getAllCurrent()
+                .then(() => ShowRepo.getAll(true)
                     .then(setShows))
         } else {
             ShowRepo.delete(showId)
-                .then(() => ShowRepo.getAllQueue()
+                .then(() => ShowRepo.getAll(false)
                     .then(setShows))
         }
     }

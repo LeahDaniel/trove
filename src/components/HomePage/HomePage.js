@@ -112,11 +112,11 @@ export const HomePage = () => {
                     .then(BookRepo.getAll)
                     .then(setFilteredBooks)
             } else {
-                GameRepo.getAllBySearchTerm(userEntries.title)
+                GameRepo.getBySearchTerm(userEntries.title)
                     .then(setFilteredGames)
-                ShowRepo.getAllBySearchTerm(userEntries.title)
+                ShowRepo.getBySearchTerm(userEntries.title)
                     .then(setFilteredShows)
-                BookRepo.getAllBySearchTerm(userEntries.title)
+                BookRepo.getBySearchTerm(userEntries.title)
                     .then(setFilteredBooks)
             }
 
