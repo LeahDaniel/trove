@@ -8,25 +8,20 @@ import { Button, Card } from "reactstrap";
 import { TagRepo } from "../../repositories/TagRepo";
 
 export const ShowQueueView = () => {
+    const history = useHistory()
+    const [shows, setShows] = useState([])
+    const [taggedShows, setTaggedShows] = useState([])
+    const [isLoading, setLoading] = useState(true)
+    const [userAttemptedSearch, setAttemptBoolean] = useState(false)
     const [userEntries, setUserEntries] = useState({
         name: "",
         service: "0",
         tags: new Set()
     })
-    const history = useHistory()
-    const [shows, setShows] = useState([])
-    const [userAttemptedSearch, setAttemptBoolean] = useState(false)
-    const [isLoading, setLoading] = useState(true)
-    const [taggedShows, setTaggedShows] = useState([])
 
     useEffect(
         () => {
-            ShowRepo.getAllQueue()
-                .then(setShows)
-                .then(() => {
-                    setLoading(false);
-                })
-                .then(() => TagRepo.getTaggedShows())
+            TagRepo.getTaggedShows()
                 .then(result => {
                     const onlyQueued = result.filter(taggedShow => taggedShow.show?.queue === false)
                     setTaggedShows(onlyQueued)
@@ -36,12 +31,15 @@ export const ShowQueueView = () => {
 
     useEffect(
         () => {
-            const determineFilters = (midFilterShows) => {
-                const serviceExist = userEntries.service !== "0"
-                const noService = userEntries.service === "0"
-                const tagsExist = userEntries.tags.size > 0
-                const noTags = userEntries.tags.size === 0
+            //variables for whether or not the user has filled in each filter
+            const serviceExist = userEntries.service !== "0"
+            const noService = userEntries.service === "0"
+            const tagsExist = userEntries.tags.size > 0
+            const noTags = userEntries.tags.size === 0
+            const nameExist = userEntries.name !== ""
+            const noName = userEntries.name === ""
 
+            const determineFilters = (midFilterShows) => {
                 const serviceId = parseInt(userEntries.service)
 
                 const showsByTagOnly = () => {
@@ -80,16 +78,18 @@ export const ShowQueueView = () => {
                 }
             }
 
-            if (userEntries.name === "") {
-                ShowRepo.getAllQueue()
+            if (noName) {
+                ShowRepo.getAll(false)
                     .then((result) => setShows(determineFilters(result)))
+                    .then(() => setLoading(false))
             } else {
-                ShowRepo.getAllQueueBySearchTerm(userEntries.name)
-                .then((result) => setShows(determineFilters(result)))
+                ShowRepo.getBySearchTerm(userEntries.name, false)
+                    .then((result) => setShows(determineFilters(result)))
+                    .then(() => setLoading(false))
             }
-            
 
-            if (userEntries.name !== "" || userEntries.service !== "0" || userEntries.tag !== "0") {
+
+            if (nameExist || serviceExist || tagsExist) {
                 setAttemptBoolean(true)
             } else {
                 setAttemptBoolean(false)

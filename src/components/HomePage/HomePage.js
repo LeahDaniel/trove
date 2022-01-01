@@ -4,44 +4,33 @@ import { ShowRepo } from "../../repositories/ShowRepo"
 import { BookRepo } from "../../repositories/BookRepo"
 import { FilterForm } from './FilterForm';
 import { SearchResults } from './SearchResults';
+import { Card } from 'reactstrap';
 
 export const HomePage = () => {
+    const [games, setGames] = useState([])
+    const [books, setBooks] = useState([])
+    const [shows, setShows] = useState([])
+    const [userAttemptedSearch, setAttemptBoolean] = useState(false)
+    const [isLoading, setLoading] = useState(true)
     const [userEntries, setUserEntries] = useState({
         title: "",
         tags: new Set()
     })
-    const [games, setGames] = useState([])
-    const [books, setBooks] = useState([])
-    const [shows, setShows] = useState([])
-    const [midFilterGames, setFilteredGames] = useState([])
-    const [midFilterShows, setFilteredShows] = useState([])
-    const [midFilterBooks, setFilteredBooks] = useState([])
-    const [userAttemptedSearch, setAttemptBoolean] = useState(false)
 
 
     useEffect(
         () => {
-            GameRepo.getAll()
-                .then(setGames)
-                .then(ShowRepo.getAll)
-                .then(setShows)
-                .then(BookRepo.getAll)
-                .then(setBooks)
-        }, []
-    )
+            const tagsExist = userEntries.tags.size > 0
+            const noTags = userEntries.tags.size === 0
+            const titleExists = userEntries.title !== ""
+            const noTitle = userEntries.title === ""
 
-    useEffect(
-        () => {
-            const determineFilters = () => {
-                const tagsExist = userEntries.tags.size > 0
-                const noTags = userEntries.tags.size === 0
-
+            //filter games, shows, and books array based on tags they're associate with
+            const determineGameFilters = (array) => {
                 if (tagsExist) {
                     let newGameArray = []
-                    let newShowArray = []
-                    let newBookArray = []
 
-                    for (const game of midFilterGames) {
+                    for (const game of array) {
                         let booleanArray = []
                         userEntries.tags.forEach(tagId => {
                             const foundGame = game.taggedGames?.find(taggedGame => taggedGame.tagId === tagId)
@@ -56,7 +45,17 @@ export const HomePage = () => {
                             newGameArray.push(game)
                         }
                     }
-                    for (const show of midFilterShows) {
+                    return newGameArray
+
+                } else if (noTags) {
+                    return array
+                }
+            }
+            const determineShowFilters = (array) => {
+                if (tagsExist) {
+                    let newShowArray = []
+
+                    for (const show of array) {
                         let booleanArray = []
                         userEntries.tags.forEach(tagId => {
                             const foundShow = show.taggedShows?.find(taggedShow => taggedShow.tagId === tagId)
@@ -66,11 +65,22 @@ export const HomePage = () => {
                                 booleanArray.push(false)
                             }
                         })
+
                         if (booleanArray.every(boolean => boolean === true)) {
                             newShowArray.push(show)
                         }
                     }
-                    for (const book of midFilterBooks) {
+                    return newShowArray
+
+                } else if (noTags) {
+                    return array
+                }
+            }
+            const determineBookFilters = (array) => {
+                if (tagsExist) {
+                    let newBookArray = []
+
+                    for (const book of array) {
                         let booleanArray = []
                         userEntries.tags.forEach(tagId => {
                             const foundBook = book.taggedBooks?.find(taggedBook => taggedBook.tagId === tagId)
@@ -80,51 +90,44 @@ export const HomePage = () => {
                                 booleanArray.push(false)
                             }
                         })
+
                         if (booleanArray.every(boolean => boolean === true)) {
                             newBookArray.push(book)
                         }
                     }
-
-                    return [newGameArray, newShowArray, newBookArray]
+                    return newBookArray
 
                 } else if (noTags) {
-
-                    return [midFilterGames, midFilterShows, midFilterBooks]
-
+                    return array
                 }
             }
 
-            const [gamesArray, showsArray, booksArray] = determineFilters()
-            setGames(gamesArray)
-            setShows(showsArray)
-            setBooks(booksArray)
-
-        }, [midFilterGames, midFilterBooks, midFilterShows, userEntries]
-    )
-
-    useEffect(
-        () => {
-            if (userEntries.title === "") {
+            //determine whether to search JSON by name (whether user has entered search term), then determine tag filters with functions above
+            if (noTitle) {
                 GameRepo.getAll()
-                    .then(setFilteredGames)
+                    .then((result) => setGames(determineGameFilters(result)))
                     .then(ShowRepo.getAll)
-                    .then(setFilteredShows)
+                    .then((result) => setShows(determineShowFilters(result)))
                     .then(BookRepo.getAll)
-                    .then(setFilteredBooks)
+                    .then((result) => setBooks(determineBookFilters(result)))
+                    .then(() => setLoading(false))
             } else {
-                GameRepo.getAllBySearchTerm(userEntries.title)
-                    .then(setFilteredGames)
-                ShowRepo.getAllBySearchTerm(userEntries.title)
-                    .then(setFilteredShows)
-                BookRepo.getAllBySearchTerm(userEntries.title)
-                    .then(setFilteredBooks)
+                GameRepo.getBySearchTerm(userEntries.title)
+                    .then((result) => setGames(determineGameFilters(result)))
+                ShowRepo.getBySearchTerm(userEntries.title)
+                    .then((result) => setShows(determineShowFilters(result)))
+                BookRepo.getBySearchTerm(userEntries.title)
+                    .then((result) => setBooks(determineBookFilters(result)))
+                    .then(() => setLoading(false))
             }
 
-            if (userEntries.title !== "" || userEntries.tags.size > 0) {
+            //mark whether a user has used the filters in order to determine the message they get for a blank list
+            if (titleExists || tagsExist) {
                 setAttemptBoolean(true)
             } else {
                 setAttemptBoolean(false)
             }
+
         }, [userEntries]
     )
 
@@ -143,7 +146,11 @@ export const HomePage = () => {
                 {/* <div className="row justify-content-center mt-4"><h2 className='col-6 text-center'>Your Media</h2></div> */}
                 <div className="row justify-content-evenly">
                     <FilterForm userEntries={userEntries} setUserEntries={setUserEntries} />
-                    <SearchResults games={games} shows={shows} books={books} userAttemptedSearch={userAttemptedSearch} />
+                    {
+                        isLoading
+                        ? <Card className="col-7 d-flex align-items-center justify-content-center border-0" />
+                        : <SearchResults games={games} shows={shows} books={books} userAttemptedSearch={userAttemptedSearch} />
+                    }
                 </div>
             </div>
         </>

@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useEffect } from "react/cjs/react.development"
 import { Button, Form, FormGroup, Input, Label } from "reactstrap"
+import { sortByTag } from "../../repositories/FetchAndSort"
 import { GameRepo } from "../../repositories/GameRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 
@@ -17,14 +18,7 @@ export const SearchGames = ({ userEntries, setUserEntries, taggedGames }) => {
                 .then(setPlatforms)
                 .then(() => TagRepo.getTagsForUser(userId))
                 .then(result => {
-                    const sorted = result.sort((a, b) => {
-                        const tagA = a.tag.toLowerCase()
-                        const tagB = b.tag.toLowerCase()
-                        if (tagA < tagB) { return -1 }
-                        if (tagA > tagB) { return 1 }
-                        return 0 //default return value (no sorting)
-                    })
-                    setTags(sorted)
+                    setTags(sortByTag(result))
                 })
         }, [userId]
     )

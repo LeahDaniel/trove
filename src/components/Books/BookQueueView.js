@@ -8,25 +8,20 @@ import { Button, Card } from "reactstrap";
 import { TagRepo } from "../../repositories/TagRepo";
 
 export const BookQueueView = () => {
-    const [userEntries, setUserEntries] = useState({
-        name: "",
-        author: "0",
-        tags: new Set()
-    })
     const history = useHistory()
     const [books, setBooks] = useState([])
     const [taggedBooks, setTaggedBooks] = useState([])
     const [userAttemptedSearch, setAttemptBoolean] = useState(false)
     const [isLoading, setLoading] = useState(true)
+    const [userEntries, setUserEntries] = useState({
+        name: "",
+        author: "0",
+        tags: new Set()
+    })
 
     useEffect(
         () => {
-            BookRepo.getAllQueue()
-                .then(setBooks)
-                .then(() => {
-                    setLoading(false);
-                })
-                .then(() => TagRepo.getTaggedBooks())
+            TagRepo.getTaggedBooks()
                 .then(result => {
                     const onlyQueued = result.filter(taggedBook => taggedBook.book?.current === false)
                     setTaggedBooks(onlyQueued)
@@ -36,12 +31,15 @@ export const BookQueueView = () => {
 
     useEffect(
         () => {
-            const determineFilters = (midFilterBooks) => {
-                const authorExist = userEntries.author !== "0"
-                const noAuthor = userEntries.author === "0"
-                const tagsExist = userEntries.tags.size > 0
-                const noTags = userEntries.tags.size === 0
+            //variables for whether or not the user has filled in each filter
+            const authorExist = userEntries.author !== "0"
+            const noAuthor = userEntries.author === "0"
+            const nameExist = userEntries.name !== ""
+            const noName = userEntries.name === ""
+            const tagsExist = userEntries.tags.size > 0
+            const noTags = userEntries.tags.size === 0
 
+            const determineFilters = (midFilterBooks) => {
                 const authorId = parseInt(userEntries.author)
 
                 const booksByTagOnly = () => {
@@ -79,15 +77,17 @@ export const BookQueueView = () => {
                 }
             }
 
-            if (userEntries.name === "") {
-                BookRepo.getAllQueue()
+            if (noName) {
+                BookRepo.getAll(false)
                     .then((result) => setBooks(determineFilters(result)))
+                    .then(() => setLoading(false))
             } else {
-                BookRepo.getAllQueueBySearchTerm(userEntries.name)
+                BookRepo.getBySearchTerm(userEntries.name, false)
                     .then((result) => setBooks(determineFilters(result)))
+                    .then(() => setLoading(false))
             }
 
-            if (userEntries.name !== "" || userEntries.author !== "0" || userEntries.tag !== "0") {
+            if (nameExist || authorExist || tagsExist) {
                 setAttemptBoolean(true)
             } else {
                 setAttemptBoolean(false)

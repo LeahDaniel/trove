@@ -8,26 +8,21 @@ import { Button, Card } from "reactstrap";
 import { TagRepo } from "../../repositories/TagRepo";
 
 export const CurrentGamesView = () => {
+    const history = useHistory()
+    const [games, setGames] = useState([])
+    const [taggedGames, setTaggedGames] = useState([])
+    const [isLoading, setLoading] = useState(true)
+    const [userAttemptedSearch, setAttemptBoolean] = useState(false)
     const [userEntries, setUserEntries] = useState({
         name: "",
         multiplayer: null,
         platform: "0",
         tags: new Set()
     })
-    const history = useHistory()
-    const [games, setGames] = useState([])
-    const [userAttemptedSearch, setAttemptBoolean] = useState(false)
-    const [isLoading, setLoading] = useState(true)
-    const [taggedGames, setTaggedGames] = useState([])
 
     useEffect(
         () => {
-            GameRepo.getAllCurrent()
-                .then(setGames)
-                .then(() => {
-                    setLoading(false);
-                })
-                .then(() => TagRepo.getTaggedGames())
+            TagRepo.getTaggedGames()
                 .then(result => {
                     const onlyCurrent = result.filter(taggedGame => taggedGame.game?.current === true)
                     setTaggedGames(onlyCurrent)
@@ -37,14 +32,17 @@ export const CurrentGamesView = () => {
 
     useEffect(
         () => {
-            const determineFilters = (midFilterGames) => {
-                const multiplayerExist = userEntries.multiplayer !== null
-                const noMultiplayer = userEntries.multiplayer === null
-                const platformExist = userEntries.platform !== "0"
-                const noPlatform = userEntries.platform === "0"
-                const tagsExist = userEntries.tags.size > 0
-                const noTags = userEntries.tags.size === 0
+            //variables for whether or not the user has filled in each filter
+            const multiplayerExist = userEntries.multiplayer !== null
+            const noMultiplayer = userEntries.multiplayer === null
+            const platformExist = userEntries.platform !== "0"
+            const noPlatform = userEntries.platform === "0"
+            const tagsExist = userEntries.tags.size > 0
+            const noTags = userEntries.tags.size === 0
+            const nameExist = userEntries.name !== ""
+            const noName = userEntries.name === ""
 
+            const determineFilters = (midFilterGames) => {
                 const multiplayerBoolean = userEntries.multiplayer
                 const platformId = parseInt(userEntries.platform)
 
@@ -112,15 +110,17 @@ export const CurrentGamesView = () => {
 
             }
 
-            if (userEntries.name === "") {
-                GameRepo.getAllCurrent()
+            if (noName) {
+                GameRepo.getAll(true)
                     .then((result) => setGames(determineFilters(result)))
+                    .then(() => setLoading(false))
             } else {
-                GameRepo.getAllCurrentBySearchTerm(userEntries.name)
+                GameRepo.getBySearchTerm(userEntries.name, true)
                     .then((result) => setGames(determineFilters(result)))
+                    .then(() => setLoading(false))
             }
 
-            if (userEntries.name !== "" || userEntries.multiplayer !== null || userEntries.platform !== "0" || userEntries.tag !== "0") {
+            if (nameExist || multiplayerExist || platformExist || tagsExist) {
                 setAttemptBoolean(true)
             } else {
                 setAttemptBoolean(false)

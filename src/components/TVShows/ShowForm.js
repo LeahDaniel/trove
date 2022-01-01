@@ -4,29 +4,27 @@ import { Alert, Button, Form, FormGroup, FormText, Input, Label, UncontrolledAle
 import { ShowRepo } from "../../repositories/ShowRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 import CreatableSelect from 'react-select/creatable'
+import { sortByTag } from "../../repositories/FetchAndSort"
 
 export const ShowForm = () => {
+    const userId = parseInt(localStorage.getItem("trove_user"))
     const history = useHistory()
     const presentShow = useLocation().state
     const [streamingServices, setStreamingServices] = useState([])
-    const userId = parseInt(localStorage.getItem("trove_user"))
     const [tags, setTags] = useState([])
-    //initialize object to hold user choices from form, and/or location.state (on edit of show)
+    const [firstAttempt, setFirstAttempt] = useState(true)
+    const [alert, setAlert] = useState(false)
     const [userChoices, setUserChoices] = useState({
         name: "",
         current: null,
         streamingService: 0,
         tagArray: []
     })
-    //initialize object to control "invalid" prop on inputs
     const [invalid, setInvalid] = useState({
         name: true,
         current: true,
         streaming: true,
     })
-    //initialize boolean to indicate whether the user is on their first form attempt (prevent form warnings on first attempt)
-    const [firstAttempt, setFirstAttempt] = useState(true)
-    const [alert, setAlert] = useState(false)
 
 
     useEffect(
@@ -34,14 +32,7 @@ export const ShowForm = () => {
             //on page load, GET streaming services and tags
             TagRepo.getTagsForUser(userId)
                 .then(result => {
-                    const sorted = result.sort((a, b) => {
-                        const tagA = a.tag.toLowerCase()
-                        const tagB = b.tag.toLowerCase()
-                        if (tagA < tagB) { return -1 }
-                        if (tagA > tagB) { return 1 }
-                        return 0 //default return value (no sorting)
-                    })
-                    setTags(sorted)
+                    setTags(sortByTag(result))
                 })
                 .then(ShowRepo.getAllStreamingServices)
                 .then(setStreamingServices)
@@ -54,7 +45,8 @@ export const ShowForm = () => {
                         const obj = {
                             name: presentShow.name,
                             current: presentShow.current,
-                            streamingService: presentShow.streamingServiceId
+                            streamingService: presentShow.streamingServiceId,
+                            tagArray: []
                         }
 
                         //create a tag array from the presentShow's associated taggedShows, and set as userChoices.tagArray value

@@ -4,6 +4,7 @@ import { Alert, Button, Form, FormGroup, FormText, Input, Label, UncontrolledAle
 import { BookRepo } from "../../repositories/BookRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 import CreatableSelect from 'react-select/creatable'
+import { sortByName, sortByTag } from "../../repositories/FetchAndSort"
 
 export const BookForm = () => {
     const history = useHistory()
@@ -11,47 +12,30 @@ export const BookForm = () => {
     const userId = parseInt(localStorage.getItem("trove_user"))
     const [authors, setAuthors] = useState([])
     const [tags, setTags] = useState([])
-    //initialize object to hold user choices from form, and/or location.state (on edit of book)
+    const [firstAttempt, setFirstAttempt] = useState(true)
+    const [alert, setAlert] = useState(false)
     const [userChoices, setUserChoices] = useState({
         name: "",
         current: null,
         author: "",
         tagArray: []
     })
-    //initialize object to control "invalid" prop on inputs
     const [invalid, setInvalid] = useState({
         name: true,
         current: true,
         author: true,
     })
-    //initialize boolean to indicate whether the user is on their first form attempt (prevent form warnings on first attempt)
-    const [firstAttempt, setFirstAttempt] = useState(true)
-    const [alert, setAlert] = useState(false)
 
     useEffect(
         () => {
             //on page load, GET streaming services and tags
             TagRepo.getTagsForUser(userId)
                 .then(result => {
-                    const sorted = result.sort((a, b) => {
-                        const tagA = a.tag.toLowerCase()
-                        const tagB = b.tag.toLowerCase()
-                        if (tagA < tagB) { return -1 }
-                        if (tagA > tagB) { return 1 }
-                        return 0 //default return value (no sorting)
-                    })
-                    setTags(sorted)
+                    setTags(sortByTag(result))
                 })
                 .then(() => BookRepo.getAuthorsForUser(userId))
                 .then(result => {
-                    const sorted = result.sort((a, b) => {
-                        const nameA = a.name.toLowerCase()
-                        const nameB = b.name.toLowerCase()
-                        if (nameA < nameB) { return -1 }
-                        if (nameA > nameB) { return 1 }
-                        return 0 //default return value (no sorting)
-                    })
-                    setAuthors(sorted)
+                    setAuthors(sortByName(result))
                 })
                 .then(() => {
                     if (presentBook) {
@@ -62,7 +46,8 @@ export const BookForm = () => {
                         const obj = {
                             name: presentBook.name,
                             current: presentBook.current,
-                            author: presentBook.author.name
+                            author: presentBook.author.name,
+                            tagArray: []
                         }
 
                         //create a tag array from the presentBook's associated taggedBooks, and set as userChoices.tagArray value

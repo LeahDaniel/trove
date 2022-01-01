@@ -10,7 +10,7 @@ export const BookRecommendation = ({ bookRecommendation, setBookRecommendations 
     const history = useHistory()
     const [authors, setAuthors] = useState([])
     const [book, setBook] = useState([])
-
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(
         () => {
@@ -18,6 +18,7 @@ export const BookRecommendation = ({ bookRecommendation, setBookRecommendations 
             .then(setBook)
             .then(BookRepo.getAllAuthors)
             .then(setAuthors)
+            .then(() => setIsLoading(false))
         }, [bookRecommendation]
     )
 
@@ -31,7 +32,10 @@ export const BookRecommendation = ({ bookRecommendation, setBookRecommendations 
 
     return (
         <div className="mt-4">
-            <Card
+            {
+                isLoading
+                ? ""
+                :<Card
                 body
                 color="light"
             >
@@ -72,7 +76,7 @@ export const BookRecommendation = ({ bookRecommendation, setBookRecommendations 
 
                 </CardBody>
             </Card>
+            }
         </div>
-
     )
 }

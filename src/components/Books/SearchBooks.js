@@ -2,37 +2,24 @@ import { useState } from "react"
 import { useEffect } from "react/cjs/react.development"
 import { Button, Form, FormGroup, Input, Label } from "reactstrap"
 import { BookRepo } from "../../repositories/BookRepo"
+import { sortByName, sortByTag } from "../../repositories/FetchAndSort"
 import { TagRepo } from "../../repositories/TagRepo"
 
 export const SearchBooks = ({ userEntries, setUserEntries, taggedBooks }) => {
+    const userId = parseInt(localStorage.getItem("trove_user"))
     const [tags, setTags] = useState([])
     const [tagsForBooks, setTagsForBooks] = useState([])
     const [authors, setAuthors] = useState([])
-    const userId = parseInt(localStorage.getItem("trove_user"))
 
     useEffect(
         () => {
             TagRepo.getTagsForUser(userId)
                 .then(result => {
-                    const sorted = result.sort((a, b) => {
-                        const tagA = a.tag.toLowerCase()
-                        const tagB = b.tag.toLowerCase()
-                        if (tagA < tagB) { return -1 }
-                        if (tagA > tagB) { return 1 }
-                        return 0 //default return value (no sorting)
-                    })
-                    setTags(sorted)
+                    setTags(sortByTag(result))
                 })
                 .then(() => BookRepo.getAuthorsForUser(userId))
                 .then(result => {
-                    const sorted = result.sort((a, b) => {
-                        const nameA = a.name.toLowerCase()
-                        const nameB = b.name.toLowerCase()
-                        if (nameA < nameB) { return -1 }
-                        if (nameA > nameB) { return 1 }
-                        return 0 //default return value (no sorting)
-                    })
-                    setAuthors(sorted)
+                    setAuthors(sortByName(result))
                 })
         }, [userId]
     )

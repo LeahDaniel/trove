@@ -1,43 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, FormGroup, Input, Label } from 'reactstrap';
+import { sortByTag } from '../../repositories/FetchAndSort';
 import { TagRepo } from '../../repositories/TagRepo';
 import { TagList } from './TagList';
 import { TagSearch } from './TagSearch';
 
 export const TagView = () => {
+    const userId = parseInt(localStorage.getItem("trove_user"))
     const [userEntry, setUserEntry] = useState("")
     const [newTagString, setNewTagString] = useState("")
-    const [openBoolean, setOpenBoolean] = useState(false)
     const [tags, setTags] = useState([])
-    const [userAttemptedSearch, setAttemptBoolean] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
-    const userId = parseInt(localStorage.getItem("trove_user"))
-
-    useEffect(
-        () => {
-            TagRepo.getTagsForUser(userId)
-                .then(result => {
-                    const sorted = result.sort((a, b) => {
-                        const tagA = a.tag.toLowerCase()
-                        const tagB = b.tag.toLowerCase()
-                        if (tagA < tagB) { return -1 }
-                        if (tagA > tagB) { return 1 }
-                        return 0 //default return value (no sorting)
-                    })
-                    setTags(sorted)
-                })
-                .then(() => setIsLoading(false))
-        }, [userId]
-    )
+    const [userAttemptedSearch, setAttemptBoolean] = useState(false)
+    const [openBoolean, setOpenBoolean] = useState(false)
 
     useEffect(
         () => {
             if (userEntry === "") {
                 TagRepo.getTagsForUser(userId)
-                    .then(setTags)
+                    .then(result => {
+                        setTags(sortByTag(result))
+                    })
+                    .then(() => setIsLoading(false))
             } else {
                 TagRepo.getTagsForUserBySearchTerm(userId, userEntry)
-                    .then(setTags)
+                    .then(result => {
+                        setTags(sortByTag(result))
+                    })
+                    .then(() => setIsLoading(false))
             }
 
             if (userEntry !== "") {

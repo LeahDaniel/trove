@@ -1,28 +1,22 @@
 import { useState, useEffect } from "react"
 import { Button, Form, FormGroup, Input, Label } from "reactstrap"
+import { sortByTag } from "../../repositories/FetchAndSort"
 import { TagRepo } from "../../repositories/TagRepo"
 
 export const FilterForm = ({ userEntries, setUserEntries }) => {
-    const [tags, setTags] = useState([])
     const userId = parseInt(localStorage.getItem("trove_user"))
+    const [tags, setTags] = useState([])
 
     useEffect(
         () => {
             TagRepo.getTagsForUser(userId)
                 .then(result => {
-                    const sorted = result.sort((a, b) => {
-                        const tagA = a.tag.toLowerCase()
-                        const tagB = b.tag.toLowerCase()
-                        if (tagA < tagB) { return -1 }
-                        if (tagA > tagB) { return 1 }
-                        return 0 //default return value (no sorting)
-                    })
-                    setTags(sorted)
+                    setTags(sortByTag(result))
                 })
         }, [userId]
     )
 
-    //check for parameter's value in chosenPlatforms. Delete if it exists (representing unchecking a box), add it if it doesn't (checking a box)
+    //check for parameter's value in userEntries.tags Delete if it exists (representing unchecking a box), add it if it doesn't (checking a box)
     const setTag = (id) => {
         const copy = { ...userEntries }
         copy.tags.has(id)
@@ -73,8 +67,6 @@ export const FilterForm = ({ userEntries, setUserEntries }) => {
                                     >
                                         {tag.tag}
                                     </Button>
-
-
                                 })
                                 : ""
                         }
@@ -83,12 +75,11 @@ export const FilterForm = ({ userEntries, setUserEntries }) => {
                 <FormGroup className='row justify-content-center'>
                     <Button
                         onClick={() => {
-                            let userEntriesCopy = { ...userEntries }
-                            userEntriesCopy = {
+                            const reset = {
                                 title: "",
                                 tags: new Set()
                             }
-                            setUserEntries(userEntriesCopy)
+                            setUserEntries(reset)
                         }
                         }
                         className="col-sm-6 col-lg-4 mt-2"

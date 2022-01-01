@@ -1,8 +1,8 @@
-import { fetchIt } from "./Fetch"
+import { fetchIt } from "./FetchAndSort"
 
 const embedTagsAndPlatforms = (game, tags, platforms) => {
     /* 
-        map through each taggedGame object (within the game object parameter), add a key named "tag" that has the value of a found tag object
+        map through each taggedGame object (within the game object parameter), add a key named "tag" to each that has the value of a found tag object
         (should match the tagId on the current taggedGame object)
     */
     game.taggedGames = game.taggedGames.map(taggedGame => {
@@ -10,7 +10,7 @@ const embedTagsAndPlatforms = (game, tags, platforms) => {
         return taggedGame
     })
     /* 
-        map through each gamePlatform on the game object, add a key named "platform" that has the value of a found platform object
+        map through each gamePlatform on the game object, add a key named "platform" to each that has the value of a found platform object
         (should match the platformId on the current gamePlatform object)
      */
     game.gamePlatforms = game.gamePlatforms.map(gamePlatform => {
@@ -25,136 +25,70 @@ const embedTagsAndPlatforms = (game, tags, platforms) => {
 //Object (GameRepo) with methods (functions) added onto it, making each function accessible via dot notation.
 export const GameRepo = {
     //GETs
-    //async functions
-    async getAllCurrent() {
+    async getAll(current = null) {
+        //determine portion of query string parameter that sorts by current by argument of true/false/null (null is initialized)
+        if (current === true) {
+            current = "&current=true"
+        } else if (current === false) {
+            current = "&current=false"
+        } else {
+            current = ""
+        }
         const userId = parseInt(localStorage.getItem("trove_user"))
         const tags = await fetchIt(`http://localhost:8088/tags`)
         const platforms = await fetchIt(`http://localhost:8088/platforms`)
-        const games = await fetchIt(`http://localhost:8088/games/?_expand=user&_embed=gamePlatforms&_embed=taggedGames&userId=${userId}&current=true`)
+        const games = await fetchIt(`http://localhost:8088/games/?_expand=user&_embed=gamePlatforms&_embed=taggedGames&userId=${userId}${current}`)
             .then(games => {
                 //map through the returned array of games
                 const embedded = games.map(game => {
-                    //for current game object, embed tag objects onto the embedded taggedGames array
+                    //for current game object, expand tag objects on the embedded taggedGames array and platforms on the gamePlatforms array
                     game = embedTagsAndPlatforms(game, tags, platforms)
-                    // only return game once 1st promise (tags) and 2nd promise (platforms) are resolved
+                    // only return once promises are resolved
                     return game
                 })
                 return embedded
             })
-        //returns games array once the full promise of fetchIt line 30 is resolved, user is expanded,
-        //taggedGames and gamePlatforms embedded on first level, and tags and platforms embedded on second level
+        //returns a games array of objects associated with the current user where each object has the user expanded, the taggedGames and gamePlatforms arrays embedded, and the tags and platforms expanded on those.
         return games
     },
-    async getAllQueue() {
+
+    //identical to the getAll function, but also adds a query string parameter to match a string with the name property
+    async getBySearchTerm(searchTerm, current = null) {
+        if (current === true) {
+            current = "&current=true"
+        } else if (current === false) {
+            current = "&current=false"
+        } else {
+            current = ""
+        }
         const userId = parseInt(localStorage.getItem("trove_user"))
         const tags = await fetchIt(`http://localhost:8088/tags`)
         const platforms = await fetchIt(`http://localhost:8088/platforms`)
-        const games = await fetchIt(`http://localhost:8088/games/?_expand=user&_embed=gamePlatforms&_embed=taggedGames&userId=${userId}&current=false`)
+        const games = await fetchIt(`http://localhost:8088/games/?_expand=user&_embed=gamePlatforms&_embed=taggedGames&userId=${userId}&name_like=${searchTerm}${current}`)
             .then(games => {
-                //map through the returned array of games
                 const embedded = games.map(game => {
-                    //for current game object, embed tag objects onto the embedded taggedGames array
                     game = embedTagsAndPlatforms(game, tags, platforms)
                     return game
                 })
                 return embedded
             })
-        //returns games array with user expanded, 
-        //taggedGames and gamePlatforms embedded on first level, and tags and platforms embedded on second level
         return games
     },
-    async getAll() {
-        const userId = parseInt(localStorage.getItem("trove_user"))
-        const tags = await fetchIt(`http://localhost:8088/tags`)
-        const platforms = await fetchIt(`http://localhost:8088/platforms`)
-        const games = await fetchIt(`http://localhost:8088/games/?_expand=user&_embed=gamePlatforms&_embed=taggedGames&userId=${userId}`)
-            .then(games => {
-                //map through the returned array of games
-                const embedded = games.map(game => {
-                    //for current game object, embed tag objects onto the embedded taggedGames array
-                    game = embedTagsAndPlatforms(game, tags, platforms)
-                    // only return game once 1st promise (tags) and 2nd promise (platforms) are resolved
-                    return game
-                })
-                return embedded
-            })
-        //returns games array once the full promise of fetchIt line 30 is resolved, user is expanded,
-        //taggedGames and gamePlatforms embedded on first level, and tags and platforms embedded on second level
-        return games
-    },
+
     async get(id) {
         const tags = await fetchIt(`http://localhost:8088/tags`)
         const platforms = await fetchIt(`http://localhost:8088/platforms`)
         return await fetchIt(`http://localhost:8088/games/${id}?_expand=user&_embed=gamePlatforms&_embed=taggedGames`)
             .then(game => {
-                //for fetched game object, embed tag objects onto the embedded taggedGames array
+                //for fetched game object, expand tag objects on the embedded taggedGames array and platform objects on the gamePlatforms array
                 game = embedTagsAndPlatforms(game, tags, platforms)
                 return game
-                //returns one game object with user and platform expanded, 
-                //taggedGames embedded on first level, and tags embedded on second level
+                //returns one game object with user expanded, 
+                //taggedGames and gamePlatforms embedded on first level, and tags and platforms embedded on second level
             })
     },
     async getAllPlatforms() {
         return await fetchIt(`http://localhost:8088/platforms`)
-    },
-
-    //GETs for search functionality
-    async getAllCurrentBySearchTerm(searchTerm) {
-        const userId = parseInt(localStorage.getItem("trove_user"))
-        const tags = await fetchIt(`http://localhost:8088/tags`)
-        const platforms = await fetchIt(`http://localhost:8088/platforms`)
-        const games = await fetchIt(`http://localhost:8088/games/?_expand=user&_embed=gamePlatforms&_embed=taggedGames&userId=${userId}&current=true&name_like=${searchTerm}`)
-            .then(games => {
-                //map through the returned array of games
-                const embedded = games.map(game => {
-                    //for current game object, embed tag objects onto the embedded taggedGames array
-                    game = embedTagsAndPlatforms(game, tags, platforms)
-                    // only return game once 1st promise (tags) and 2nd promise (platforms) are resolved
-                    return game
-                })
-                return embedded
-            })
-        //returns games array once the full promise of fetchIt line 30 is resolved, user is expanded,
-        //taggedGames and gamePlatforms embedded on first level, and tags and platforms embedded on second level
-        return games
-    },
-    async getAllQueueBySearchTerm(searchTerm) {
-        const userId = parseInt(localStorage.getItem("trove_user"))
-        const tags = await fetchIt(`http://localhost:8088/tags`)
-        const platforms = await fetchIt(`http://localhost:8088/platforms`)
-        const games = await fetchIt(`http://localhost:8088/games/?_expand=user&_embed=gamePlatforms&_embed=taggedGames&userId=${userId}&current=false&name_like=${searchTerm}`)
-            .then(games => {
-                //map through the returned array of games
-                const embedded = games.map(game => {
-                    //for current game object, embed tag objects onto the embedded taggedGames array
-                    game = embedTagsAndPlatforms(game, tags, platforms)
-                    // only return game once 1st promise (tags) and 2nd promise (platforms) are resolved
-                    return game
-                })
-                return embedded
-            })
-        //returns games array once the full promise of fetchIt line 30 is resolved, user is expanded,
-        //taggedGames and gamePlatforms embedded on first level, and tags and platforms embedded on second level
-        return games
-    },
-    async getAllBySearchTerm(searchTerm) {
-        const userId = parseInt(localStorage.getItem("trove_user"))
-        const tags = await fetchIt(`http://localhost:8088/tags`)
-        const platforms = await fetchIt(`http://localhost:8088/platforms`)
-        const games = await fetchIt(`http://localhost:8088/games/?_expand=user&_embed=gamePlatforms&_embed=taggedGames&userId=${userId}&name_like=${searchTerm}`)
-            .then(games => {
-                //map through the returned array of games
-                const embedded = games.map(game => {
-                    //for current game object, embed tag objects onto the embedded taggedGames array
-                    game = embedTagsAndPlatforms(game, tags, platforms)
-                    // only return game once 1st promise (tags) and 2nd promise (platforms) are resolved
-                    return game
-                })
-                return embedded
-            })
-        //returns games array once the full promise of fetchIt line 30 is resolved, user is expanded,
-        //taggedGames and gamePlatforms embedded on first level, and tags and platforms embedded on second level
-        return games
     },
 
     //DELETEs
@@ -187,7 +121,7 @@ export const GameRepo = {
             },
             body: JSON.stringify(newGamePlatform)
         }
-        
+
         return fetch("http://localhost:8088/gamePlatforms", fetchOptions)
     },
 

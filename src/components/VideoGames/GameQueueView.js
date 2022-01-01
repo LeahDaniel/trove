@@ -8,42 +8,42 @@ import { Button, Card } from "reactstrap";
 import { TagRepo } from "../../repositories/TagRepo";
 
 export const GameQueueView = () => {
+    const history = useHistory()
+    const [games, setGames] = useState([])
+    const [taggedGames, setTaggedGames] = useState([])
+    const [userAttemptedSearch, setAttemptBoolean] = useState(false)
+    const [isLoading, setLoading] = useState(true)
     const [userEntries, setUserEntries] = useState({
         name: "",
         multiplayer: null,
         platform: "0",
         tags: new Set()
     })
-    const history = useHistory()
-    const [games, setGames] = useState([])
-    const [userAttemptedSearch, setAttemptBoolean] = useState(false)
-    const [isLoading, setLoading] = useState(true)
-    const [taggedGames, setTaggedGames] = useState([])
 
     useEffect(
         () => {
-            GameRepo.getAllQueue()
-                .then(setGames)
-                .then(() => setLoading(false))
-                .then(() => TagRepo.getTaggedGames())
+            TagRepo.getTaggedGames()
                 .then(result => {
                     const onlyQueued = result.filter(taggedGame => taggedGame.game?.current === false)
                     setTaggedGames(onlyQueued)
                 })
-                
+
         }, []
     )
 
     useEffect(
         () => {
-            const determineFilters = (midFilterGames) => {
-                const multiplayerExist = userEntries.multiplayer !== null
-                const noMultiplayer = userEntries.multiplayer === null
-                const platformExist = userEntries.platform !== "0"
-                const noPlatform = userEntries.platform === "0"
-                const tagsExist = userEntries.tags.size > 0
-                const noTags = userEntries.tags.size === 0
+            //variables for whether or not the user has filled in each filter
+            const multiplayerExist = userEntries.multiplayer !== null
+            const noMultiplayer = userEntries.multiplayer === null
+            const platformExist = userEntries.platform !== "0"
+            const noPlatform = userEntries.platform === "0"
+            const tagsExist = userEntries.tags.size > 0
+            const noTags = userEntries.tags.size === 0
+            const nameExist = userEntries.name !== ""
+            const noName = userEntries.name === ""
 
+            const determineFilters = (midFilterGames) => {
                 const multiplayerBoolean = userEntries.multiplayer
                 const platformId = parseInt(userEntries.platform)
 
@@ -111,15 +111,17 @@ export const GameQueueView = () => {
 
             }
 
-            if (userEntries.name === "") {
-                GameRepo.getAllQueue()
+            if (noName) {
+                GameRepo.getAll(false)
                     .then((result) => setGames(determineFilters(result)))
+                    .then(() => setLoading(false))
             } else {
-                GameRepo.getAllQueueBySearchTerm(userEntries.name)
+                GameRepo.getBySearchTerm(userEntries.name, false)
                     .then((result) => setGames(determineFilters(result)))
+                    .then(() => setLoading(false))
             }
 
-            if (userEntries.name !== "" || userEntries.multiplayer !== null || userEntries.platform !== "0" || userEntries.tag !== "0") {
+            if (nameExist || multiplayerExist || platformExist || tagsExist) {
                 setAttemptBoolean(true)
             } else {
                 setAttemptBoolean(false)
