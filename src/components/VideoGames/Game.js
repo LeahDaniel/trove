@@ -82,7 +82,7 @@ export const Game = ({ game, setGames }) => {
                         <Card
                             body
                             color="light"
-                            className="rounded shadow border-0"
+                            className="rounded shadow border"
                         >
                             {
                                 setGames
@@ -138,8 +138,9 @@ export const Game = ({ game, setGames }) => {
                                     {presentGame.name}
                                 </CardTitle>
                                 <CardSubtitle
-                                    className=" text-muted"
+                                    className="text-mutedPlus"
                                     tag="h6"
+                                    
                                 >
                                     {/* display "multiplayer capable" if true */}
                                     {presentGame.multiplayerCapable === true ? "Multiplayer Capable" : ""}

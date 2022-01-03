@@ -19,6 +19,12 @@ export const fetchIt = (url, method = "GET", body = null) => {
                 "Content-Type": "application/json"
             }
             break;
+        //if the method is PATCH, add the content-type property onto the headers property
+        case "PATCH":
+            options.headers = {
+                "Content-Type": "application/json"
+            }
+            break;
         //if the method is anything else other than the above, do nothing (break).
         default:
             break;

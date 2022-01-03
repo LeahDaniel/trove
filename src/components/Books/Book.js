@@ -75,7 +75,7 @@ export const Book = ({ book, setBooks }) => {
                         <Card
                             body
                             color="light"
-                            className="rounded shadow border-0"
+                            className="rounded shadow border"
                         >
                             {
                                 setBooks
