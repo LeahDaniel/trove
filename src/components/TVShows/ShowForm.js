@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useHistory, useLocation } from "react-router"
-import { Alert, Button, Form, FormGroup, FormText, Input, Label, UncontrolledAlert } from "reactstrap"
+import { Alert, Button, Form, FormGroup, FormText, Input, Label } from "reactstrap"
 import { ShowRepo } from "../../repositories/ShowRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 import CreatableSelect from 'react-select/creatable'
@@ -178,8 +178,8 @@ export const ShowForm = () => {
     }
 
     return (
-        <div className="row justify-content-center">
-            <Form className="m-4 p-2 col-9">
+        <div className="row justify-content-center my-4">
+            <Form className="my-4 p-5 col-9 gradient rounded border">
                 {
                     presentShow
                         ? <h3> Edit a Show</h3>
@@ -228,7 +228,7 @@ export const ShowForm = () => {
                 </FormGroup>
                 {
                     presentShow?.tagArray?.length > 0
-                        ? <Alert color="success">The user who recommended this used the tags: {presentShow.tagArray.join(", ")}</Alert>
+                        ? <Alert color="success" style={{fontSize: 15}} className="p-2 border rounded-0">The user who recommended this used the tags: {presentShow.tagArray.join(", ")}</Alert>
                         : ""
                 }
                 <FormGroup>

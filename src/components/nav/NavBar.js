@@ -14,7 +14,7 @@ export const NavBar = () => {
                 className="shadow-sm"
             >
                 <NavbarBrand className="p-3 text-dark" href="/">
-                    <img className="pe-2" style={{ maxWidth: 45, maxHeight: 45 }} src={troveIcon}></img>
+                    <img className="me-3" alt="Treasure Chest: Trove Logo" style={{ maxWidth: 35, maxHeight: 35 }} src={troveIcon}></img>
                     Trove
                 </NavbarBrand>
                 <NavbarToggler onClick={() => setIsOpen(!isOpen)} />

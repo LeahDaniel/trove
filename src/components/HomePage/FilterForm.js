@@ -51,7 +51,7 @@ export const FilterForm = ({ userEntries, setUserEntries }) => {
                     <Label>
                         Tags
                     </Label>
-                    <div>
+                    <div className="d-flex flex-row flex-wrap justify-content-start">
                         {
                             tags.length > 0
                                 ? tags.map(tag => {
@@ -62,7 +62,7 @@ export const FilterForm = ({ userEntries, setUserEntries }) => {
                                         style={{ color: "#000000", borderRadius: '20px',fontWeight: 500 }}
                                         outline
                                         size="sm"
-                                        className="m-2"
+                                        className="mx-1 my-2 text-truncate"
                                         onClick={() => setTag(tag.id)}
                                     >
                                         {tag.tag}
@@ -84,7 +84,7 @@ export const FilterForm = ({ userEntries, setUserEntries }) => {
                         }
                         color="info"
                         size="sm"
-                        className="col-sm-6 col-lg-4 mt-2 text-white"
+                        className="col-sm-11 col-md-9 col-lg-7 col-xl-5 mt-2 text-white"
                     >
                         Clear Filters
                     </Button>

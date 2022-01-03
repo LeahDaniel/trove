@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useHistory, useLocation } from "react-router"
-import { Alert, Button, Form, FormGroup, FormText, Input, Label, UncontrolledAlert } from "reactstrap"
+import { Alert, Button, Form, FormGroup, FormText, Input, Label} from "reactstrap"
 import { GameRepo } from "../../repositories/GameRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 import CreatableSelect from 'react-select/creatable'
@@ -235,8 +235,8 @@ export const GameForm = () => {
     }
 
     return (
-        <div className="row justify-content-center">
-            <Form className="m-4 p-2 col-9">
+        <div className="row justify-content-center my-4">
+            <Form className="my-4 p-5 col-9 gradient rounded border">
                 {
                     presentGame
                         ? <h3> Edit a Game</h3>
@@ -285,7 +285,7 @@ export const GameForm = () => {
                 </FormGroup>
                 {
                     presentGame?.tagArray?.length > 0
-                        ? <Alert color="success">The user who recommended this used the tag(s): {presentGame.tagArray.join(", ")}</Alert>
+                        ? <Alert color="success" style={{ fontSize: 15 }} className="p-2 border rounded-0">The user who recommended this used the tags: {presentGame.tagArray.join(", ")}</Alert>
                         : ""
                 }
                 <FormGroup>

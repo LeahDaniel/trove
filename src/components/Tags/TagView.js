@@ -69,7 +69,7 @@ export const TagView = () => {
     return (
 
         <div className="p-5 m-5 border gradient rounded">
-            <div className='row justify-content-center'>
+            <div className='row justify-content-center mb-3'>
                 <TagSearch setUserEntry={setUserEntry} userEntry={userEntry} />
             </div>
             {
@@ -98,7 +98,7 @@ export const TagView = () => {
                             </div>
                         </FormGroup>
 
-                        : <Button color="info" className="col-2 mt-4 px-1 text-white" onClick={() => setOpenBoolean(!openBoolean)}>Add A New Tag</Button>
+                        : <Button color="info" className="col-lg-2 col-md-3 col-sm-4 col-xs-5 mt-4 px-1 text-white" onClick={() => setOpenBoolean(!openBoolean)}>Add A New Tag</Button>
                 }
             </div>
         </div>

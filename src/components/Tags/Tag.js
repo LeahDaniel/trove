@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Button, Card, CardBody, FormGroup, Input, Tooltip } from "reactstrap"
+import { Button, Card, CardBody, Input, Tooltip } from "reactstrap"
 import { TagRepo } from "../../repositories/TagRepo"
 
 

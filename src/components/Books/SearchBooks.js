@@ -107,7 +107,7 @@ export const SearchBooks = ({ userEntries, setUserEntries, taggedBooks }) => {
                                     style={{ color: "#000000", borderRadius: '20px' }}
                                     outline
                                     size="sm"
-                                    className="m-2"
+                                    className="mx-1 my-2"
                                     onClick={() => setTag(tag.id)}
                                 >
                                     {tag.tag}
@@ -133,7 +133,7 @@ export const SearchBooks = ({ userEntries, setUserEntries, taggedBooks }) => {
                     }
                     size="sm"
                     color="info"
-                    className="col-4 mt-2 text-white"
+                    className="col-sm-9 col-md-7 col-lg-5 mt-2 text-white"
                 >
                     Clear Filters
                 </Button>
