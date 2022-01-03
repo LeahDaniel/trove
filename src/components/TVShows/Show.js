@@ -76,7 +76,7 @@ export const Show = ({ show, setShows }) => {
                             {
                                 setShows
                                     ?
-                                    <div style={{ alignSelf: "flex-end" }} className="mt-2 mb-0">
+                                    <div style={{ alignSelf: "flex-end" }} className="mt-2 mb-1">
                                         {/* 
                                 If the present show is in the queue, display a "Add to Current" button.
                             */}

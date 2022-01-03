@@ -80,7 +80,7 @@ export const Book = ({ book, setBooks }) => {
                             {
                                 setBooks
                                     ?
-                                    <div style={{ alignSelf: "flex-end" }} className="mt-2 mb-0">
+                                    <div style={{ alignSelf: "flex-end" }} className="mt-2 mb-1">
                                         {/* 
                                 If the present book is in the queue, display a "Add to Current" button.
                             */}
