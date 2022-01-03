@@ -22,13 +22,12 @@ export const BookRecommendation = ({ bookRecommendation, setBookRecommendations 
         }, [bookRecommendation]
     )
 
-    //delete recommendationby id. If a current book, set books with current books, else set books with queued books (to update state appropriately based on current user view)
+    //delete recommendation by id. If a current book, set books with current books, else set books with queued books (to update state appropriately based on current user view)
     const deleteRecommendation = (id) => {
         SocialRepo.deleteBookRecommendation(id)
             .then(SocialRepo.getAllBookRecommendations)
             .then(setBookRecommendations)
     }
-
 
     return (
         <div className="mt-4">
@@ -41,7 +40,7 @@ export const BookRecommendation = ({ bookRecommendation, setBookRecommendations 
                 className="rounded shadow border-0"
             >
                 <div style={{ alignSelf: "flex-end" }} className="mt-2 mb-0">
-                    {/* onClick of delete button (trash icon) call deleteRecommendationfunction with argument of the id of the present book. */}
+                    {/* onClick of delete button (trash icon) call deleteRecommendation function with argument of the id of the present book. */}
                     <button className="imgButton">
                         <img src={deleteIcon} alt="Delete" style={{ maxWidth: 35, maxHeight: 35 }} onClick={
                             () => { return deleteRecommendation(bookRecommendation.id) }
@@ -51,7 +50,7 @@ export const BookRecommendation = ({ bookRecommendation, setBookRecommendations 
 
                 <CardBody className="mt-0 pt-0">
                     <CardTitle tag="h4" className="mb-3 mt-0">
-                        {/* display recommendationnames */}
+                        {/* display recommendation names */}
                         {book.name}
                     </CardTitle>
                     <CardSubtitle className="mb-3 mt-0">
