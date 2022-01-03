@@ -21,6 +21,9 @@ export const SocialRepo = {
     async getAllUsers() {
         return await fetchIt(`http://localhost:8088/users`)
     },
+    async getUser(id) {
+        return await fetchIt(`http://localhost:8088/users/${id}`)
+    },
     async getAllGameRecommendations(recipientId = null) {
         let recipientString = ""
         if(recipientId !== null){
