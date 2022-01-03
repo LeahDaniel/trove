@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react"
-import { Collapse, DropdownItem, DropdownMenu, DropdownToggle, Nav, Navbar, NavLink, NavbarBrand, NavbarToggler, NavItem, UncontrolledDropdown } from "reactstrap"
+import { Collapse, DropdownItem, DropdownMenu, DropdownToggle, Nav, Navbar, NavLink, NavbarBrand, NavbarToggler, NavItem, UncontrolledDropdown, NavbarText } from "reactstrap"
 import troveIcon from "../../images/TroveIcon.png"
 import notificationIcon from "../../images/NotificationIcon.png"
+import userIcon from "../../images/UserIcon.png"
 import { SocialRepo } from "../../repositories/SocialRepo"
 
 export const NavBar = () => {
@@ -9,6 +10,7 @@ export const NavBar = () => {
     //initialize state to open and close navbar when toggler is clicked.
     const [isOpen, setIsOpen] = useState(false)
     const [newNotification, setNewNotification] = useState(false)
+    const [user, setUser] = useState({})
     const [receivedBookRecommendations, setReceivedBookRecommendations] = useState([])
     const [receivedGameRecommendations, setReceivedGameRecommendations] = useState([])
     const [receivedShowRecommendations, setReceivedShowRecommendations] = useState([])
@@ -21,15 +23,17 @@ export const NavBar = () => {
                 .then(setReceivedGameRecommendations)
                 .then(() => SocialRepo.getAllBookRecommendations(userId))
                 .then(setReceivedBookRecommendations)
+                .then(() => SocialRepo.getUser(userId))
+                .then(setUser)
         }, [userId]
     )
 
     useEffect(
         () => {
-            const foundBookReco = receivedBookRecommendations.find(bookReco => bookReco.read === false)
-            const foundGameReco = receivedGameRecommendations.find(gameReco => gameReco.read === false)
-            const foundShowReco = receivedShowRecommendations.find(showReco => showReco.read === false)
-            if (foundBookReco || foundGameReco || foundShowReco) {
+            const foundBookRecommendation = receivedBookRecommendations.find(bookReco => bookReco.read === false)
+            const foundGameRecommendation = receivedGameRecommendations.find(gameReco => gameReco.read === false)
+            const foundShowRecommendation = receivedShowRecommendations.find(showReco => showReco.read === false)
+            if (foundBookRecommendation || foundGameRecommendation || foundShowRecommendation) {
                 setNewNotification(true)
             }
         }, [receivedBookRecommendations, receivedGameRecommendations, receivedShowRecommendations]
@@ -50,15 +54,16 @@ export const NavBar = () => {
             </NavbarBrand>
             <NavbarToggler onClick={() => setIsOpen(!isOpen)} />
             <Collapse isOpen={isOpen} className="ms-3" navbar>
-                <Nav navbar >
+                <Nav navbar>
                     <UncontrolledDropdown
                         inNavbar
                         nav
+                        className="align-self-start me-4 mt-2 pt-1 ps-1 ms-1"
                     >
                         <DropdownToggle
                             caret
                             nav
-                            className="text-body ps-4"
+                            className="text-body"
                         >
                             Video Games
                         </DropdownToggle>
@@ -77,11 +82,12 @@ export const NavBar = () => {
                     <UncontrolledDropdown
                         inNavbar
                         nav
+                        className="align-self-start me-4 mt-2 pt-1 ps-1 ms-1"
                     >
                         <DropdownToggle
                             caret
                             nav
-                            className="text-body ps-4"
+                            className="text-body"
                         >
                             TV Shows
                         </DropdownToggle>
@@ -100,11 +106,12 @@ export const NavBar = () => {
                     <UncontrolledDropdown
                         inNavbar
                         nav
+                        className="align-self-start me-4 mt-2 pt-1 ps-1 ms-1"
                     >
                         <DropdownToggle
                             caret
                             nav
-                            className="text-body ps-4"
+                            className="text-body"
                         >
                             Books
                         </DropdownToggle>
@@ -116,33 +123,35 @@ export const NavBar = () => {
                                 <NavLink className="text-body" href="/books/queue">Queue</NavLink>
                             </DropdownItem>
                             <DropdownItem>
-                                <NavLink className="text-body" href="/books/create">Create New</NavLink>
+                                <NavLink className="text-body " href="/books/create">Create New</NavLink>
                             </DropdownItem>
                         </DropdownMenu>
                     </UncontrolledDropdown>
-                    <NavItem >
-                        <NavLink className="text-body ps-4" href="/tags">Tags</NavLink>
+                    <NavItem className="align-self-start mt-2 pt-1 ps-1 ms-1">
+                        <NavLink className="text-body me-4 " href="/tags">Tags</NavLink>
                     </NavItem>
-                    <NavItem className="d-flex flex-row">
-                        
-                            {
-                                newNotification
-                                    ? <img src={notificationIcon} 
-                                    alt="New notification!" 
-                                    style={{ maxWidth: 25, maxHeight: 25 }} 
-                                    className="align-self-center ms-4"></img>
-                                    : ''
-                            }
-                            <NavLink className={newNotification? "text-body px-0 ms-1" : "text-body px-0 ps-4"} href="/recommendations">Recommendations</NavLink>
+                    <NavItem className="d-flex flex-row align-self-start mt-2 ps-1 ms-1 pt-1">
+                        {
+                            newNotification
+                                ? <img src={notificationIcon}
+                                    alt="New notification!"
+                                    style={{ maxWidth: 20, maxHeight: 20 }}
+                                    className="align-self-start mt-2 me-1 p-0"></img>
+                                : ''
+                        }
+                        <NavLink className= "text-body align-self-start me-4 ps-0" href="/recommendations">Recommendations</NavLink>
                     </NavItem>
-                    <NavItem >
-                        <NavLink className="text-body ps-4" href="/login" onClick={
-                            () => {
-                                localStorage.removeItem("trove_user")
-                            }
-                        }>
-                            Logout
-                        </NavLink>
+                    <NavItem className="d-flex flex-column align-self-start gradient border-0 shadow-sm px-2 py-1 mt-1 rounded">
+                            <NavbarText className="p-0 align-self-start">
+                                {user.name}
+                            </NavbarText>
+                            <NavLink className="text-body p-0 align-self-start" href="/login" onClick={
+                                () => {
+                                    localStorage.removeItem("trove_user")
+                                }
+                            }>
+                                Logout
+                            </NavLink>
                     </NavItem>
                 </Nav>
             </Collapse>
