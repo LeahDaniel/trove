@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useHistory, useLocation } from "react-router"
-import { Alert, Button, Form, FormGroup, FormText, Input, Label, UncontrolledAlert } from "reactstrap"
+import { Alert, Button, Form, FormGroup, FormText, Input, Label} from "reactstrap"
 import { BookRepo } from "../../repositories/BookRepo"
 import { TagRepo } from "../../repositories/TagRepo"
 import CreatableSelect from 'react-select/creatable'
@@ -217,8 +217,8 @@ export const BookForm = () => {
 
 
     return (
-        <div className="row justify-content-center">
-            <Form className="m-4 p-2 col-9">
+        <div className="row justify-content-center my-4">
+            <Form className="my-4 p-5 col-9 gradient rounded border">
                 {
                     presentBook
                         ? <h3> Edit a Book</h3>
@@ -267,7 +267,7 @@ export const BookForm = () => {
                 </FormGroup>
                 {
                     presentBook?.tagArray?.length > 0
-                        ? <UncontrolledAlert fade color="info">The user who recommended this used the tag(s): {presentBook.tagArray.join(", ")}</UncontrolledAlert>
+                        ? <Alert color="success" style={{ fontSize: 15 }} className="p-2 border rounded-0">The user who recommended this used the tags: {presentBook.tagArray.join(", ")}</Alert>
                         : ""
                 }
                 <FormGroup>
@@ -341,7 +341,7 @@ export const BookForm = () => {
                         : ""
                 }
                 <FormGroup>
-                    <Button onClick={(evt) => {
+                    <Button className="text-white" color="info" onClick={(evt) => {
                         evt.preventDefault()
                         // checkValidity()
                         setFirstAttempt(false)
@@ -358,7 +358,7 @@ export const BookForm = () => {
                     }}>
                         Submit
                     </Button>
-                    <Button onClick={() => { history.goBack() }} className="ms-3">
+                    <Button onClick={() => { history.goBack() }} color="info" className="ms-3 text-white">
                         Cancel
                     </Button>
                 </FormGroup>

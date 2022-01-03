@@ -36,9 +36,9 @@ export const Register = (props) => {
     }
 
     const postDefaultTags = (createdUser) => {
-        const defaultTagArray = ["Action", "Adventure", "Comedy", "Drama", "Mystery", 
-            "Fantasy", "Historical", "Horror", "Romance", "Science Fiction", "Thriller", 
-            "Western", "Platformer", "Shooter", "Survival", "Battle Royale", "RPG", 
+        const defaultTagArray = ["Action", "Adventure", "Comedy", "Drama", "Mystery",
+            "Fantasy", "Historical", "Horror", "Romance", "Science Fiction", "Thriller",
+            "Western", "Platformer", "Shooter", "Survival", "Battle Royale", "RPG",
             "Simulator", "Strategy", "Esports", "Casual", "Educational", "Sandbox", "Open world"
         ]
         let promiseArray = []
@@ -64,30 +64,31 @@ export const Register = (props) => {
     }
 
     return (
-        <main className="mx-4">
-            <dialog className="dialog dialog--password" ref={conflictDialog}>
-                <div>Account with that email address already exists</div>
-                <Button close onClick={e => conflictDialog.current.close()} className="text-right" />
-            </dialog>
+        <main className="row justify-content-center my-5">
+            <div className="my-5 p-5 col-9 gradient rounded border shadow-sm">
+                <dialog className="dialog dialog--password" ref={conflictDialog}>
+                    <div>Account with that email address already exists</div>
+                    <Button close onClick={e => conflictDialog.current.close()} color="info" className="text-white text-right" />
+                </dialog>
 
-            <Form onSubmit={handleRegister}>
-                <h1 className="pt-5">Trove</h1>
-                <h5 className="pt-4">Please Register</h5>
-                <FormGroup className="pt-3">
-                    <Label htmlFor="name"> Full Name </Label>
-                    <Input onChange={updateUser}
-                        type="text" id="name"
-                        placeholder="Enter your name" required autoFocus />
-                </FormGroup>
-                <FormGroup className="pt-3">
-                    <Label htmlFor="email"> Email address </Label>
-                    <Input onChange={updateUser} type="email" id="email" placeholder="Email address" required />
-                </FormGroup>
-                <FormGroup className="pt-3">
-                    <Button type="submit"> Register </Button>
-                </FormGroup>
-            </Form>
-
+                <Form onSubmit={handleRegister}>
+                    <h1 className="pt-4">Trove</h1>
+                    <h5 className="pt-4">Please Register</h5>
+                    <FormGroup className="pt-3">
+                        <Label htmlFor="name"> Full Name </Label>
+                        <Input onChange={updateUser}
+                            type="text" id="name"
+                            placeholder="Enter your name" required autoFocus />
+                    </FormGroup>
+                    <FormGroup className="pt-3">
+                        <Label htmlFor="email"> Email address </Label>
+                        <Input onChange={updateUser} type="email" id="email" placeholder="Email address" required />
+                    </FormGroup>
+                    <FormGroup className="pt-3">
+                        <Button className="text-white" color="info" type="submit"> Register </Button>
+                    </FormGroup>
+                </Form>
+            </div>
         </main>
     )
 }

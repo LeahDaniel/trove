@@ -33,7 +33,8 @@ export const PlatformModal = ({ openBoolean, setOpenBoolean, presentGame, addToC
             </ModalBody>
             <ModalFooter>
                 <Button
-                    color="dark"
+                    color="info"
+                    className="text-white"
                     onClick={() => {
                         //on submit, delete all gamePlatforms for the present game, then re-add the one that was chosen
                         //on this modal. Call the addToCurrent function (from props) to perform PUT operation and push user to current list
@@ -50,7 +51,7 @@ export const PlatformModal = ({ openBoolean, setOpenBoolean, presentGame, addToC
                     Submit
                 </Button>
                 {/* set boolean state to false when cancel button is clicked to hide modal */}
-                <Button onClick={() => { setOpenBoolean(false) }}>
+                <Button color="info" className="text-white" onClick={() => { setOpenBoolean(false) }}>
                     Cancel
                 </Button>
             </ModalFooter>

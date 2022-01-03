@@ -75,6 +75,7 @@ export const Book = ({ book, setBooks }) => {
                         <Card
                             body
                             color="light"
+                            className="rounded shadow border-0"
                         >
                             {
                                 setBooks
@@ -132,7 +133,7 @@ export const Book = ({ book, setBooks }) => {
                                     {/* map through the taggedBooks for the present book, and display the tag associated with each in a Badge format */}
                                     {
                                         presentBook.taggedBooks?.map(taggedBook => {
-                                            return <Badge className="my-1 me-1" key={taggedBook.id} style={{ fontSize: 15 }} color="info" pill>
+                                            return <Badge className="my-1 me-1 shadow-sm" key={taggedBook.id} style={{ fontSize: 15, fontWeight: 600 }} color="tags" pill>
                                                 {taggedBook.tag?.tag}
                                             </Badge>
                                         })
@@ -144,6 +145,7 @@ export const Book = ({ book, setBooks }) => {
                         {
                             successOpenBoolean
                                 ? <UncontrolledAlert
+                                    className=" shadow-sm"
                                     color="success">
                                     Recommendation sent!
                                 </UncontrolledAlert>

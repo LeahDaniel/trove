@@ -1,12 +1,17 @@
-// $theme-colors: (
-//   "primary": #118dc2,
-//   "secondary": hsl(55, 100%, 58%),
-//   "success": hsl(239, 100%, 83%),
-//   "danger": #01024E,
-//   "warning": #01024E,
-//   "info": #bb2828,
-//   "light": #01024E,
-//   "dark": #01024E
-// );
+$theme-colors: (
+    "primary": #D2D6F1,
+    "secondary": #faf4f4,
+    "success": #D2D6F1,
+    "danger": #e48ea4,
+    "tags": #7393eb,
+    "info": #de5879 ,
+    "light": #efedf5,
+    "dark": #060718,
+    "checkbox": #e48ea4,
+    "muted": #D2D6F1 ,
+);
+
+$enable-gradients: true;
+$enable-shadows : true;
 
 @import "../../node_modules/bootstrap/scss/bootstrap";

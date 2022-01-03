@@ -71,6 +71,7 @@ export const Show = ({ show, setShows }) => {
                         <Card
                             body
                             color="light"
+                            className="rounded shadow border-0"
                         >
                             {
                                 setShows
@@ -130,7 +131,7 @@ export const Show = ({ show, setShows }) => {
                                     {/* map through the taggedShows for the present show, and display the tag associated with each in a Badge format */}
                                     {
                                         presentShow.taggedShows?.map(taggedShow => {
-                                            return <Badge className="my-1 me-1" key={taggedShow.id} style={{ fontSize: 15 }} color="info" pill>
+                                            return <Badge className="my-1 me-1 shadow-sm" key={taggedShow.id} style={{ fontSize: 15, fontWeight: 600 }} color="tags" pill>
                                                 {taggedShow.tag?.tag}
                                             </Badge>
                                         })
@@ -142,6 +143,7 @@ export const Show = ({ show, setShows }) => {
                         {
                             successOpenBoolean
                                 ? <UncontrolledAlert
+                                    className=" shadow-sm"
                                     color="success">
                                     Recommendation sent!
                                 </UncontrolledAlert>

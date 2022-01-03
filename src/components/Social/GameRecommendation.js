@@ -36,6 +36,7 @@ export const GameRecommendation = ({ gameRecommendation, setGameRecommendations 
                     : <Card
                         body
                         color="light"
+                        className="rounded shadow border-0"
                     >
                         <div style={{ alignSelf: "flex-end" }} className="mt-2 mb-0">
                             {/* onClick of delete button (trash icon) call deleteRecommendationfunction with argument of the id of the present game. */}
@@ -53,14 +54,14 @@ export const GameRecommendation = ({ gameRecommendation, setGameRecommendations 
                             </CardTitle>
                             <CardSubtitle className="mb-3 mt-0" >
                                 {/* display sender name */}
-                                Recommended by {gameRecommendation.sender.name}
+                                <em>Recommended by {gameRecommendation.sender.name}</em>
                             </CardSubtitle>
                             <CardText className="my-3">
                                 {/* display message (games as empty string if not entered on modal) */}
                                 {gameRecommendation.message}
                             </CardText>
 
-                            <Button onClick={() => {
+                            <Button color="info" className="text-white" onClick={() => {
                                 history.push({
                                     pathname: "/games/create",
                                     state: {

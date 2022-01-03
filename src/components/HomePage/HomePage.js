@@ -133,7 +133,7 @@ export const HomePage = () => {
 
     return (
         <>
-            <div className="p-5 m-5 bg-light border border-secondary">
+            <div className="p-5 m-5 gradient border-0 shadow-sm" style={{borderRadius: 25}}>
                 <p>Welcome! Please use the navigation bar above to find the list of media you'd like to look through, or use the filter feature below to search through all of your media at once.</p>
                 <p className="pt-3">Each media type has a:</p>
                 <ul>

@@ -67,7 +67,7 @@ export const RecommendationList = () => {
                                 : <div
                                     className="mt-5 pt-5 border-0 d-flex align-items-center justify-content-center"
                                 >
-                                    <h5 className="text-center text-muted">
+                                    <h5 className="mt-5 pt-5 text-center text-muted">
                                         No Recommendations
                                     </h5>
                                 </div>

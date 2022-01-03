@@ -57,7 +57,7 @@ export const SearchGames = ({ userEntries, setUserEntries, taggedGames }) => {
     }
 
     return (
-        <Form className="pb-2 mt-5 px-2 bg-light border" inline>
+        <Form className="pb-2 mt-5 px-2 bg-secondary shadow-sm rounded" inline>
 
             <h5 className="text-center py-3">Filters</h5>
 
@@ -137,11 +137,11 @@ export const SearchGames = ({ userEntries, setUserEntries, taggedGames }) => {
                                 return <Button
                                     key={`tag--${tag.id}`}
                                     active={userEntries.tags.has(tag.id) ? true : false}
-                                    color="info"
+                                    color="checkbox"
                                     style={{ color: "#000000", borderRadius: '20px' }}
                                     outline
                                     size="sm"
-                                    className="m-2"
+                                    className="mx-1 my-2"
                                     onClick={() => setTag(tag.id)}
                                 >
                                     {tag.tag}
@@ -165,9 +165,11 @@ export const SearchGames = ({ userEntries, setUserEntries, taggedGames }) => {
                         setUserEntries(userEntriesCopy)
                     }
                     }
-                    className="col-4 mt-2"
+                    color="info"
+                    size="sm"
+                    className="col-sm-9 col-md-7 col-lg-5 mt-2 text-white"
                 >
-                    Clear
+                    Clear Filters
                 </Button>
             </FormGroup>
         </Form>
