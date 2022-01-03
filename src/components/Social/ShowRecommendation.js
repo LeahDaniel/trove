@@ -1,10 +1,9 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Button, Card, CardBody, CardSubtitle, CardText, CardTitle } from "reactstrap"
 import deleteIcon from '../../images/DeleteIcon.png';
 import { useHistory } from "react-router";
 import { SocialRepo } from "../../repositories/SocialRepo";
 import { ShowRepo } from "../../repositories/ShowRepo";
-import { useEffect, useState } from "react/cjs/react.development";
 
 
 export const ShowRecommendation = ({ showRecommendation, setShowRecommendations }) => {

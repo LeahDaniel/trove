@@ -1,4 +1,4 @@
-import { useState } from "react/cjs/react.development"
+import React, { useState } from "react"
 import { Modal, ModalBody, ModalFooter, Button, FormGroup, Input } from "reactstrap"
 import { GameRepo } from "../../repositories/GameRepo"
 

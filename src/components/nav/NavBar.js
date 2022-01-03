@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react"
 import { Collapse, DropdownItem, DropdownMenu, DropdownToggle, Nav, Navbar, NavLink, NavbarBrand, NavbarToggler, NavItem, UncontrolledDropdown, NavbarText } from "reactstrap"
 import troveIcon from "../../images/TroveIcon.png"
 import notificationIcon from "../../images/NotificationIcon.png"
-import userIcon from "../../images/UserIcon.png"
 import { SocialRepo } from "../../repositories/SocialRepo"
 
 export const NavBar = () => {

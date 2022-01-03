@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react/cjs/react.development"
+import React, { useEffect, useState } from "react"
 import { ShowList } from "./ShowList"
 import { SearchShows } from "./SearchShows"
 import addIcon from '../../images/AddIcon.png';
