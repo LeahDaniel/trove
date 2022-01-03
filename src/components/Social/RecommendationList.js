@@ -24,6 +24,25 @@ export const RecommendationList = () => {
         }, []
     )
 
+    useEffect(
+        () => {
+            if(!isLoading){
+                let promiseArray = []
+
+                for(const gameReco of gameRecommendations){
+                    promiseArray.push(SocialRepo.modifyGameRecommendation(gameReco.id))
+                }
+                for(const showReco of showRecommendations){
+                    promiseArray.push(SocialRepo.modifyShowRecommendation(showReco.id))
+                }
+                for(const bookReco of bookRecommendations){
+                    promiseArray.push(SocialRepo.modifyBookRecommendation(bookReco.id))
+                }
+                Promise.all(promiseArray)
+            }
+        }, [isLoading, gameRecommendations, bookRecommendations, showRecommendations]
+    )
+
     return (
         <div className="row justify-content-center mt-5">
             {

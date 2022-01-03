@@ -21,10 +21,14 @@ export const SocialRepo = {
     async getAllUsers() {
         return await fetchIt(`http://localhost:8088/users`)
     },
-    async getAllGameRecommendations() {
+    async getAllGameRecommendations(recipientId = null) {
+        let recipientString = ""
+        if(recipientId !== null){
+            recipientString = `&recipientId=${recipientId}`
+        }
         const userId = parseInt(localStorage.getItem("trove_user"))
         const users = await fetchIt(`http://localhost:8088/users`)
-        const recommendations = await fetchIt(`http://localhost:8088/gameRecommendations/?_expand=game&recipientId=${userId}`)
+        const recommendations = await fetchIt(`http://localhost:8088/gameRecommendations/?_expand=game&recipientId=${userId}${recipientString}`)
             .then(recommendations => {
                 //map through the returned array of recommendations
                 const embedded = recommendations.map(recommendation => {
@@ -38,10 +42,14 @@ export const SocialRepo = {
         //returns a recommendations array associated with the current user (if the recipient) with game and user expanded
         return recommendations
     },
-    async getAllShowRecommendations() {
+    async getAllShowRecommendations(recipientId = null) {
+        let recipientString = ""
+        if(recipientId !== null){
+            recipientString = `&recipientId=${recipientId}`
+        }
         const userId = parseInt(localStorage.getItem("trove_user"))
         const users = await fetchIt(`http://localhost:8088/users`)
-        const recommendations = await fetchIt(`http://localhost:8088/showRecommendations/?_expand=show&recipientId=${userId}`)
+        const recommendations = await fetchIt(`http://localhost:8088/showRecommendations/?_expand=show&recipientId=${userId}${recipientString}`)
             .then(recommendations => {
                 //map through the returned array of recommendations
                 const embedded = recommendations.map(recommendation => {
@@ -55,10 +63,14 @@ export const SocialRepo = {
         //returns a recommendations array associated with the current user (if the recipient) with show and user expanded
         return recommendations
     },
-    async getAllBookRecommendations() {
+    async getAllBookRecommendations(recipientId = null) {
+        let recipientString = ""
+        if(recipientId !== null){
+            recipientString = `&recipientId=${recipientId}`
+        }
         const userId = parseInt(localStorage.getItem("trove_user"))
         const users = await fetchIt(`http://localhost:8088/users`)
-        const recommendations = await fetchIt(`http://localhost:8088/bookRecommendations/?_expand=book&recipientId=${userId}`)
+        const recommendations = await fetchIt(`http://localhost:8088/bookRecommendations/?_expand=book&recipientId=${userId}${recipientString}`)
             .then(recommendations => {
                 //map through the returned array of recommendations
                 const embedded = recommendations.map(recommendation => {
@@ -72,6 +84,7 @@ export const SocialRepo = {
         //returns a recommendations array associated with the current user (if the recipient) with book and user expanded
         return recommendations
     },
+   
 
     //DELETEs
     async deleteGameRecommendation(id) {
@@ -115,6 +128,29 @@ export const SocialRepo = {
             `http://localhost:8088/gameRecommendations`,
             "POST",
             JSON.stringify(newRecommendation)
+        )
+    },
+
+    //PATCHes
+    async modifyBookRecommendation(id) {
+        return await fetchIt(
+            `http://localhost:8088/bookRecommendations/${id}`,
+            "PATCH",
+            JSON.stringify({read: true})
+        )
+    },
+    async modifyShowRecommendation(id) {
+        return await fetchIt(
+            `http://localhost:8088/showRecommendations/${id}`,
+            "PATCH",
+            JSON.stringify({read: true})
+        )
+    },
+    async modifyGameRecommendation(id) {
+        return await fetchIt(
+            `http://localhost:8088/gameRecommendations/${id}`,
+            "PATCH",
+            JSON.stringify({read: true})
         )
     },
 }

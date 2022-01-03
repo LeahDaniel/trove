@@ -87,7 +87,8 @@ export const RecommendationModal = ({ openBoolean, setOpenBoolean, presentGame, 
                                 senderId: userId,
                                 recipientId: foundUser.id,
                                 gameId: presentGame.id,
-                                message: messageEntry
+                                message: messageEntry,
+                                read: false
                             })
                                 .then(() => {
                                     setGameRecoSuccess(true)
@@ -100,7 +101,8 @@ export const RecommendationModal = ({ openBoolean, setOpenBoolean, presentGame, 
                                 senderId: userId,
                                 recipientId: foundUser.id,
                                 showId: presentShow.id,
-                                message: messageEntry
+                                message: messageEntry,
+                                read: false
                             })
                                 .then(() => {
                                     setShowRecoSuccess(true)
@@ -113,7 +115,8 @@ export const RecommendationModal = ({ openBoolean, setOpenBoolean, presentGame, 
                                 senderId: userId,
                                 recipientId: foundUser.id,
                                 bookId: presentBook.id,
-                                message: messageEntry
+                                message: messageEntry,
+                                read: false
                             })
                                 .then(() => {
                                     setBookRecoSuccess(true)

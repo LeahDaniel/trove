@@ -71,7 +71,7 @@ export const Show = ({ show, setShows }) => {
                         <Card
                             body
                             color="light"
-                            className="rounded shadow border-0"
+                            className="rounded shadow border"
                         >
                             {
                                 setShows
