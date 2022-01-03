@@ -34,11 +34,12 @@ export const RecommendationModal = ({ openBoolean, setOpenBoolean, presentGame, 
             <ModalBody className="mt-4">
                 <FormGroup className="mt-4">
                     <Label>
-                        Enter the email of the user you'd like to recommend this media to.
+                        Recipient's Email
                     </Label>
                     <Input
                         id="emailEntry"
                         name="emailEntry"
+                        placeholder="Existing User Email..."
                         type="email"
                         onChange={(event) => {
                             setEmailEntry(event.target.value)
@@ -66,6 +67,7 @@ export const RecommendationModal = ({ openBoolean, setOpenBoolean, presentGame, 
                         id="messageEntry"
                         name="messageEntry"
                         type="textarea"
+                        placeholder="Why are you recommending this?"
                         onChange={(event) => {
                             setMessageEntry(event.target.value)
                         }}
@@ -75,7 +77,8 @@ export const RecommendationModal = ({ openBoolean, setOpenBoolean, presentGame, 
             </ModalBody>
             <ModalFooter>
                 <Button
-                    color="dark"
+                    color="info"
+                    className="text-white"
                     onClick={() => {
                         const foundUser = users.find(user => user.email === emailEntry)
 
@@ -129,7 +132,7 @@ export const RecommendationModal = ({ openBoolean, setOpenBoolean, presentGame, 
                     Submit
                 </Button>
                 {/* set boolean state to false when cancel button is clicked to hide modal */}
-                <Button onClick={() => {
+                <Button color="info" className="text-white" onClick={() => {
                     setWarningBoolean(false)
                     setOpenBoolean(false)
                 }}>

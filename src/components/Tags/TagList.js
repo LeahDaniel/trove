@@ -7,13 +7,14 @@ export const TagList = ({tags, setTags, userAttemptedSearch, setUserEntry }) => 
         <Container>
             {
                 tags?.length > 0
-                    ? <Row>
+                    ? <div className="d-inline-flex flex-row flex-wrap">
                         {
                             tags.map(tag => <Tag key={tag.id} tag={tag} setTags={setTags} setUserEntry={setUserEntry}/>)
                         }
-                    </Row>
+                    </div>
                     : <Card
                         body
+                        className="rounded"
                     >
                         <CardBody>
                             <CardTitle tag="h5" className="text-center text-muted ">

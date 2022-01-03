@@ -68,8 +68,10 @@ export const TagView = () => {
 
     return (
 
-        <div className="p-5 m-5 bg-light">
-            <TagSearch setUserEntry={setUserEntry} userEntry={userEntry} />
+        <div className="p-5 m-5 border gradient rounded">
+            <div className='row justify-content-center'>
+                <TagSearch setUserEntry={setUserEntry} userEntry={userEntry} />
+            </div>
             {
                 isLoading
                     ? < Card className="col-7 d-flex align-items-center justify-content-center border-0" />
@@ -78,12 +80,11 @@ export const TagView = () => {
             <div className='row justify-content-center'>
                 {
                     openBoolean
-                        ? <FormGroup className="col-10 mt-4">
+                        ? <FormGroup className="col-5 mt-4">
                             <Label>New Tag Name</Label>
                             <Input
                                 id="tagEdit"
                                 type="text"
-                                placeholder="Press Enter to submit..."
                                 onKeyUp={(event) => {
                                     if (event.key === "Enter") {
                                         constructTag(newTagString)
@@ -92,10 +93,13 @@ export const TagView = () => {
                                     }
                                 }}
                             />
+                            <div className='row justify-content-center'>
+                                <Button color="info" className="col-2 mt-4 px-1 text-white" onClick={() => constructTag(newTagString)}>Submit</Button>
+                            </div>
                         </FormGroup>
-                        : <Button className="col-4 mt-4" onClick={() => setOpenBoolean(!openBoolean)}>Add A New Tag</Button>
-                }
 
+                        : <Button color="info" className="col-2 mt-4 px-1 text-white" onClick={() => setOpenBoolean(!openBoolean)}>Add A New Tag</Button>
+                }
             </div>
         </div>
 

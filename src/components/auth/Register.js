@@ -67,7 +67,7 @@ export const Register = (props) => {
         <main className="mx-4">
             <dialog className="dialog dialog--password" ref={conflictDialog}>
                 <div>Account with that email address already exists</div>
-                <Button close onClick={e => conflictDialog.current.close()} className="text-right" />
+                <Button close onClick={e => conflictDialog.current.close()} color="info" className="text-white text-right" />
             </dialog>
 
             <Form onSubmit={handleRegister}>
@@ -84,7 +84,7 @@ export const Register = (props) => {
                     <Input onChange={updateUser} type="email" id="email" placeholder="Email address" required />
                 </FormGroup>
                 <FormGroup className="pt-3">
-                    <Button type="submit"> Register </Button>
+                    <Button className="bg-info" type="submit"> Register </Button>
                 </FormGroup>
             </Form>
 

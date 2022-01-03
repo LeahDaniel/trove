@@ -13,3 +13,12 @@ a{
     justify-content: center;
     align-items: center
 }
+
+
+.gradient{
+    background-image: linear-gradient(#faf4f4, #D2D6F1);
+}
+
+body {
+    font-family: "Montserrat", 'Open Sans', sans-serif
+}

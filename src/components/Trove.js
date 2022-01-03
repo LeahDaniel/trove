@@ -14,7 +14,7 @@ export const Trove = () => (
                     return (
                         <>
                             <NavBar />
-                            <ApplicationViews />
+                            <ApplicationViews/>
                         </>
                     );
                 //otherwise show the login page

@@ -285,7 +285,7 @@ export const GameForm = () => {
                 </FormGroup>
                 {
                     presentGame?.tagArray?.length > 0
-                        ? <UncontrolledAlert fade color="info">The user who recommended this used the tag(s): {presentGame.tagArray.join(", ")}</UncontrolledAlert>
+                        ? <Alert color="success">The user who recommended this used the tag(s): {presentGame.tagArray.join(", ")}</Alert>
                         : ""
                 }
                 <FormGroup>
@@ -461,7 +461,7 @@ export const GameForm = () => {
                             : ""
                 }
                 <FormGroup>
-                    <Button onClick={(evt) => {
+                    <Button color="info" className="text-white" onClick={(evt) => {
                         evt.preventDefault()
 
                         setFirstAttempt(false)
@@ -479,7 +479,7 @@ export const GameForm = () => {
                     }}>
                         Submit
                     </Button>
-                    <Button onClick={() => { history.goBack() }} className="ms-3">
+                    <Button color="info" onClick={() => { history.goBack() }} className="ms-3 text-white">
                         Cancel
                     </Button>
                 </FormGroup>

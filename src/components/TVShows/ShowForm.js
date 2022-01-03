@@ -228,7 +228,7 @@ export const ShowForm = () => {
                 </FormGroup>
                 {
                     presentShow?.tagArray?.length > 0
-                        ? <UncontrolledAlert fade color="info">The user who recommended this used the tags: {presentShow.tagArray.join(", ")}</UncontrolledAlert>
+                        ? <Alert color="success">The user who recommended this used the tags: {presentShow.tagArray.join(", ")}</Alert>
                         : ""
                 }
                 <FormGroup>
@@ -325,7 +325,7 @@ export const ShowForm = () => {
                             : ""
                 }
                 <FormGroup>
-                    <Button onClick={(evt) => {
+                    <Button color="info" className=" text-white" onClick={(evt) => {
                         evt.preventDefault()
 
                         setFirstAttempt(false)
@@ -343,7 +343,7 @@ export const ShowForm = () => {
                     }}>
                         Submit
                     </Button>
-                    <Button onClick={() => { history.goBack() }} className="ms-3">
+                    <Button color="info" className="text-white ms-3" onClick={() => { history.goBack() }} >
                         Cancel
                     </Button>
                 </FormGroup>

@@ -48,7 +48,7 @@ export const SearchBooks = ({ userEntries, setUserEntries, taggedBooks }) => {
     }
 
     return (
-        <Form className="pb-2 mt-5 px-3 bg-light border" inline>
+        <Form className="pb-2 mt-5 px-3 bg-secondary shadow-sm rounded" inline>
 
             <h5 className="text-center py-3">Filters</h5>
 
@@ -103,7 +103,7 @@ export const SearchBooks = ({ userEntries, setUserEntries, taggedBooks }) => {
                                 return <Button
                                     key={`tag--${tag.id}`}
                                     active={userEntries.tags.has(tag.id) ? true : false}
-                                    color="info"
+                                    color="checkbox"
                                     style={{ color: "#000000", borderRadius: '20px' }}
                                     outline
                                     size="sm"
@@ -131,7 +131,8 @@ export const SearchBooks = ({ userEntries, setUserEntries, taggedBooks }) => {
                         setUserEntries(userEntriesCopy)
                     }
                     }
-                    className="col-4 mt-2"
+                    color="info"
+                    className="col-4 mt-2 text-white"
                 >
                     Clear
                 </Button>

@@ -82,6 +82,7 @@ export const Game = ({ game, setGames }) => {
                         <Card
                             body
                             color="light"
+                            className="rounded shadow border-0"
                         >
                             {
                                 setGames
@@ -155,7 +156,7 @@ export const Game = ({ game, setGames }) => {
                                     {/* map through the taggedGames for the present game, and display the tag associated with each in a Badge format */}
                                     {
                                         presentGame.taggedGames?.map(taggedGame => {
-                                            return <Badge className="my-1 me-1" key={taggedGame.id} style={{ fontSize: 15 }} color="info" pill>
+                                            return <Badge className="my-1 me-1 shadow-sm " key={taggedGame.id} style={{ fontSize: 15, fontWeight: 600 }} color="tags" pill>
                                                 {taggedGame.tag?.tag}
                                             </Badge>
                                         })
@@ -172,6 +173,7 @@ export const Game = ({ game, setGames }) => {
                         {
                             successOpenBoolean
                                 ? <UncontrolledAlert
+                                    className=" shadow-sm"
                                     color="success">
                                     Recommendation sent!
                                 </UncontrolledAlert>

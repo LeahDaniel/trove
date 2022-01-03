@@ -267,7 +267,7 @@ export const BookForm = () => {
                 </FormGroup>
                 {
                     presentBook?.tagArray?.length > 0
-                        ? <UncontrolledAlert fade color="info">The user who recommended this used the tag(s): {presentBook.tagArray.join(", ")}</UncontrolledAlert>
+                        ? <Alert color="success">The user who recommended this used the tag(s): {presentBook.tagArray.join(", ")}</Alert>
                         : ""
                 }
                 <FormGroup>
@@ -341,7 +341,7 @@ export const BookForm = () => {
                         : ""
                 }
                 <FormGroup>
-                    <Button onClick={(evt) => {
+                    <Button className="text-white" color="info" onClick={(evt) => {
                         evt.preventDefault()
                         // checkValidity()
                         setFirstAttempt(false)
@@ -358,7 +358,7 @@ export const BookForm = () => {
                     }}>
                         Submit
                     </Button>
-                    <Button onClick={() => { history.goBack() }} className="ms-3">
+                    <Button onClick={() => { history.goBack() }} color="info" className="ms-3 text-white">
                         Cancel
                     </Button>
                 </FormGroup>
