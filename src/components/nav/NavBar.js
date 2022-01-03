@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { Collapse, DropdownItem, DropdownMenu, DropdownToggle, Nav, Navbar, NavLink, NavbarBrand, NavbarToggler, NavItem, UncontrolledDropdown } from "reactstrap"
+import troveIcon from "../../images/TroveIcon.png"
 
 export const NavBar = () => {
     //initialize state to open and close navbar when toggler is clicked.
@@ -13,6 +14,7 @@ export const NavBar = () => {
                 className="shadow-sm"
             >
                 <NavbarBrand className="p-3 text-dark" href="/">
+                    <img className="pe-2" style={{ maxWidth: 45, maxHeight: 45 }} src={troveIcon}></img>
                     Trove
                 </NavbarBrand>
                 <NavbarToggler onClick={() => setIsOpen(!isOpen)} />

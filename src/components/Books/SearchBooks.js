@@ -131,10 +131,11 @@ export const SearchBooks = ({ userEntries, setUserEntries, taggedBooks }) => {
                         setUserEntries(userEntriesCopy)
                     }
                     }
+                    size="sm"
                     color="info"
                     className="col-4 mt-2 text-white"
                 >
-                    Clear
+                    Clear Filters
                 </Button>
             </FormGroup>
         </Form>
