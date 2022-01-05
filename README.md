@@ -68,7 +68,6 @@ npm start
 
 ---
 ### Demo
-<img src="" alt="">
 
 
 #### ERD
