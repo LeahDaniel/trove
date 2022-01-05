@@ -68,7 +68,7 @@ npm start
 
 ---
 ### Demo
-<img src="bookeeper-demo-final.gif" alt="">
+<img src="" alt="">
 
 
 #### ERD
@@ -104,6 +104,7 @@ SOFTWARE.
 ## Author Info
 
 [Github](https://github.com/LeahDaniel)
+
 [Linkedin](https://www.linkedin.com/in/leah-daniel/)
 
 [Back To The Top](#trove)
