@@ -1,70 +1,109 @@
-# Getting Started with Create React App
+# Trove
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+> Track all of your media in one place.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+### Table of Contents
 
-### `npm start`
+- [Description](#description)
+- [Features](#features)
+- [Technologies](#technologies)
+- [Installation](#installation)
+- [ERD](#erd)
+- [License](#license)
+- [Author Info](#author-info)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+---
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Description
 
-### `npm test`
+As someone who picks up new games, shows, and books almost weekly, only to forget about them before finishing them, I needed a way to organize my media. 
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+To solve this issue, I created a media tracking app that allows users to keep all of their current and queued media in one place. This way, they do not have to travel to multiple apps (Netflix, Steam, Goodreads, etc) to find their lists, and can filter all of their media by genre at once. 
 
-### `npm run build`
+My goals for this app were to achieve full CRUD, to create a complex tagging system and buildable filtering features, to add in error handling for any form entries, to learn how to use Bootstrap/Reactstrap, to manage my state in a clear and concise way, and to learn more about user experience.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Features
+- Users can create or delete books, games, and shows to and from their personal lists. When creating new items, users can add multiple tags to each item using a dynamic select dropdown, built with React Select.
+- Users can edit all fields of each media item.
+- Users can track whether they are currently using a media item by organizing it onto two different lists (current or queued).
+- Users can filter each list or their entire library at once by multiple categories. When filtering by tag, users can choose multiple tags at once to futher narrow down the selection.
+- Users can send media items to other registered users as recommendations.
+- Users can add, delete, or edit their tags on the tag management page
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+#### Technologies
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- HTML5
+- CSS3
+- Javascript
+- React
+- Git
+- Github
+- JSON Server
+- Visual Studio Code
+- Bootstrap/Reactstrap
+- React Select
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+#### Installation
+1. Clone this repository and change to the directory in the terminal.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```sh
+git clone git@github.com:LeahDaniel/trove.git
+cd trove
+```
+2. Access the data
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+<a href="https://github.com/LeahDaniel/trove-api" target="_blank" rel="noreferrer"><img src="https://img.shields.io/badge/-Click%20Here-blue" alt="Trove API Repository" style="height: 30px !important; width: 100px !important;" /></a>
 
-## Learn More
+3. Launch the application
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```sh
+npm install
+npm start
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
+### Demo
+<img src="bookeeper-demo-final.gif" alt="">
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+#### ERD
+<img src="./src/images/ERD.png" alt="ERD">
+---
 
-### Analyzing the Bundle Size
+## License
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+MIT License
 
-### Making a Progressive Web App
+Copyright (c) [2022] [Leah J Daniel]
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-### Advanced Configuration
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Author Info
 
-### `npm run build` fails to minify
+[Github](https://github.com/LeahDaniel)
+[Linkedin](https://www.linkedin.com/in/leah-daniel/)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+[Back To The Top](#trove)
