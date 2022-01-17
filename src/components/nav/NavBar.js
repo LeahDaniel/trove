@@ -9,13 +9,11 @@ export const NavBar = ({newNotification}) => {
     //initialize state to open and close navbar when toggler is clicked.
     const [isOpen, setIsOpen] = useState(false)
     const [user, setUser] = useState({})
-    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(
         () => {
             SocialRepo.getUser(userId)
                 .then(setUser)
-                .then(setIsLoading(false))
         }, [userId]
     )
 
