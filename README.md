@@ -69,7 +69,7 @@ npm start
 
 ---
 ### Demo
-<a href="https://loom.com/share/c8322025a4e844f995e9470c5bafafbf"><img src="./src/images/Demo.png" style="height: 350px" alt="Demo"></a>
+<a href="https://loom.com/share/c8322025a4e844f995e9470c5bafafbf">![Demo](./src/images/Demo.gif)</a>
 
 #### ERD
 <img src="./src/images/ERD.png" alt="ERD"/>
