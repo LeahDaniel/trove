@@ -10,6 +10,7 @@
 - [Features](#features)
 - [Technologies](#technologies)
 - [Installation](#installation)
+- [Demo](#demo)
 - [ERD](#erd)
 - [License](#license)
 - [Author Info](#author-info)
@@ -68,10 +69,10 @@ npm start
 
 ---
 ### Demo
-
+<img src="./src/images/demo.png" alt="Demo"><a href="https://loom.com/share/c8322025a4e844f995e9470c5bafafbf"/></img>
 
 #### ERD
-<img src="./src/images/ERD.png" alt="ERD">
+<img src="./src/images/ERD.png" alt="ERD"/>
 ---
 
 ## License
