@@ -461,7 +461,7 @@ export const GameForm = () => {
                             : ""
                 }
                 <FormGroup>
-                    <Button color="info" className="text-white" onClick={(evt) => {
+                    <Button color="info" onClick={(evt) => {
                         evt.preventDefault()
 
                         setFirstAttempt(false)
@@ -479,7 +479,7 @@ export const GameForm = () => {
                     }}>
                         Submit
                     </Button>
-                    <Button color="info" onClick={() => { history.goBack() }} className="ms-3 text-white">
+                    <Button color="info" onClick={() => { history.goBack() }} className="ms-3">
                         Cancel
                     </Button>
                 </FormGroup>

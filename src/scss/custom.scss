@@ -1,15 +1,18 @@
 $theme-colors: (
-    "primary": #bdc3ee,
-    "secondary": #f7eeee,
-    "success": #bdc3ee,
-    "danger": #e48ea4,
-    "tags": #7393eb,
-    "info": #de5879 ,
-    "light": #eae8f0,
+    "primary": #1e1e1f,
+    "secondary": #636EAF,
+    "success": #a5abd5,
+    "danger": #e48e8e,
+    "tags": #5b77c6,
+    "info": #F8BD28 ,
+    "light": #FEF2BC,
     "dark": #060718,
-    "checkbox": #e48ea4,
+    "checkbox": #31385F,
     "muted": #bdc3ee ,
-    "mutedPlus": #5b5f6a
+    "mutedPlus": #5b5f6a,
+    "navLink": #f0f0f0,
+    "white": white,
+    "black": black
 );
 
 $enable-gradients: true;

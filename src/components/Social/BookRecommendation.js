@@ -62,7 +62,7 @@ export const BookRecommendation = ({ bookRecommendation, setBookRecommendations 
                         {bookRecommendation.message}
                     </CardText>
 
-                    <Button color="info" className="text-white" onClick={() => {
+                    <Button color="info" onClick={() => {
                         history.push({
                             pathname: "/books/create",
                             state: {

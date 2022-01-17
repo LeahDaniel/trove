@@ -23,7 +23,7 @@ export const ShowQueueView = () => {
         () => {
             TagRepo.getTaggedShows()
                 .then(result => {
-                    const onlyQueued = result.filter(taggedShow => taggedShow.show?.queue === false)
+                    const onlyQueued = result.filter(taggedShow => taggedShow.show?.current === false)
                     setTaggedShows(onlyQueued)
                 })
         }, []
@@ -103,7 +103,7 @@ export const ShowQueueView = () => {
             <div className="col-3">
                 {/* clickable "add" image to bring user to form */}
                 <div className="row justify-content-center mt-5">
-                    <Button color="info" size="sm" className="col-sm-10 col-md-8 col-lg-6 text-white" onClick={
+                    <Button color="info" size="sm" className="col-sm-10 col-md-8 col-lg-6" onClick={
                         () => history.push("/shows/create")
                     }>
                         <img src={addIcon} alt="Add" style={{ maxWidth: 25 }} className="me-2"

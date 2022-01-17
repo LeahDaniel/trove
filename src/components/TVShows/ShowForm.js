@@ -325,7 +325,7 @@ export const ShowForm = () => {
                             : ""
                 }
                 <FormGroup>
-                    <Button color="info" className=" text-white" onClick={(evt) => {
+                    <Button color="info" onClick={(evt) => {
                         evt.preventDefault()
 
                         setFirstAttempt(false)
@@ -343,7 +343,7 @@ export const ShowForm = () => {
                     }}>
                         Submit
                     </Button>
-                    <Button color="info" className="text-white ms-3" onClick={() => { history.goBack() }} >
+                    <Button color="info" className="ms-3" onClick={() => { history.goBack() }} >
                         Cancel
                     </Button>
                 </FormGroup>

@@ -341,7 +341,7 @@ export const BookForm = () => {
                         : ""
                 }
                 <FormGroup>
-                    <Button className="text-white" color="info" onClick={(evt) => {
+                    <Button color="info" onClick={(evt) => {
                         evt.preventDefault()
                         // checkValidity()
                         setFirstAttempt(false)
@@ -358,7 +358,7 @@ export const BookForm = () => {
                     }}>
                         Submit
                     </Button>
-                    <Button onClick={() => { history.goBack() }} color="info" className="ms-3 text-white">
+                    <Button onClick={() => { history.goBack() }} color="info" className="ms-3">
                         Cancel
                     </Button>
                 </FormGroup>

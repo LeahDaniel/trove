@@ -94,11 +94,11 @@ export const TagView = () => {
                                 }}
                             />
                             <div className='row justify-content-center'>
-                                <Button color="info" className="col-2 mt-4 px-1 text-white" onClick={() => constructTag(newTagString)}>Submit</Button>
+                                <Button color="info" className="col-2 mt-4 px-1" onClick={() => constructTag(newTagString)}>Submit</Button>
                             </div>
                         </FormGroup>
 
-                        : <Button color="info" className="col-lg-2 col-md-3 col-sm-4 col-xs-5 mt-4 px-1 text-white" onClick={() => setOpenBoolean(!openBoolean)}>Add A New Tag</Button>
+                        : <Button color="info" className="col-lg-2 col-md-3 col-sm-4 col-xs-5 mt-4 px-1 " onClick={() => setOpenBoolean(!openBoolean)}>Add A New Tag</Button>
                 }
             </div>
         </div>

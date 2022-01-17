@@ -61,7 +61,7 @@ export const GameRecommendation = ({ gameRecommendation, setGameRecommendations 
                                 {gameRecommendation.message}
                             </CardText>
 
-                            <Button color="info" className="text-white" onClick={() => {
+                            <Button color="info" onClick={() => {
                                 history.push({
                                     pathname: "/games/create",
                                     state: {
