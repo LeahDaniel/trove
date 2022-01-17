@@ -1,4 +1,4 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 import { Route, Redirect } from "react-router-dom";
 import { ApplicationViews } from "./ApplicationViews";
 import { NavBar } from "./nav/NavBar";
@@ -7,7 +7,7 @@ import { Register } from "./auth/Register";
 
 export const Trove = () => {
     const [newNotification, setNewNotification] = useState(false)
-    
+
     return (
         <>
             <Route
@@ -17,7 +17,8 @@ export const Trove = () => {
                         return (
                             <>
                                 <NavBar newNotification={newNotification} />
-                                <ApplicationViews setNewNotification={setNewNotification}/>
+                                <ApplicationViews setNewNotification={setNewNotification} />
+                                <div className="bottom"></div>
                             </>
                         );
                         //otherwise show the login page
