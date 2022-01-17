@@ -19,8 +19,8 @@ export const RecommendationList = ({setNewNotification}) => {
                 .then(setBookRecommendations)
                 .then(SocialRepo.getAllShowRecommendations)
                 .then(setShowRecommendations)
-                .then(() => setNewNotification(false))
                 .then(() => setIsLoading(false))
+                .then(() => setNewNotification(false))
         }, [setNewNotification]
     )
 
