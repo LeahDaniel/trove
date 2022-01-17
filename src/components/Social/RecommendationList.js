@@ -5,7 +5,7 @@ import { BookRecommendation } from "./BookRecommendation"
 import { GameRecommendation } from "./GameRecommendation"
 import { ShowRecommendation } from "./ShowRecommendation"
 
-export const RecommendationList = () => {
+export const RecommendationList = ({setNewNotification}) => {
     const [gameRecommendations, setGameRecommendations] = useState([])
     const [showRecommendations, setShowRecommendations] = useState([])
     const [bookRecommendations, setBookRecommendations] = useState([])
@@ -19,6 +19,7 @@ export const RecommendationList = () => {
                 .then(setBookRecommendations)
                 .then(SocialRepo.getAllShowRecommendations)
                 .then(setShowRecommendations)
+                .then(() => setNewNotification(false))
                 .then(() => setIsLoading(false))
         }, []
     )

@@ -1,5 +1,6 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Route } from "react-router-dom"
+import { SocialRepo } from "../repositories/SocialRepo"
 import { BookForm } from "./Books/BookForm"
 import { BookQueueView } from "./Books/BookQueueView"
 import { CurrentBooksView } from "./Books/CurrentBooksView"
@@ -14,44 +15,72 @@ import { GameForm } from "./VideoGames/GameForm"
 import { GameQueueView } from "./VideoGames/GameQueueView"
 
 
-export const ApplicationViews = () => {
+export const ApplicationViews = ({ setNewNotification }) => {
+    const [receivedBookRecommendations, setReceivedBookRecommendations] = useState([])
+    const [receivedGameRecommendations, setReceivedGameRecommendations] = useState([])
+    const [receivedShowRecommendations, setReceivedShowRecommendations] = useState([])
+    const userId = localStorage.getItem("trove_user")
+
+    useEffect(
+        () => {
+            SocialRepo.getAllShowRecommendations(userId)
+                .then(setReceivedShowRecommendations)
+                .then(() => SocialRepo.getAllGameRecommendations(userId))
+                .then(setReceivedGameRecommendations)
+                .then(() => SocialRepo.getAllBookRecommendations(userId))
+                .then(setReceivedBookRecommendations)
+        }, [userId]
+    )
+
+    useEffect(
+        () => {
+            const foundBookRecommendation = receivedBookRecommendations.find(bookReco => bookReco.read === false)
+            const foundGameRecommendation = receivedGameRecommendations.find(gameReco => gameReco.read === false)
+            const foundShowRecommendation = receivedShowRecommendations.find(showReco => showReco.read === false)
+            if (foundBookRecommendation || foundGameRecommendation || foundShowRecommendation) {
+                setNewNotification(true)
+            } else {
+                setNewNotification(false)
+            }
+        }, [receivedBookRecommendations, receivedGameRecommendations, receivedShowRecommendations]
+    )
     return (
         <>
             <Route exact path="/">
-                <HomePage/>
+                <HomePage />
             </Route>
             <Route exact path="/games/current">
-                <CurrentGamesView/>
+                <CurrentGamesView />
             </Route>
             <Route exact path="/games/create">
-                <GameForm/>
+                <GameForm />
             </Route>
             <Route exact path="/games/queue">
-                <GameQueueView/>
+                <GameQueueView />
             </Route>
             <Route exact path="/shows/current">
-                <CurrentShowsView/>
+                <CurrentShowsView />
             </Route>
             <Route exact path="/shows/create">
-                <ShowForm/>
+                <ShowForm />
             </Route>
             <Route exact path="/shows/queue">
-                <ShowQueueView/>
+                <ShowQueueView />
             </Route>
             <Route exact path="/books/current">
-                <CurrentBooksView/>
+                <CurrentBooksView />
             </Route>
             <Route exact path="/books/create">
-                <BookForm/>
+                <BookForm />
             </Route>
             <Route exact path="/books/queue">
-                <BookQueueView/>
+                <BookQueueView />
             </Route>
             <Route exact path="/tags">
-                <TagView/>
+                <TagView />
             </Route>
             <Route exact path="/recommendations">
-                <RecommendationList/>
+                <RecommendationList setNewNotification={setNewNotification}/>
             </Route>
         </>
     )
