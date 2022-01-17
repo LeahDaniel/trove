@@ -45,7 +45,7 @@ export const SearchShows = ({ userEntries, setUserEntries, taggedShows }) => {
     }
 
     return (
-        <Form className="pb-2 mt-5 px-2 bg-secondary shadow-sm rounded" inline>
+        <Form className="pb-2 mt-5 px-2 bg-secondary shadow-sm rounded text-white" inline>
 
             <h5 className="text-center py-3">Filters</h5>
 
@@ -101,10 +101,10 @@ export const SearchShows = ({ userEntries, setUserEntries, taggedShows }) => {
                                     key={`tag--${tag.id}`}
                                     active={userEntries.tags.has(tag.id) ? true : false}
                                     color="checkbox"
-                                    style={{ color: "#000000", borderRadius: '20px' }}
+                                    style={{borderRadius: '20px' }}
                                     outline
                                     size="sm"
-                                    className="mx-1 my-2"
+                                    className="mx-1 my-2 text-white"
                                     onClick={() => setTag(tag.id)}
                                 >
                                     {tag.tag}
@@ -128,7 +128,7 @@ export const SearchShows = ({ userEntries, setUserEntries, taggedShows }) => {
                     }
                     }
                     color="info"
-                    className="col-sm-9 col-md-7 col-lg-5 mt-2 text-white"
+                    className="col-sm-9 col-md-7 col-lg-5 mt-2"
                     size="sm"
                 >
                     Clear Filters

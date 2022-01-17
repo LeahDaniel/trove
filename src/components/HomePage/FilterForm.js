@@ -54,8 +54,8 @@ export const FilterForm = ({ userEntries, setUserEntries }) => {
     }
 
     return (
-        <div className="col-3">
-            <Form className="pb-2 mt-5 px-3 bg-secondary shadow-sm rounded" inline>
+        <div className="col-3 text-white">
+            <Form className="pb-2 mt-5 px-3 bg-secondary shadow-sm" style={{borderRadius: 20}}inline>
 
                 <h5 className="text-center pt-5 pb-4">Filters</h5>
 
@@ -87,10 +87,10 @@ export const FilterForm = ({ userEntries, setUserEntries }) => {
                                         key={`tag--${tag.id}`}
                                         active={userEntries.tags.has(tag.id) ? true : false}
                                         color="checkbox"
-                                        style={{ color: "#000000", borderRadius: '20px', fontWeight: 500 }}
+                                        style={{ borderRadius: '20px', fontWeight: 500 }}
                                         outline
                                         size="sm"
-                                        className="mx-1 my-2 text-truncate"
+                                        className= "mx-1 my-2 text-truncate text-white"
                                         onClick={() => setTag(tag.id)}
                                     >
                                         {tag.tag}
@@ -112,7 +112,7 @@ export const FilterForm = ({ userEntries, setUserEntries }) => {
                         }
                         color="info"
                         size="sm"
-                        className="col-sm-11 col-md-9 col-lg-7 col-xl-5 mt-2 text-white"
+                        className="col-sm-11 col-md-9 col-lg-7 col-xl-5 mt-2"
                     >
                         Clear Filters
                     </Button>

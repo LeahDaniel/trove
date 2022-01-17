@@ -82,7 +82,7 @@ export const Game = ({ game, setGames }) => {
                         <Card
                             body
                             color="light"
-                            className="rounded shadow border"
+                            className="rounded shadow-sm border border-info"
                         >
                             {
                                 setGames

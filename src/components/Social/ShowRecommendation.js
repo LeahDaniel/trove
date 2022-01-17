@@ -59,7 +59,7 @@ export const ShowRecommendation = ({ showRecommendation, setShowRecommendations 
                                 {showRecommendation.message}
                             </CardText>
 
-                            <Button color="info" className="text-white" onClick={() => {
+                            <Button color="info" onClick={() => {
                                 history.push({
                                     pathname: "/shows/create",
                                     state: {
