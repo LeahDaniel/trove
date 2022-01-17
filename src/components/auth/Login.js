@@ -49,7 +49,7 @@ export const Login = () => {
                             required autoFocus />
                     </FormGroup>
                     <FormGroup className="pt-3">
-                        <Button type="submit" color="info" className="text-white">
+                        <Button type="submit" color="info">
                             Sign in
                         </Button>
                     </FormGroup>
