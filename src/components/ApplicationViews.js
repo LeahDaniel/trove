@@ -42,7 +42,7 @@ export const ApplicationViews = ({ setNewNotification }) => {
             } else {
                 setNewNotification(false)
             }
-        }, [receivedBookRecommendations, receivedGameRecommendations, receivedShowRecommendations]
+        }, [receivedBookRecommendations, receivedGameRecommendations, receivedShowRecommendations, setNewNotification]
     )
     return (
         <>

@@ -21,7 +21,7 @@ export const RecommendationList = ({setNewNotification}) => {
                 .then(setShowRecommendations)
                 .then(() => setNewNotification(false))
                 .then(() => setIsLoading(false))
-        }, []
+        }, [setNewNotification]
     )
 
     useEffect(
